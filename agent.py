@@ -15,6 +15,7 @@ import numpy as np
 import networkx as nx
 import pandas as pd
 import sympy as sp
+import matplotlib.pyplot as plt
 
 sp.init_printing(use_unicode=True)
 
@@ -38,6 +39,7 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
+        self.visualize_memory(self.clip_space)
 
 
     def trial_preprocess(self, percept, action): # Ok!
@@ -94,6 +96,7 @@ class Agent(object):
 
         self.clip_space[percept][action]['weight'] += reward
         self.clip_space[action][percept]['weight'] += (self.K * reward)
+        self.visualize_memory(self.clip_space)
 
 
     def softmax(self, h_vec, beta): # Ok!
@@ -297,3 +300,18 @@ class Agent(object):
         W_class = W_class[cols]
 
         return W_class
+    
+    def visualize_memory(self, clip_space):
+
+        """
+        Produce a visualisation of the agent's memory
+        """
+
+        # Code borrowed from here: https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
+
+        pos = nx.spring_layout(clip_space)
+        nx.draw_networkx_nodes(clip_space, pos)
+        nx.draw_networkx_labels(clip_space, pos)
+        nx.draw_networkx_edges(clip_space, pos, edge_color='r', arrows=True)
+        plt.show()
+
