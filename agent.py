@@ -39,8 +39,6 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
-        self.visualize_memory(self.clip_space)
-
 
     def trial_preprocess(self, percept, action): # Ok!
 
@@ -305,11 +303,20 @@ class Agent(object):
 
         """
         Produce a visualisation of the agent's memory
+        TODO: Rewrite this better!
         """
 
         # Code borrowed from here: https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
 
-        pos = nx.spring_layout(clip_space)
+        print(clip_space.nodes)
+        subsets = dict()
+        for stimuli in clip_space.nodes:
+            subsets[stimuli] = stimuli[0]
+        print(subsets)
+
+        nx.set_node_attributes(clip_space, subsets, name="layers")
+
+        pos = nx.multipartite_layout(clip_space, "layers", align="horizontal")
         nx.draw_networkx_nodes(clip_space, pos)
         nx.draw_networkx_labels(clip_space, pos)
         nx.draw_networkx_edges(clip_space, pos, edge_color='r', arrows=True)
