@@ -31,16 +31,15 @@ class MyWidget(QtWidgets.QWidget):
 
         self.figure = Figure()
 
-        self.canvas = FigureCanvas(self.figure)
+        canvas = FigureCanvas(self.figure)
 
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = NavigationToolbar(canvas, self)
 
         main_widget = QWidget(self)
         main_layout = QHBoxLayout(main_widget)
         main_layout.setStretch(0, 1)
         main_layout.addWidget(control_widget)
-        main_layout.addWidget(self.canvas)
-        # self.setCentralWidget(main_widget)
+        main_layout.addWidget(canvas)
 
         # self.button = QtGui.QPushButton('Plot')
         # self.button.clicked.connect(self.plot_agent_memory)

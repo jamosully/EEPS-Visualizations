@@ -93,8 +93,7 @@ class Agent(object):
             d['weight']= (1- self.gamma_damping) *d['weight']
 
         self.clip_space[percept][action]['weight'] += reward
-        self.clip_space[action][percept]['weight'] += (self.K * reward)
-        self.visualize_memory(self.clip_space)
+        self.clip_space[action][percept]['weight'] += (self.K * reward)     
 
 
     def softmax(self, h_vec, beta): # Ok!
@@ -299,7 +298,7 @@ class Agent(object):
 
         return W_class
     
-    def visualize_memory(self, clip_space):
+    def visualize_memory(self):
 
         """
         Produce a visualisation of the agent's memory
@@ -308,17 +307,17 @@ class Agent(object):
 
         # Code borrowed from here: https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
 
-        print(clip_space.nodes)
+        print(self.clip_space.nodes)
         subsets = dict()
-        for stimuli in clip_space.nodes:
+        for stimuli in self.clip_space.nodes:
             subsets[stimuli] = stimuli[0]
         print(subsets)
 
-        nx.set_node_attributes(clip_space, subsets, name="layers")
+        nx.set_node_attributes(self.clip_space, subsets, name="layers")
 
-        pos = nx.multipartite_layout(clip_space, "layers", align="horizontal")
-        nx.draw_networkx_nodes(clip_space, pos)
-        nx.draw_networkx_labels(clip_space, pos)
-        nx.draw_networkx_edges(clip_space, pos, edge_color='r', arrows=True)
+        pos = nx.multipartite_layout(self.clip_space, "layers", align="horizontal")
+        nx.draw_networkx_nodes(self.clip_space, pos)
+        nx.draw_networkx_labels(self.clip_space, pos)
+        nx.draw_networkx_edges(self.clip_space, pos, edge_color='r', arrows=True)
         plt.show()
 
