@@ -26,7 +26,7 @@ class Agent(object):
     Projective Simulation agent for Equivalence Class formation.
     """
 
-    def __init__(self, parameter):
+    def __init__(self, parameter, canvas):
 
         """Initialize the basic PS agent,
         """
@@ -39,6 +39,7 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
+        self.canvas = canvas
 
     def trial_preprocess(self, percept, action): # Ok!
 
@@ -319,5 +320,5 @@ class Agent(object):
         nx.draw_networkx_nodes(self.clip_space, pos)
         nx.draw_networkx_labels(self.clip_space, pos)
         nx.draw_networkx_edges(self.clip_space, pos, edge_color='r', arrows=True)
-        plt.show()
+        self.canvas.draw_idle()
 
