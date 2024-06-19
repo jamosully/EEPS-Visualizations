@@ -7,6 +7,7 @@ import random
 # UI Modules
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QGroupBox
+from PySide6.QtCore import Slot
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -70,26 +71,27 @@ class MyWidget(QtWidgets.QWidget):
 
         layout = QVBoxLayout()
         for i in  self.NumButtons:
-                button = QPushButton(i[0])
-                button.setObjectName(i[0])
-                layout.addWidget(button)
-                layout.setSpacing(10)
-                self.verticalGroupBox.setLayout(layout)
-                button.clicked.connect(i[1])
+            button = QPushButton(i[0])
+            button.setObjectName(i[0])
+            layout.addWidget(button)
+            layout.setSpacing(10)
+            self.verticalGroupBox.setLayout(layout)
+            button.clicked.connect(self.run_sim)
 
-    @QtCore.Slot()
+    Slot()
     def run_sim(self):
 
+        print("hahaha")
         environment_detail = initialization_detail.environment_details()
         environment_parameter, agent_parameter = initialization.config()
 
         file_name = None
 
         if file_name == None:
-            agent = agn.Agent(agent_parameter, self.canvas)
+            agent = agn.Agent(agent_parameter)
             environment = env.Environment(environment_parameter)
             interaction = intrc.Interaction(agent, environment, agent_parameter,
-                                                                environment_parameter, 100)
+                                                                environment_parameter, 100, self.canvas, self.figure)
             interaction.run_save()
             file_name = interaction.file_name
             print(file_name)

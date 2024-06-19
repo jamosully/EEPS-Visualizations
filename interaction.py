@@ -30,7 +30,7 @@ class Interaction(object):
     Interaction between agent and environment for Equivalence Projective Simulation
     """
 
-    def __init__(self, agent, environment, agent_parameter, environment_parameter, vis_step):
+    def __init__(self, agent, environment, agent_parameter, environment_parameter, vis_step, canvas, figure):
 
         """
         For a given agent, environment and their parameters, run the whole
@@ -47,6 +47,8 @@ class Interaction(object):
         file_name = 'Env_'+ str(environment_parameter['environment_ID'][0])+ \
         '_ExpID_'+ str(environment_parameter['experiment_ID'][0])
         self.file_name = "results/{}.p".format(file_name)
+        self.canvas = canvas
+        self.figure = figure
 
 
     def run_experiment(self): # Ok!
@@ -67,7 +69,7 @@ class Interaction(object):
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward)
             if num_steps % self.vis_step == 0:
-                self.agent.visualize_memory()
+                self.agent.visualize_memory(self.canvas, self.figure)
 
 
     def experiment_results(self): # Ok!

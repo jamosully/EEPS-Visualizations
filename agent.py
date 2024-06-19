@@ -26,7 +26,7 @@ class Agent(object):
     Projective Simulation agent for Equivalence Class formation.
     """
 
-    def __init__(self, parameter, canvas):
+    def __init__(self, parameter):
 
         """Initialize the basic PS agent,
         """
@@ -39,7 +39,6 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
-        self.canvas = canvas
 
     def trial_preprocess(self, percept, action): # Ok!
 
@@ -299,7 +298,7 @@ class Agent(object):
 
         return W_class
     
-    def visualize_memory(self):
+    def visualize_memory(self, canvas, figure):
 
         """
         Produce a visualisation of the agent's memory
@@ -313,12 +312,14 @@ class Agent(object):
         for stimuli in self.clip_space.nodes:
             subsets[stimuli] = stimuli[0]
         print(subsets)
-
+        
         nx.set_node_attributes(self.clip_space, subsets, name="layers")
 
         pos = nx.multipartite_layout(self.clip_space, "layers", align="horizontal")
         nx.draw_networkx_nodes(self.clip_space, pos)
         nx.draw_networkx_labels(self.clip_space, pos)
         nx.draw_networkx_edges(self.clip_space, pos, edge_color='r', arrows=True)
-        self.canvas.draw_idle()
+        memory_plot = figure.add_subplot(111)
+        nx.draw(self.clip_space, pos, memory_plot)
+        canvas.draw_idle()
 
