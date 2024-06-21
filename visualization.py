@@ -23,7 +23,7 @@ import pdb
 
 class MyWidget(QtWidgets.QWidget):
 
-    NumButtons = [['Run Model', 'self.run_sim()']]
+    NumButtons = [['Run Model', 'self.run_sim']]
 
     def __init__(self):
         super().__init__()
@@ -76,7 +76,7 @@ class MyWidget(QtWidgets.QWidget):
             layout.addWidget(button)
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
-            button.clicked.connect(self.run_sim)
+            button.clicked.connect(eval(i[1]))
 
     Slot()
     def run_sim(self):

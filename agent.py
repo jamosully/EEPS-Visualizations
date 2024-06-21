@@ -300,26 +300,30 @@ class Agent(object):
     
     def visualize_memory(self, canvas, figure):
 
-        """
-        Produce a visualisation of the agent's memory
-        TODO: Rewrite this better!
-        """
+        # Produce a visualisation of the agent's memory
+        # 
 
-        # Code borrowed from here: https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
+        # Code adapted from here: https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
 
-        print(self.clip_space.nodes)
         subsets = dict()
         for stimuli in self.clip_space.nodes:
             subsets[stimuli] = stimuli[0]
+        subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
         print(subsets)
+
+        figure.clf()
         
         nx.set_node_attributes(self.clip_space, subsets, name="layers")
+        
+        ordered_clip_space = nx.Graph()
+        ordered_clip_space.add_nodes_from(sorted(self.clip_space.nodes(data=True)))
+        ordered_clip_space.add_weighted_edges_from(self.clip_space.edges(data=True))
 
-        pos = nx.multipartite_layout(self.clip_space, "layers", align="horizontal")
-        nx.draw_networkx_nodes(self.clip_space, pos)
-        nx.draw_networkx_labels(self.clip_space, pos)
-        nx.draw_networkx_edges(self.clip_space, pos, edge_color='r', arrows=True)
+        pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
+        nx.draw_networkx_nodes(ordered_clip_space, pos)
+        nx.draw_networkx_labels(ordered_clip_space, pos)
+        nx.draw_networkx_edges(ordered_clip_space, pos, edge_color='r', arrows=True)
         memory_plot = figure.add_subplot(111)
-        nx.draw(self.clip_space, pos, memory_plot)
+        nx.draw(ordered_clip_space, pos, memory_plot, with_labels=True)
         canvas.draw_idle()
 
