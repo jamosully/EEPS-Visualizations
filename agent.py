@@ -315,12 +315,13 @@ class Agent(object):
         
         nx.set_node_attributes(self.clip_space, subsets, name="layers")
         
-        ordered_clip_space = nx.Graph()
+        ordered_clip_space = nx.DiGraph()
+        ordered_clip_space.to_directed()
         ordered_clip_space.add_nodes_from(sorted(self.clip_space.nodes(data=True)))
         ordered_clip_space.add_weighted_edges_from(self.clip_space.edges(data=True))
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
-        nx.draw_networkx_nodes(ordered_clip_space, pos)
+        nx.draw_networkx_nodes(ordered_clip_space, pos, node_size=400)
         nx.draw_networkx_labels(ordered_clip_space, pos)
         nx.draw_networkx_edges(ordered_clip_space, pos, edge_color='r', arrows=True)
         memory_plot = figure.add_subplot(111)
