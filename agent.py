@@ -326,5 +326,5 @@ class Agent(object):
         nx.draw_networkx_edges(ordered_clip_space, pos, edge_color='r', arrows=True)
         memory_plot = figure.add_subplot(111)
         nx.draw(ordered_clip_space, pos, memory_plot, with_labels=True)
-        canvas.draw_idle()
+        canvas.draw()
 

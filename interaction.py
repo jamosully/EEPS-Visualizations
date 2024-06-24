@@ -20,7 +20,7 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns; sns.set()
-
+from waiting import wait
 import pdb
 
 
@@ -49,6 +49,7 @@ class Interaction(object):
         self.file_name = "results/{}.p".format(file_name)
         self.canvas = canvas
         self.figure = figure
+        self.proceed = True
 
 
     def run_experiment(self): # Ok!
@@ -57,6 +58,11 @@ class Interaction(object):
 
         num_steps = 0
         while (self.environment.Training):
+
+            # TODO: THIS DOES NOT WORK, USE THREADING
+
+            wait(lambda: self.proceed, timeout_seconds=200, waiting_for="user to proceed")
+            
             if num_steps == self.max_trial:
                 sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
                                                                self.max_trial))
@@ -70,6 +76,7 @@ class Interaction(object):
                                                action, reward)
             if num_steps % self.vis_step == 0:
                 self.agent.visualize_memory(self.canvas, self.figure)
+                self.proceed = False
 
 
     def experiment_results(self): # Ok!
@@ -143,7 +150,9 @@ class Interaction(object):
                    avg_NE_itr, W_in, P, Tau]
 
         return results
-
+    
+    def continue_sim(self):
+        self.proceed = True
 
     def training_dataframe(self, training_order, avg_time_training,
                                                            avg_prob_training): # Ok!

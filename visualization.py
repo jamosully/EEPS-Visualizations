@@ -6,7 +6,7 @@ import random
 
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QGroupBox
+from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QGroupBox, QSlider
 from PySide6.QtCore import Slot
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -23,22 +23,26 @@ import pdb
 
 class MyWidget(QtWidgets.QWidget):
 
-    NumButtons = [['Run Model', 'self.run_sim']]
+    NumButtons = [['Initialize Model', 'self.initialize_model'],
+                  ['Run Simulation', 'self.run_sim'],
+                  ['Continue', 'self.continue_sim']]
 
     def __init__(self):
         super().__init__()
 
         # Code sourced from:
         # https://stackoverflow.com/questions/35328916/embedding-a-networkx-graph-into-pyqt-widget
-
+        
         self.setWindowTitle("Affinity.net")
 
         grid = QGridLayout()
         self.setLayout(grid)
         self.createVerticalGroupBox()
+        self.createStepSlider()
 
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.verticalGroupBox)
+        buttonLayout.addWidget(self.stepslider)
 
         # control_widget = QWidget(self)
         # control_layout = QGridLayout(control_widget)
@@ -46,8 +50,14 @@ class MyWidget(QtWidgets.QWidget):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
-        grid.addWidget(self.canvas, 0, 1, 9, 9)
-        grid.addLayout(buttonLayout, 0, 0)
+
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        grid.addWidget(self.toolbar, 0, 1)
+        grid.addWidget(self.canvas, 1, 1, 9, 9)
+        grid.addLayout(buttonLayout, 1, 0)
+
+        self.step = 100
 
         # self.toolbar = NavigationToolbar(canvas, self)
 
@@ -77,24 +87,43 @@ class MyWidget(QtWidgets.QWidget):
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
             button.clicked.connect(eval(i[1]))
+    
+    def createStepSlider(self):
+
+        # TODO: Improve this, and link it to self.step
+        
+        self.stepslider = QSlider()
+        self.stepslider.tickPosition = QSlider.TickPosition.TicksRight
 
     Slot()
-    def run_sim(self):
+    def initialize_model(self):
 
-        print("hahaha")
-        environment_detail = initialization_detail.environment_details()
-        environment_parameter, agent_parameter = initialization.config()
+        self.environment_detail = initialization_detail.environment_details()
+        self.environment_parameter, self.agent_parameter = initialization.config()
 
+        # TODO: Allow users to upload files
+        
         file_name = None
 
         if file_name == None:
-            agent = agn.Agent(agent_parameter)
-            environment = env.Environment(environment_parameter)
-            interaction = intrc.Interaction(agent, environment, agent_parameter,
-                                                                environment_parameter, 100, self.canvas, self.figure)
-            interaction.run_save()
-            file_name = interaction.file_name
+            self.agent = agn.Agent(self.agent_parameter)
+            self.environment = env.Environment(self.environment_parameter)
+            self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
+                                                                self.environment_parameter, self.step, self.canvas, self.figure)
+            
+    Slot()
+    def run_sim(self):
+
+        if self.interaction is not None:
+            self.interaction.run_save()
+            file_name = self.interaction.file_name
             print(file_name)
+
+    Slot()
+    def continue_sim(self):
+
+        if self.interaction is not None:
+            self.interaction.continue_sim()
         
 
 if __name__ == "__main__":
