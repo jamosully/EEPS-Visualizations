@@ -20,7 +20,6 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns; sns.set()
-from waiting import wait
 import pdb
 
 
@@ -30,7 +29,7 @@ class Interaction(object):
     Interaction between agent and environment for Equivalence Projective Simulation
     """
 
-    def __init__(self, agent, environment, agent_parameter, environment_parameter, vis_step, canvas, figure):
+    def __init__(self, agent, environment, agent_parameter, environment_parameter, vis_step, canvas, figure, wait_signal):
 
         """
         For a given agent, environment and their parameters, run the whole
@@ -50,25 +49,38 @@ class Interaction(object):
         self.canvas = canvas
         self.figure = figure
         self.proceed = True
+        self.pause = wait_signal
 
 
     def run_experiment(self): # Ok!
 
         """ This method run the experiment for one agent/participant"""
 
+
+        # num_steps = 0
+        # while (self.environment.Training):
+
+        #     if num_steps == self.max_trial:
+        #         sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
+        #                                                        self.max_trial))
+        #     percept, action_set_t = self.environment.next_trial()
+        #     num_steps += 1
+        #     self.agent.trial_preprocess(percept, action_set_t)
+        #     action = self.agent.action_selection(percept, action_set_t)
+        #     reward = self.environment.feedback(percept, action)
+        #     self.agent.training_update_network(percept, action_set_t,
+        #                                        action, reward)
+        #     if num_steps % self.vis_step == 0:
+        #         self.agent.visualize_memory(self.canvas, self.figure)
+        #         self.proceed = False
         num_steps = 0
-        while (self.environment.Training):
-
-            # TODO: THIS DOES NOT WORK, USE THREADING
-
-            wait(lambda: self.proceed, timeout_seconds=200, waiting_for="user to proceed")
-            
-            if num_steps == self.max_trial:
-                sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
-                                                               self.max_trial))
+        for num_steps in range(self.max_trial):
 
             percept, action_set_t = self.environment.next_trial()
-            num_steps += 1
+
+            if self.environment.Training is not True:
+                break
+
             self.agent.trial_preprocess(percept, action_set_t)
             action = self.agent.action_selection(percept, action_set_t)
             reward = self.environment.feedback(percept, action)
@@ -76,7 +88,14 @@ class Interaction(object):
                                                action, reward)
             if num_steps % self.vis_step == 0:
                 self.agent.visualize_memory(self.canvas, self.figure)
-                self.proceed = False
+                print("Trying to visualise")
+                self.pause.lock()
+    
+        if num_steps == self.max_trial:
+            sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
+                                                            self.max_trial))
+
+        
 
 
     def experiment_results(self): # Ok!
