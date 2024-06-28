@@ -21,6 +21,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns; sns.set()
 import pdb
+from PySide6 import QtCore
+from PySide6.QtCore import QThread, QMutex, QWaitCondition
 
 
 class Interaction(object):

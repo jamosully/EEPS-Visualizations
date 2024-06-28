@@ -26,12 +26,12 @@ class Simulator(QtCore.QObject):
     def __init__(self, mutex, cond):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
-        self.cond = cond
+        # self.cond = cond
 
     Slot()
     def initialize_model(self, canvas, step, figure):
 
-        self.cond.wait(self.mtx)
+        # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
         self.environment_parameter, self.agent_parameter = initialization.config()
 
