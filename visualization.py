@@ -92,23 +92,6 @@ class Window(QtWidgets.QWidget):
         grid.addWidget(self.canvas, 1, 1, 9, 9)
         grid.addLayout(buttonLayout, 1, 0)
 
-        # self.toolbar = NavigationToolbar(canvas, self)
-
-        # main_widget = QWidget(self)
-        # main_layout = QHBoxLayout(main_widget)
-        # main_layout.setStretch(0, 1)
-        # main_layout.addWidget(control_widget)
-        # main_layout.addWidget(canvas)
-
-        # self.button = QtGui.QPushButton('Plot')
-        # self.button.clicked.connect(self.plot_agent_memory)
-
-        # layout = QtGui.QVBoxLayout()
-        # layout.addWidget(self.toolbar)
-        # layout.addWidget(self.canvas)
-        # layout.addWidget(self.button)
-        # self.setLayout(layout)
-
     def createSimulator(self):
 
         self.mutex = QMutex()
@@ -146,21 +129,21 @@ class Window(QtWidgets.QWidget):
         addToLayout(stepButton, layout)
         stepButton.clicked.connect(self.simulator.mtx.unlock)
 
-
-        # for i in  self.NumButtons:
-        #     button = QPushButton(i[0])
-        #     button.setObjectName(i[0])
-        #     layout.addWidget(button)
-        #     layout.setSpacing(10)
-        #     self.verticalGroupBox.setLayout(layout)
-        #     button.clicked.connect(eval(i[1]))
-    
     def createStepSlider(self):
 
         # TODO: Improve this, and link it to self.step
         
         self.stepslider = QSlider()
-        self.stepslider.tickPosition = QSlider.TickPosition.TicksRight
+        self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)
+        self.stepslider.setTickInterval(5)
+        self.stepslider.setMinimum(1)
+        self.stepslider.setEnabled(True)
+
+        self.stepslider.valueChanged.connect(self.adjust_step_count)
+
+    def adjust_step_count(self, value):
+        print(self.step)
+        self.step = value * 100
 
         
 
