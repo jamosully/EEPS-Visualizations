@@ -314,6 +314,9 @@ class Agent(object):
         figure.clf()
         
         nx.set_node_attributes(self.clip_space, subsets, name="layers")
+        weight_labels = nx.get_edge_attributes(self.clip_space, 'weight')
+        normalised_weights = {key: value * (1.0/sum(weight_labels.values())) for key, value in weight_labels.items()}
+        memory_plot = figure.add_subplot(111)
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
@@ -323,8 +326,16 @@ class Agent(object):
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
         nx.draw_networkx_nodes(ordered_clip_space, pos, node_size=400)
         nx.draw_networkx_labels(ordered_clip_space, pos)
-        nx.draw_networkx_edges(ordered_clip_space, pos, edge_color='r', arrows=True)
-        memory_plot = figure.add_subplot(111)
+        print(weight_labels)
+        [nx.draw_networkx_edges(ordered_clip_space, 
+                                pos, 
+                                edgelist=[key],
+                                ax=memory_plot, 
+                                arrows=True, 
+                                alpha=weight) for key, weight in normalised_weights.items()]
+
         nx.draw(ordered_clip_space, pos, memory_plot, with_labels=True)
+        nx.draw_networkx_edge_labels(ordered_clip_space, pos, ax=memory_plot, edge_labels=weight_labels)
         canvas.draw()
+
 
