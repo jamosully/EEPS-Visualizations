@@ -59,6 +59,13 @@ class Simulator(QtCore.QObject):
         if self.interaction is not None:
             self.interaction.continue_sim()
 
+    Slot()
+    def on_pick(self, event):
+        artist = event.artist
+        x_mouse, y_mouse = event.mouseevent.xdata, event.mouseevent.ydata
+        # x, y = artist.get_xdata(), artist.get_ydata()
+        print(str(x_mouse) + '\n' + str(y_mouse))
+
 
 
 class Window(QtWidgets.QWidget):
@@ -83,6 +90,8 @@ class Window(QtWidgets.QWidget):
         self.createSimulator()
         self.createVerticalGroupBox()
         self.createStepSlider()
+
+        self.canvas.callbacks.connect('pick_event', self.simulator.on_pick)
 
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.verticalGroupBox)

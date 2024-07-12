@@ -303,7 +303,7 @@ class Agent(object):
     def visualize_memory(self, canvas, figure):
 
         # Produce a visualisation of the agent's memory
-        # TODO: Fix opacity issues (normalise weights)
+        # TODO: Make things clickable
 
         # Code adapted from here: 
         # https://stackoverflow.com/questions/20133479/how-to-draw-directed-graphs-using-networkx-in-python
@@ -312,36 +312,36 @@ class Agent(object):
         for stimuli in self.clip_space.nodes:
             subsets[stimuli] = stimuli[0]
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
-        print(subsets)
 
         figure.clf()
         
         nx.set_node_attributes(self.clip_space, subsets, name="layers")
         weight_labels = nx.get_edge_attributes(self.clip_space, 'weight')
-        #normalised_weights = {key: value * (1.0/sum(weight_labels.values())) for key, value in weight_labels.items()}
 
         weights = np.array([weight for weight in weight_labels.values()])
         normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
         print(normalized_weights)
-        memory_plot = figure.add_subplot(111)
+        memory_plot = figure.add_subplot(111, picker=10)
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
-        ordered_clip_space.add_nodes_from(sorted(self.clip_space.nodes(data=True)))
+        ordered_clip_space.add_nodes_from(sorted(self.clip_space.nodes(data=True)), size=10000)
         ordered_clip_space.add_weighted_edges_from(self.clip_space.edges(data=True))
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
-        nx.draw_networkx_nodes(ordered_clip_space, pos, node_size=400)
-        nx.draw_networkx_labels(ordered_clip_space, pos)
+        
+        nx.draw_networkx_nodes(ordered_clip_space, pos, ax=memory_plot, node_size=500)
+        nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot)
         for key, weight in normalized_weights.items():
-            nx.draw_networkx_edges(ordered_clip_space, 
-                                    pos, 
+            nx.draw_networkx_edges(ordered_clip_space,
+                                    pos,
                                     edgelist=[key],
-                                    ax=memory_plot, 
-                                    arrows=True, 
-                                    alpha=weight)
+                                    ax=memory_plot,
+                                    arrows=True,
+                                    alpha=weight,
+                                    width=5)
 
-        nx.draw(ordered_clip_space, pos, memory_plot, with_labels=True)
+        #nx.draw(ordered_clip_space, pos, memory_plot, with_labels=True)
         #nx.draw_networkx_edge_labels(ordered_clip_space, pos, ax=memory_plot, edge_labels=weight_labels)
         canvas.draw()
 
