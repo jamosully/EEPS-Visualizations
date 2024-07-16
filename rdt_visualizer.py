@@ -5,9 +5,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-class NetworkVisualizer(QWidget):
+class RDTVisualizer(QWidget):
 
-    def __init__(self, parent, simulator):
+    def __init__(self, parent):
         super(QWidget, self).__init__(parent)
 
         grid = QGridLayout()
@@ -16,5 +16,3 @@ class NetworkVisualizer(QWidget):
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
-
-        simulator.setCanvasAndFigure(self.canvas, self.figure)

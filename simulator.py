@@ -1,6 +1,3 @@
-import sys
-import random
-
 # UI Modules
 from PySide6 import QtCore
 from PySide6.QtCore import Slot, Signal
@@ -11,8 +8,6 @@ import EEPS.initialization_detail as initialization_detail
 import EEPS.environment as env
 import EEPS.agent as agn
 import EEPS.interaction as intrc
-import pdb
-
 
 class Simulator(QtCore.QObject):
 
@@ -24,6 +19,15 @@ class Simulator(QtCore.QObject):
         self.mtx = mutex
         # self.cond = cond
 
+    Slot()
+    def setCanvasAndFigure(self, canvas, figure):
+
+        # TODO: Figure out if their will be multiple of these
+        #       for each type of visualization
+
+        self.canvas = canvas
+        self.figure = figure
+    
     Slot()
     def initialize_model(self, canvas, step, figure):
 
@@ -39,7 +43,7 @@ class Simulator(QtCore.QObject):
             self.agent = agn.Agent(self.agent_parameter)
             self.environment = env.Environment(self.environment_parameter)
             self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
-                                                                self.environment_parameter, step, canvas, figure, self.mtx)
+                                                                self.environment_parameter, step, self.canvas, self.figure, self.mtx)
             self.file_name = self.interaction.file_name
             
     Slot()
