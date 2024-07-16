@@ -10,11 +10,11 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 
 # EEPS Modules
-import initialization
-import initialization_detail
-import environment as env
-import agent as agn
-import interaction as intrc
+import EEPS.initialization as initialization
+import EEPS.initialization_detail as initialization_detail
+import EEPS.environment as env
+import EEPS.agent as agn
+import EEPS.interaction as intrc
 import pdb
 
 
@@ -23,7 +23,7 @@ class Simulator(QtCore.QObject):
     wait_for_input = Signal()
     proceed = Signal()
 
-    def __init__(self, mutex, cond):
+    def __init__(self, mutex):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
         # self.cond = cond
@@ -44,6 +44,7 @@ class Simulator(QtCore.QObject):
             self.environment = env.Environment(self.environment_parameter)
             self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
                                                                 self.environment_parameter, step, canvas, figure, self.mtx)
+            self.file_name = self.interaction.file_name
             
     Slot()
     def run_sim(self):
@@ -60,16 +61,42 @@ class Simulator(QtCore.QObject):
             self.interaction.continue_sim()
 
     Slot()
+    def display_results(self):
+
+        self.results = intrc.Plot_results(self.file_name)
+        self.results.showResults()
+
+    Slot()
     def on_pick(self, event):
         artist = event.artist
         x_mouse, y_mouse = event.mouseevent.xdata, event.mouseevent.ydata
+        ax = event.canvas.figure.gca()
+        print(ax)
         # x, y = artist.get_xdata(), artist.get_ydata()
         print(str(x_mouse) + '\n' + str(y_mouse))
 
 
+class ResultsWindow(QtWidgets.QWidget):
 
-class Window(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        
+        self.setWindowTitle("Results")
+        
+        layout = QVBoxLayout()
+        self.setLayout(layout)
 
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+    def display_results(self):
+
+        res = ResultsWindow()
+        res.show()
+
+
+class MainWindow(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
@@ -105,7 +132,7 @@ class Window(QtWidgets.QWidget):
 
         self.mutex = QMutex()
         self.cond = QWaitCondition()
-        self.simulator = Simulator(self.mutex, self.cond)
+        self.simulator = Simulator(self.mutex)
         self.simulator_thread = QThread()
 
         self.simulator.moveToThread(self.simulator_thread)
@@ -159,7 +186,7 @@ class Window(QtWidgets.QWidget):
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
-    widget = Window()
+    widget = MainWindow()
     widget.resize(800, 600)
     widget.show()
 
