@@ -43,7 +43,7 @@ class Simulator(QtCore.QObject):
             self.agent = agn.Agent(self.agent_parameter)
             self.environment = env.Environment(self.environment_parameter)
             self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
-                                                                self.environment_parameter, step, self.canvas, self.figure, self.mtx)
+                                                                self.environment_parameter, step, canvas, figure, self.mtx)
             self.file_name = self.interaction.file_name
             
     Slot()

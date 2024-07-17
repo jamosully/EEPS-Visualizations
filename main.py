@@ -7,9 +7,9 @@ from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 
 from simulator import Simulator
 from table_setup import TableDisplay
-from side_panel import SidePanel
+from control_panel import ButtonPanel, StepSlider
 
-class MainWindow(QWidget):
+class MainWindow(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
@@ -17,9 +17,15 @@ class MainWindow(QWidget):
         self.setWindowTitle("Affinity.net")
 
         grid = QGridLayout()
+        
         self.setLayout(grid)
 
+        self.createSimulator()
+        self.createTable()
+        self.createControlPanel()
 
+        grid.addWidget(self.main_table, 0, 1)
+        grid.addLayout(self.control_layout, 0, 0)
 
 
     def createSimulator(self):
@@ -34,7 +40,17 @@ class MainWindow(QWidget):
 
     def createTable(self):
 
-        self.main_table = TableDisplay(self.simulator)
+        self.main_table = TableDisplay(self, self.simulator)
+
+    def createControlPanel(self):
+
+        self.control_layout = QVBoxLayout()
+
+        self.button_panel = ButtonPanel(self, self.simulator, self.simulator_thread, self.mutex)
+        self.slider = StepSlider(self)
+
+        self.control_layout.addWidget(self.button_panel.verticalGroupBox)
+        self.control_layout.addWidget(self.slider.stepslider)
 
 
 if __name__ == "__main__":

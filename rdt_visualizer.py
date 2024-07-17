@@ -5,7 +5,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-class RDTVisualizer(QWidget):
+class RDTVisualizer(QtWidgets.QWidget):
 
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
