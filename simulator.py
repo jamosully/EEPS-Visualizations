@@ -29,7 +29,7 @@ class Simulator(QtCore.QObject):
         self.figure = figure
     
     Slot()
-    def initialize_model(self, canvas, step, figure):
+    def initialize_model(self, canvas_dict, step, figure_dict):
 
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
@@ -37,13 +37,13 @@ class Simulator(QtCore.QObject):
 
         # TODO: Allow users to upload files
         
-        file_name = None
+        self.file_name = None
 
-        if file_name == None:
+        if self.file_name == None:
             self.agent = agn.Agent(self.agent_parameter)
             self.environment = env.Environment(self.environment_parameter)
             self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
-                                                                self.environment_parameter, step, canvas, figure, self.mtx)
+                                                                self.environment_parameter, step, canvas_dict, figure_dict, self.mtx)
             self.file_name = self.interaction.file_name
             
     Slot()

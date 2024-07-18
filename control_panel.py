@@ -1,14 +1,17 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider
+from PySide6.QtCore import Slot
 
 class ButtonPanel(QtWidgets.QWidget):
-
+    
     def __init__(self, parent, simulator, simulator_thread, mutex):
         QtWidgets.QWidget.__init__(self)
         
         self.verticalGroupBox = QGroupBox()
         self.simulator = simulator
+        self.main_window = parent
+        self.simulator_thread = simulator_thread
 
         layout = QVBoxLayout()
 
@@ -17,22 +20,54 @@ class ButtonPanel(QtWidgets.QWidget):
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
         
-        initSimButton = QPushButton("Initialize Parameters")
-        initSimButton.setObjectName("Initialize Parameters")
-        addToLayout(initSimButton, layout)
-        initSimButton.clicked.connect(self.simulator.initialize_model(parent.main_table.network_tab.canvas, 100, parent.main_table.network_tab.figure))
+        self.initSimButton = QPushButton("Initialize Parameters", self)
+        self.initSimButton.setObjectName("Initialize Parameters")
+        addToLayout(self.initSimButton, layout)
 
-        runSimButton = QPushButton("Run Simulation")
-        runSimButton.setObjectName("Run Simulation")
-        addToLayout(runSimButton, layout)
-        runSimButton.clicked.connect(simulator_thread.start)
+        self.runSimButton = QPushButton("Run Simulation", self)
+        self.runSimButton.setObjectName("Run Simulation")
+        addToLayout(self.runSimButton, layout)
 
-        stepButton = QPushButton("Step")
-        stepButton.setObjectName("Step")
-        addToLayout(stepButton, layout)
-        stepButton.clicked.connect(mutex.unlock)
+        self.stepButton = QPushButton("Proceed", self)
+        self.stepButton.setObjectName("Proceed")
+        addToLayout(self.stepButton, layout)
+
+        self.showResultsButton = QPushButton("Show Results", self)
+        self.showResultsButton.setObjectName("Show Results")
+        addToLayout(self.showResultsButton, layout)
+        #showResultsButton.clicked.connect()
+
+        self.initSimButton.clicked.connect(self.build_model)
+        self.runSimButton.clicked.connect(self.start_model)
+        self.stepButton.clicked.connect(mutex.unlock)
+
+        self.runSimButton.setDisabled(True)
+        self.stepButton.setDisabled(True)
+        self.showResultsButton.setDisabled(True)
 
         print("Button Panel Created")
+
+    Slot()
+    def build_model(self):
+
+        self.simulator.initialize_model(self.main_window.main_table.network_tab.canvas, 100, self.main_window.main_table.network_tab.figure)
+        self.runSimButton.setDisabled(False)
+        print("Parameters Loaded")
+    
+    Slot()
+    def start_model(self):
+
+        self.simulator_thread.start()
+        self.stepButton.setDisabled(False)
+        print("Model Running")
+
+    Slot()
+    def prepare_results(self):
+
+        self.showResultsButton.setDisabled(False)
+        print("Results Ready")
+
+
 
 class StepSlider(QtWidgets.QWidget):
 

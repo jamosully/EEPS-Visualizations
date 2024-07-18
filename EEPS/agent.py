@@ -300,7 +300,7 @@ class Agent(object):
 
         return W_class
     
-    def visualize_memory(self, canvas, figure):
+    def visualize_memory_network(self, canvas, figure):
 
         # Produce a visualisation of the agent's memory
         # TODO: Make things clickable
@@ -343,6 +343,14 @@ class Agent(object):
                                     width=5)
 
         #nx.draw_networkx_edge_labels(ordered_clip_space, pos, ax=memory_plot, edge_labels=weight_labels)
+        canvas.draw()
+
+    def visualize_rdt_data(self, canvas, figure):
+
+        # Relational Volume = Number of relations contained within the network
+
+        print(len(self.clip_space))
+
         canvas.draw()
 
 
