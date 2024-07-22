@@ -18,18 +18,10 @@ class Simulator(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
         # self.cond = cond
-
-    Slot()
-    def setCanvasAndFigure(self, canvas, figure):
-
-        # TODO: Figure out if their will be multiple of these
-        #       for each type of visualization
-
-        self.canvas = canvas
-        self.figure = figure
+        self.agent = None
     
     Slot()
-    def initialize_model(self, canvas_dict, step, figure_dict):
+    def initialize_model(self, step, memory_visualizer, rdt_visualizer):
 
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
@@ -42,9 +34,17 @@ class Simulator(QtCore.QObject):
         if self.file_name == None:
             self.agent = agn.Agent(self.agent_parameter)
             self.environment = env.Environment(self.environment_parameter)
-            self.interaction = intrc.Interaction(self.agent, self.environment, self.agent_parameter,
-                                                                self.environment_parameter, step, canvas_dict, figure_dict, self.mtx)
+            self.interaction = intrc.Interaction(self.agent, 
+                                                 self.environment, 
+                                                 self.agent_parameter, 
+                                                 self.environment_parameter, 
+                                                 step, 
+                                                 memory_visualizer,
+                                                 rdt_visualizer,
+                                                 self.mtx)
             self.file_name = self.interaction.file_name
+
+        rdt_visualizer.createClassButtons(self.environment.num_classes)
             
     Slot()
     def run_sim(self):

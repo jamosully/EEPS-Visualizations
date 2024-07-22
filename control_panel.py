@@ -50,7 +50,13 @@ class ButtonPanel(QtWidgets.QWidget):
     Slot()
     def build_model(self):
 
-        self.simulator.initialize_model(self.main_window.main_table.network_tab.canvas, 100, self.main_window.main_table.network_tab.figure)
+        # TODO: THIS IS A FUCKING AWFUL WAY OF DOING THIS
+        #       FIX IT
+
+        self.simulator.initialize_model(
+            100,
+            self.main_window.main_table.network_tab,
+            self.main_window.main_table.rdt_tab)
         self.runSimButton.setDisabled(False)
         print("Parameters Loaded")
     

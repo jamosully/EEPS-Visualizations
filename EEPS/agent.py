@@ -41,6 +41,7 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
+        self.rdt_class = 0
 
     def trial_preprocess(self, percept, action): # Ok!
 
@@ -342,14 +343,26 @@ class Agent(object):
                                     alpha=weight,
                                     width=5)
 
-        #nx.draw_networkx_edge_labels(ordered_clip_space, pos, ax=memory_plot, edge_labels=weight_labels)
         canvas.draw()
 
-    def visualize_rdt_data(self, canvas, figure):
+    def visualize_rdt_data(self, canvas, figure, class_id, class_volume, class_density):
 
         # Relational Volume = Number of relations contained within the network
+        #                     Total area of network
+        #                     OR number of nodes
+        # Relational Density = Strength of various relations contained in the network
+        #                      Perimiter of network/volume
+        #                      OR strength of relations (SUM)
 
-        print(len(self.clip_space))
+        figure.clf()
+
+        volume_plot = figure.add_subplot(311)
+        density_plot = figure.add_subplot(312)
+        mass_plot = figure.add_subplot(313)
+
+        volume_plot.plot(class_volume)
+
+        self.rdt_class = class_id
 
         canvas.draw()
 

@@ -29,7 +29,15 @@ class Interaction(object):
     Interaction between agent and environment for Equivalence Projective Simulation
     """
 
-    def __init__(self, agent, environment, agent_parameter, environment_parameter, vis_step, canvas_dict, figure_dict, wait_signal):
+    def __init__(self, 
+                 agent, 
+                 environment, 
+                 agent_parameter, 
+                 environment_parameter, 
+                 vis_step,
+                 memory_visualizer,
+                 rdt_visualizer,
+                 wait_signal):
 
         """
         For a given agent, environment and their parameters, run the whole
@@ -45,14 +53,16 @@ class Interaction(object):
         self.vis_step = vis_step
         file_name = 'Env_'+ str(environment_parameter['environment_ID'][0])+ \
         '_ExpID_'+ str(environment_parameter['experiment_ID'][0])
-        self.file_name = "results/{}.p".format(file_name)
-
-        self.canvas_dict = canvas_dict
-        self.figure_dict = figure_dict
-        # self.canvas = canvas
-        # self.figure = figure
-        self.proceed = True
+        self.file_name = "results/{}.p".format(file_name)#
+        self.memory_visualizer = memory_visualizer
+        self.rdt_visualizer = rdt_visualizer
         self.pause = wait_signal
+
+        self.rdt_volume = []
+        self.rdt_density = []
+        for i in range(self.environment.num_classes):
+            self.rdt_volume.append([])
+            self.rdt_density.append([])
 
 
     def run_experiment(self): # Ok!
@@ -89,9 +99,14 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward)
+            self.track_rdt_data()
             if num_steps % self.vis_step == 0:
-                self.agent.visualize_memory_network(self.canvas, self.figure)
-                self.agent.visualize_rdt_data(self.canvas, self.figure)
+                self.agent.visualize_memory_network(self.memory_visualizer.canvas, self.memory_visualizer.figure)
+                self.agent.visualize_rdt_data(self.rdt_visualizer.canvas, 
+                                              self.rdt_visualizer.figure, 
+                                              self.agent.rdt_class, 
+                                              self.rdt_volume[self.agent.rdt_class], 
+                                              self.rdt_density[self.agent.rdt_class])
                 print("Trying to visualise")
                 self.pause.lock()
     
@@ -173,9 +188,6 @@ class Interaction(object):
                    avg_NE_itr, W_in, P, Tau]
 
         return results
-    
-    def continue_sim(self):
-        self.proceed = True
 
     def training_dataframe(self, training_order, avg_time_training,
                                                            avg_prob_training): # Ok!
@@ -324,6 +336,26 @@ class Interaction(object):
                 result[k_] = result_
 
         return show, result
+    
+    def track_rdt_data(self):
+
+        # TODO: Figure out how to calculate densities
+        
+        rdt_volume_count = []
+        rdt_density_value = []
+        
+        for i in range(self.environment.num_classes):
+            rdt_volume_count.append(0)
+            rdt_density_value.append(0)
+
+        for stimuli in self.agent.clip_space.nodes:
+            rdt_volume_count[(int(stimuli[1]) - 1)] += 1
+
+        for i in range(self.environment.num_classes):
+            self.rdt_volume[i].append(rdt_volume_count[i])
+            self.rdt_density[i].append(rdt_density_value[i])
+
+
 
 
 #    def save_latex(self, results):
