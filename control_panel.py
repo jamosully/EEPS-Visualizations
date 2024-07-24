@@ -49,10 +49,7 @@ class ButtonPanel(QtWidgets.QWidget):
 
     Slot()
     def build_model(self):
-
-        # TODO: THIS IS A FUCKING AWFUL WAY OF DOING THIS
-        #       FIX IT
-
+        
         self.simulator.initialize_model(
             100,
             self.main_window.main_table.network_tab,

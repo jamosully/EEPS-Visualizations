@@ -27,8 +27,6 @@ class TableDisplay(QtWidgets.QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-        self.assembleGraphDicts()
-
     def add_results(self, simulator):
 
         self.results_tab = ResultsWindow(self, simulator)
@@ -39,10 +37,3 @@ class TableDisplay(QtWidgets.QWidget):
         self.tabs.removeTab(self.results_tab)
         self.results_tab.deleteLater()
 
-    def assembleGraphDicts(self):
-
-        self.visualizer_canvas_dict = {}
-        self.visualizer_figure_dict = {}
-        for visualizer in self.visualizers:
-            self.visualizer_canvas_dict[visualizer.name] = visualizer.canvas
-            self.visualizer_figure_dict[visualizer.name] = visualizer.figure

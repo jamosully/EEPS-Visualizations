@@ -29,30 +29,35 @@ class RDTVisualizer(QtWidgets.QWidget):
 
     def createClassButtons(self, num_classes):
 
-        self.button_group_box = QGroupBox()
-        layout = QHBoxLayout()
+        # self.button_group_box = QGroupBox()
+        self.class_layout = QHBoxLayout()
 
         def addToLayout(button, layout):
-            layout.addWidget(button)
-            layout.setSpacing(10)
-            self.button_group_box.setLayout(layout)
+            self.class_layout.addWidget(button)
+            self.class_layout.setSpacing(10)
+            # self.button_group_box.setLayout(layout)
+
+        self.class_dict = {}
 
         for i in range(num_classes):
             button_name = "Class " + str(i + 1)
             button = QPushButton(button_name)
             button.setObjectName(button_name)
-            addToLayout(button, layout)
-            button.clicked.connect(lambda: self.visualizeClass(i))
+            self.class_dict[button.objectName] = i
+            print(i)
+            addToLayout(button, self.class_layout)
+            button.clicked.connect(self.visualizeClass)
         
-        self.grid.addWidget(self.button_group_box, 0, 0)
+        self.grid.addLayout(self.class_layout, 0, 0)
 
-    def visualizeClass(self, id):
+    def visualizeClass(self):
 
-        self.class_id = id
+        self.class_id = int(self.sender().objectName()[6]) - 1
+        print(self.class_id)
         self.simulator.agent.visualize_rdt_data(self.canvas, 
                                                 self.figure, 
                                                 self.class_id, 
-                                                self.simulator.interaction.rdt_volume[id], 
-                                                self.simulator.interaction.rdt_density[id])
+                                                self.simulator.interaction.rdt_volume[self.class_id], 
+                                                self.simulator.interaction.rdt_density[self.class_id])
 
         
