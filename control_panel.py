@@ -19,6 +19,10 @@ class ButtonPanel(QtWidgets.QWidget):
             layout.addWidget(button)
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
+
+        self.modifyParametersButton = QPushButton("Modify Parameters", self)
+        self.modifyParametersButton.setObjectName("Modify Parameters")
+        addToLayout(self.modifyParametersButton, layout)
         
         self.initSimButton = QPushButton("Initialize Parameters", self)
         self.initSimButton.setObjectName("Initialize Parameters")

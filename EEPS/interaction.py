@@ -344,16 +344,16 @@ class Interaction(object):
         rdt_volume_count = []
         rdt_density_value = []
 
-        #print(self.agent.clip_space.edges)
+        print(self.agent.clip_space.edges(data=True))
         
         for i in range(self.environment.num_classes):
             rdt_volume_count.append(0)
             rdt_density_value.append(0)
 
-        for edge in self.agent.clip_space.edges:
+        for edge in self.agent.clip_space.edges(data=True):
             if edge[0][1] == edge[1][1]:
                 rdt_volume_count[(int(edge[0][1]) - 1)] += 1
-
+                rdt_density_value[(int(edge[0][1]) - 1)] += edge[2]['weight']
 
         for i in range(self.environment.num_classes):
             self.rdt_volume[i].append(rdt_volume_count[i])

@@ -361,6 +361,8 @@ class Agent(object):
         mass_plot = figure.add_subplot(313)
 
         volume_plot.plot(class_volume)
+        density_plot.plot(class_density)
+        mass_plot.plot(np.multiply(class_volume, class_density))
 
         self.rdt_class = class_id
 
