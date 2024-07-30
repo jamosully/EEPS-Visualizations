@@ -48,13 +48,13 @@ def agent_parameters():
         exp(beta_h*h_value). is used for converting h-values to probabilities
         during training and to generate the Network enhancement input
 
-        - beta_t:  float >=0, controls agent’s function in a trial at test phase (derived relation)
+        - beta_t: float >=0, controls agent’s function in a trial at test phase (derived relation)
 
-        - 0 < K <= 1 is the parameter for symmetry relation. K=1 means that
+        - K: parameter for symmetry relation. K=1 means that
         the relations are bidirectional and network is symmetric at the end of 
         the training phase.
 
-        alpha: the regularization parameter
+        - alpha: the regularization parameter
 
     """
 

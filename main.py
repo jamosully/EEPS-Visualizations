@@ -8,6 +8,7 @@ from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 from simulator import Simulator
 from table_setup import TableDisplay
 from control_panel import ButtonPanel, StepSlider
+from parameter_details import ParameterToolbox
 
 class MainWindow(QtWidgets.QWidget):
 
@@ -23,10 +24,11 @@ class MainWindow(QtWidgets.QWidget):
         self.createSimulator()
         self.createTable()
         self.createControlPanel()
+        self.createParameterMenu()
 
-        grid.addWidget(self.main_table, 0, 1)
-        grid.addLayout(self.control_layout, 0, 0)
-
+        grid.addWidget(self.parameter_menu, 0, 0)
+        grid.addLayout(self.control_layout, 0, 1)
+        grid.addWidget(self.main_table, 0, 2)
 
     def createSimulator(self):
         self.mutex = QMutex()
@@ -37,6 +39,10 @@ class MainWindow(QtWidgets.QWidget):
         self.simulator.moveToThread(self.simulator_thread)
 
         self.simulator_thread.started.connect(self.simulator.run_sim)
+
+    def createParameterMenu(self):
+
+        self.parameter_menu = ParameterToolbox(self, self.simulator)
 
     def createTable(self):
 
