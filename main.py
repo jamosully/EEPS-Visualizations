@@ -2,8 +2,9 @@ import sys
 
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QGroupBox, QSlider
+from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory
 from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
+
 
 from simulator import Simulator
 from table_setup import TableDisplay
@@ -26,7 +27,7 @@ class MainWindow(QtWidgets.QWidget):
         self.createControlPanel()
         self.createParameterMenu()
 
-        grid.addWidget(self.parameter_menu, 0, 0)
+        grid.addWidget(self.parameter_menu.toolbox, 0, 0)
         grid.addLayout(self.control_layout, 0, 1)
         grid.addWidget(self.main_table, 0, 2)
 
@@ -61,9 +62,10 @@ class MainWindow(QtWidgets.QWidget):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
+    #app.setStyle(QStyleFactory)
 
     widget = MainWindow()
-    widget.resize(800, 600)
-    widget.show()
+    #widget.resize(800, 600)
+    widget.showMaximized()
 
     sys.exit(app.exec())
