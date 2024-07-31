@@ -56,8 +56,6 @@ class AgentParamTable(QtWidgets.QWidget):
 
         self.table.resizeColumnsToContents()
 
-
-
     def generate_descriptions(self):
 
         with open(os.path.abspath(EEPS.initialization.__file__)) as f:
