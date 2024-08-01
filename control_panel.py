@@ -57,7 +57,8 @@ class ButtonPanel(QtWidgets.QWidget):
         self.simulator.initialize_model(
             100,
             self.main_window.main_table.network_tab,
-            self.main_window.main_table.rdt_tab)
+            self.main_window.main_table.rdt_tab,
+            self.main_window.main_table.heatmap_tab)
         self.runSimButton.setDisabled(False)
         print("Parameters Loaded")
     

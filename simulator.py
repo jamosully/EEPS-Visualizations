@@ -21,7 +21,7 @@ class Simulator(QtCore.QObject):
         self.agent = None
     
     Slot()
-    def initialize_model(self, step, memory_visualizer, rdt_visualizer):
+    def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):
 
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
@@ -41,6 +41,7 @@ class Simulator(QtCore.QObject):
                                                  step, 
                                                  memory_visualizer,
                                                  rdt_visualizer,
+                                                 heat_visualizer,
                                                  self.mtx)
             self.file_name = self.interaction.file_name
 

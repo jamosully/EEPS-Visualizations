@@ -14,7 +14,7 @@ class RDTVisualizer(QtWidgets.QWidget):
     # TODO: Implement RDT view
 
     def __init__(self, parent, simulator):
-        super().__init__()
+        QtWidgets.QWidget.__init__(self)
 
         self.simulator = simulator
         self.class_id = 0
@@ -63,7 +63,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.class_id = int(self.sender().objectName()[6]) - 1
         print(self.class_id)
-        self.visualize_rdt_data(self.simulator.clip_space)
+        self.visualize_rdt_data(self.simulator.agent.clip_space)
         # self.simulator.agent.visualize_rdt_data(self.canvas, 
         #                                         self.figure, 
         #                                         self.class_id, 
@@ -85,7 +85,7 @@ class RDTVisualizer(QtWidgets.QWidget):
         density_plot = self.figure.add_subplot(312)
         mass_plot = self.figure.add_subplot(313)
 
-        self.track_rdt_data(clip_space)
+        #self.track_rdt_data(clip_space)
 
         volume_plot.plot(self.rdt_volume[self.class_id])
         density_plot.plot(self.rdt_density[self.class_id])

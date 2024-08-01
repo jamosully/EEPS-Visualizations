@@ -5,10 +5,16 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
+import seaborn as sns
+import networkx as nx
+import pandas as pd
+from sklearn import preprocessing
+
+
 class HeatmapVisualizer(QtWidgets.QWidget):
 
-    def __init__(self, simulator):
-        super.__init__()
+    def __init__(self, parent, simulator):
+        QtWidgets.QWidget.__init__(self)
 
         self.simulator = simulator
         self.class_id = 0
@@ -53,9 +59,18 @@ class HeatmapVisualizer(QtWidgets.QWidget):
     def visualizeClass(self):
         
         self.class_id = int(self.sender().objectName()[6]) - 1
-        print(self.class_id)
-        self.simulator.agent.visualize_rdt_data(self.canvas, 
-                                                self.figure, 
-                                                self.class_id, 
-                                                self.simulator.interaction.rdt_volume[self.class_id], 
-                                                self.simulator.interaction.rdt_density[self.class_id])
+
+    def visualize_heatmaps(self, clip_space):
+
+        self.figure.clf()
+
+        scaler = preprocessing.MinMaxScaler()
+        heat_df = nx.to_pandas_adjacency(clip_space)
+        norm_heat_df = pd.DataFrame(scaler.fit_transform(heat_df), index=heat_df.index, columns=heat_df.columns)
+        norm_heat_df = norm_heat_df.reindex(sorted(norm_heat_df.columns), axis=1).sort_index()
+
+        heatmap_plot = self.figure.add_subplot(111, picker=1)
+        sns.heatmap(norm_heat_df, ax=heatmap_plot)
+
+        self.canvas.draw()
+        print(heat_df)

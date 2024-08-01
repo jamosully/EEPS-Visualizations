@@ -7,6 +7,7 @@ from matplotlib.figure import Figure
 
 import networkx as nx
 import numpy as np
+import itertools as it
 
 class NetworkVisualizer(QtWidgets.QWidget):
 
@@ -63,6 +64,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         for key, weight in normalized_weights.items():
             nx.draw_networkx_edges(ordered_clip_space,
                                     pos,
+                                    connectionstyle='arc3,rad=0.1',
                                     edgelist=[key],
                                     ax=memory_plot,
                                     arrows=True,

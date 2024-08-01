@@ -37,6 +37,7 @@ class Interaction(object):
                  vis_step,
                  memory_visualizer,
                  rdt_visualizer,
+                 heatmap_visualizer,
                  wait_signal):
 
         """
@@ -56,6 +57,7 @@ class Interaction(object):
         self.file_name = "results/{}.p".format(file_name)#
         self.memory_visualizer = memory_visualizer
         self.rdt_visualizer = rdt_visualizer
+        self.heatmap_visualizer = heatmap_visualizer
         self.pause = wait_signal
 
 
@@ -103,6 +105,7 @@ class Interaction(object):
                 #                               self.rdt_density[self.agent.rdt_class])
                 self.rdt_visualizer.visualize_rdt_data(self.agent.clip_space)
                 self.memory_visualizer.visualize_memory_network(self.agent.clip_space)
+                self.heatmap_visualizer.visualize_heatmaps(self.agent.clip_space)
                 print("Trying to visualise")
                 self.pause.lock()
     
