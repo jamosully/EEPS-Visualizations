@@ -71,6 +71,7 @@ class HeatmapVisualizer(QtWidgets.QWidget):
 
         heatmap_plot = self.figure.add_subplot(111, picker=1)
         sns.heatmap(norm_heat_df, ax=heatmap_plot)
+        heatmap_plot.set(xlabel="Percept Stimuli", ylabel="Action Stimuli")
 
         self.canvas.draw()
         print(heat_df)

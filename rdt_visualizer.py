@@ -91,6 +91,10 @@ class RDTVisualizer(QtWidgets.QWidget):
         density_plot.plot(self.rdt_density[self.class_id])
         mass_plot.plot(np.multiply(self.rdt_volume[self.class_id], self.rdt_density[self.class_id]))
 
+        volume_plot.set(ylabel="Relational Volume")
+        density_plot.set(ylabel="Relational Density")
+        mass_plot.set(ylabel="Relational Mass")
+
         self.canvas.draw()
 
     def track_rdt_data(self, clip_space):
