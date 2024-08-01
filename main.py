@@ -65,7 +65,8 @@ if __name__ == "__main__":
     #app.setStyle(QStyleFactory)
 
     widget = MainWindow()
-    #widget.resize(800, 600)
-    widget.showMaximized()
+    widget.resize(1200, 600)
+    widget.show()
+    #widget.showMaximized()
 
     sys.exit(app.exec())
