@@ -58,12 +58,6 @@ class Interaction(object):
         self.rdt_visualizer = rdt_visualizer
         self.pause = wait_signal
 
-        self.rdt_volume = []
-        self.rdt_density = []
-        for i in range(self.environment.num_classes):
-            self.rdt_volume.append([])
-            self.rdt_density.append([])
-
 
     def run_experiment(self): # Ok!
 
@@ -99,23 +93,22 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward)
-            self.track_rdt_data()
+            self.rdt_visualizer.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                self.agent.visualize_memory_network(self.memory_visualizer.canvas, self.memory_visualizer.figure)
-                self.agent.visualize_rdt_data(self.rdt_visualizer.canvas, 
-                                              self.rdt_visualizer.figure, 
-                                              self.agent.rdt_class, 
-                                              self.rdt_volume[self.agent.rdt_class], 
-                                              self.rdt_density[self.agent.rdt_class])
+                # self.agent.visualize_memory_network(self.memory_visualizer.canvas, self.memory_visualizer.figure)
+                # self.agent.visualize_rdt_data(self.rdt_visualizer.canvas, 
+                #                               self.rdt_visualizer.figure, 
+                #                               self.agent.rdt_class, 
+                #                               self.rdt_volume[self.agent.rdt_class], 
+                #                               self.rdt_density[self.agent.rdt_class])
+                self.rdt_visualizer.visualize_rdt_data(self.agent.clip_space)
+                self.memory_visualizer.visualize_memory_network(self.agent.clip_space)
                 print("Trying to visualise")
                 self.pause.lock()
     
         if num_steps == self.max_trial:
             sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
                                                             self.max_trial))
-
-        
-
 
     def experiment_results(self): # Ok!
 
@@ -337,30 +330,6 @@ class Interaction(object):
 
         return show, result
     
-    def track_rdt_data(self):
-
-        # TODO: Figure out how to calculate densities
-        
-        rdt_volume_count = []
-        rdt_density_value = []
-
-        print(self.agent.clip_space.edges(data=True))
-        
-        for i in range(self.environment.num_classes):
-            rdt_volume_count.append(0)
-            rdt_density_value.append(0)
-
-        for edge in self.agent.clip_space.edges(data=True):
-            if edge[0][1] == edge[1][1]:
-                rdt_volume_count[(int(edge[0][1]) - 1)] += 1
-                rdt_density_value[(int(edge[0][1]) - 1)] += edge[2]['weight']
-
-        for i in range(self.environment.num_classes):
-            self.rdt_volume[i].append(rdt_volume_count[i])
-            self.rdt_density[i].append(rdt_density_value[i])
-
-
-
 
 #    def save_latex(self, results):
 #
