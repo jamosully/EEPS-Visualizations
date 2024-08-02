@@ -2,7 +2,7 @@ import sys
 
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory
+from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory, QTabWidget, QGroupBox
 from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 
 
@@ -22,16 +22,20 @@ class MainWindow(QtWidgets.QWidget):
         
         self.setLayout(grid)
 
-        self.createSimulator()
-        self.createTable()
-        self.createControlPanel()
+        self.tabs = QTabWidget()
+        # self.createSystem()
+        # self.createTable()
+        # self.createControlPanel()
+
+        #self.createSim()
         self.createParameterMenu()
 
         grid.addWidget(self.parameter_menu.toolbox, 0, 0)
-        grid.addLayout(self.control_layout, 0, 1)
-        grid.addWidget(self.main_table, 0, 2)
+        grid.addWidget(self.tabs, 0 , 1)
+        # grid.addLayout(self.control_layout, 0, 1)
+        # grid.addWidget(self.main_table, 0, 2)
 
-    def createSimulator(self):
+    def createSystem(self):
         self.mutex = QMutex()
         self.cond = QWaitCondition()
         self.simulator = Simulator(self.mutex)
@@ -43,7 +47,7 @@ class MainWindow(QtWidgets.QWidget):
 
     def createParameterMenu(self):
 
-        self.parameter_menu = ParameterToolbox(self, self.simulator)
+        self.parameter_menu = ParameterToolbox(self)
 
     def createTable(self):
 
@@ -58,6 +62,23 @@ class MainWindow(QtWidgets.QWidget):
 
         self.control_layout.addWidget(self.button_panel.verticalGroupBox)
         self.control_layout.addWidget(self.slider.stepslider)
+
+    Slot()
+    def createSim(self, num, params):
+
+        self.tab = QGroupBox()
+        self.tab_layout = QGridLayout()
+        
+        self.createSystem()
+        self.createControlPanel()
+        self.createTable()
+        
+        self.tab_layout.addLayout(self.control_layout, 0, 0)
+        self.tab_layout.addWidget(self.main_table, 0, 1)
+
+        self.tab.setLayout(self.tab_layout)
+
+        self.tabs.addTab(self.tab, "Agent 1")
 
 
 if __name__ == "__main__":

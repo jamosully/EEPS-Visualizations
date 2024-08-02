@@ -53,7 +53,6 @@ class RDTVisualizer(QtWidgets.QWidget):
             button = QPushButton(button_name)
             button.setObjectName(button_name)
             self.class_dict[button.objectName] = i
-            print(i)
             addToLayout(button, self.class_layout)
             button.clicked.connect(self.visualizeClass)
         
@@ -64,11 +63,6 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.class_id = int(self.sender().objectName()[6]) - 1
         print(self.class_id)
         self.visualize_rdt_data(self.simulator.agent.clip_space)
-        # self.simulator.agent.visualize_rdt_data(self.canvas, 
-        #                                         self.figure, 
-        #                                         self.class_id, 
-        #                                         self.simulator.interaction.rdt_volume[self.class_id], 
-        #                                         self.simulator.interaction.rdt_density[self.class_id])
 
     def visualize_rdt_data(self, clip_space):
 
