@@ -26,6 +26,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
 
         self.rdt_volume = []
         self.rdt_density = []
@@ -34,7 +35,8 @@ class RDTVisualizer(QtWidgets.QWidget):
             self.rdt_volume.append([])
             self.rdt_density.append([])
 
-        self.grid.addWidget(self.canvas, 1, 0)
+        self.grid.addWidget(self.toolbar, 0, 0)
+        self.grid.addWidget(self.canvas, 2, 0)
 
     def createClassButtons(self, num_classes):
 
@@ -56,7 +58,7 @@ class RDTVisualizer(QtWidgets.QWidget):
             addToLayout(button, self.class_layout)
             button.clicked.connect(self.visualizeClass)
         
-        self.grid.addLayout(self.class_layout, 0, 0)
+        self.grid.addLayout(self.class_layout, 1, 0)
 
     def visualizeClass(self):
 

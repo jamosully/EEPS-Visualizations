@@ -1,6 +1,9 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets 
-from PySide6.QtWidgets import QVBoxLayout, QTableWidget, QComboBox, QLabel, QGroupBox, QSizePolicy, QHeaderView, QPushButton, QHBoxLayout, QCheckBox, QDoubleSpinBox
+from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox, 
+                               QLabel, QGroupBox, QSizePolicy, 
+                               QHeaderView, QPushButton, QHBoxLayout, 
+                               QCheckBox, QDoubleSpinBox, QSpinBox)
 
 import EEPS.initialization
 import EEPS.initialization_detail
@@ -88,21 +91,30 @@ class EnvParamTable(QtWidgets.QWidget):
         #     if
 
         match key:
-            case "experiment_ID":
-                return
             case "environment_ID":
-                return
-            case "max_trial":
-                return
+                table_widget = QComboBox(self)
+                for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
+                    table_widget.insertItem(x, str(id))
+                    if value[0] == id:
+                        table_widget.setCurrentIndex(x)
+                table_widget.currentIndexChanged.connect(lambda: self.adjust_params(key, table_widget.currentIndex()))
+                return table_widget
+            case "max_trial" | "size_action_set" | "experiment_ID":
+                table_widget = QSpinBox(self)
+                table_widget.setMinimum(1)
+                table_widget.setValue(value[0])
+                table_widget.valueChanged.connect(lambda: self.adjust_params(key, table_widget.value()))
+                return table_widget
             case "num_agents":
-                return
-            case "size_action_set":
+
+                # TODO: Should this parameter be incorporated into the multi-agent mode?
+
                 return
 
-    def adjust_params(self, value):
+    def adjust_params(self, key, value):
 
-        key = self.sender().objectName()
-        self.env_params[key] = value
+        self.env_params[key] = [value]
+        print(self.env_params)
 
 class AgentParamTable(QtWidgets.QWidget):
 
@@ -132,26 +144,35 @@ class AgentParamTable(QtWidgets.QWidget):
 
     def createTableWidget(self, value, key):
 
+        # TODO: Getting some weird floating point stuff here
+
         match key:
             case "network_enhancement":
                 table_widget = QCheckBox(self)
-                table_widget.setObjectName(key)
+                table_widget.setChecked(value[0])
                 table_widget.clicked.connect(lambda: self.adjust_params(key, table_widget.checkState()))
                 return table_widget
             case "beta_h" | "K" | "gamma_damping" | "alpha":
                 table_widget = QDoubleSpinBox(self)
                 table_widget.setMaximum(1.00)
                 table_widget.setMinimum(0.00)
+                table_widget.setValue(value[0])
                 table_widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
                 table_widget.setDecimals(3)
+                table_widget.valueChanged.connect(lambda: self.adjust_params(key, table_widget.value()))
                 return table_widget
             case "beta_t":
-                return
+                table_widget = QDoubleSpinBox(self)
+                table_widget.setMinimum(0.01)
+                table_widget.setValue(value[0])
+                table_widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
+                table_widget.valueChanged.connect(lambda: self.adjust_params(key, table_widget.value()))
+                return table_widget
             
     def adjust_params(self, key, value):
 
-        self.agent_params[key] = value
-
+        self.agent_params[key] = [value]
+        print(self.agent_params)
 
     def generate_descriptions(self):
 
