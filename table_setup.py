@@ -31,9 +31,10 @@ class TableDisplay(QtWidgets.QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-    def add_results(self, simulator):
+    def add_results(self):
 
-        self.results_tab = ResultsWindow(self, simulator)
+        print("adding results")
+        self.results_tab = ResultsWindow(self, self.simulator)
         self.tabs.addTab(self.results_tab, "Results")
 
     def delete_results(self):

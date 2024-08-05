@@ -57,6 +57,7 @@ class Simulator(QtCore.QObject):
             self.interaction.run_save()
             file_name = self.interaction.file_name
             print(file_name)
+            self.display_results()
 
     Slot()
     def continue_sim(self):

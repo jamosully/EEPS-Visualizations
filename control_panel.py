@@ -44,6 +44,7 @@ class ButtonPanel(QtWidgets.QWidget):
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)
+        self.showResultsButton.clicked.connect(self.prepare_results)
 
         self.runSimButton.setDisabled(True)
         self.stepButton.setDisabled(True)
@@ -72,7 +73,8 @@ class ButtonPanel(QtWidgets.QWidget):
     Slot()
     def prepare_results(self):
 
-        self.showResultsButton.setDisabled(False)
+        self.main_table.add_results()
+        self.showResultsButton.setDisabled(True)
         print("Results Ready")
 
 
