@@ -14,18 +14,21 @@ class Simulator(QtCore.QObject):
     wait_for_input = Signal()
     proceed = Signal()
 
-    def __init__(self, mutex):
+    def __init__(self, mutex, agent_params, env_params):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
         # self.cond = cond
         self.agent = None
+        self.agent_parameter = agent_params
+        self.environment_parameter = env_params
     
     Slot()
     def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):
 
+        print("we've made it")
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
-        self.environment_parameter, self.agent_parameter = initialization.config()
+        # self.environment_parameter, self.agent_parameter = initialization.config()
 
         # TODO: Allow users to upload files
         

@@ -5,12 +5,12 @@ from PySide6.QtCore import Slot
 
 class ButtonPanel(QtWidgets.QWidget):
     
-    def __init__(self, parent, simulator, simulator_thread, mutex):
+    def __init__(self,  main_table, simulator, simulator_thread, mutex):
         QtWidgets.QWidget.__init__(self)
         
         self.verticalGroupBox = QGroupBox()
         self.simulator = simulator
-        self.main_window = parent
+        self.main_table = main_table
         self.simulator_thread = simulator_thread
 
         layout = QVBoxLayout()
@@ -20,8 +20,8 @@ class ButtonPanel(QtWidgets.QWidget):
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
 
-        self.modifyParametersButton = QPushButton("Modify Parameters", self)
-        self.modifyParametersButton.setObjectName("Modify Parameters")
+        self.modifyParametersButton = QPushButton("Update Parameters", self)
+        self.modifyParametersButton.setObjectName("Update Parameters")
         addToLayout(self.modifyParametersButton, layout)
         
         self.initSimButton = QPushButton("Initialize Parameters", self)
@@ -41,7 +41,7 @@ class ButtonPanel(QtWidgets.QWidget):
         addToLayout(self.showResultsButton, layout)
         #showResultsButton.clicked.connect()
 
-        self.initSimButton.clicked.connect(self.build_model)
+        self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)
 
@@ -56,9 +56,9 @@ class ButtonPanel(QtWidgets.QWidget):
         
         self.simulator.initialize_model(
             100,
-            self.main_window.main_table.network_tab,
-            self.main_window.main_table.rdt_tab,
-            self.main_window.main_table.heatmap_tab)
+            self.main_table.network_tab,
+            self.main_table.rdt_tab,
+            self.main_table.heatmap_tab)
         self.runSimButton.setDisabled(False)
         print("Parameters Loaded")
     

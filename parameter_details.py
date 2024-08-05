@@ -51,7 +51,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.createSimButton.setObjectName("Create Simulation")
         self.button_layout.addWidget(self.createSimButton)
         self.button_layout.setSpacing(10)
-        self.createSimButton.clicked.connect(lambda: self.main.createSim(1, 1))
+        self.createSimButton.clicked.connect(lambda: self.main.createSim())
 
         self.exportParamsButton = QPushButton("Export Parameters")
         self.exportParamsButton.setObjectName("Export Parameters")

@@ -23,62 +23,74 @@ class MainWindow(QtWidgets.QWidget):
         self.setLayout(grid)
 
         self.tabs = QTabWidget()
-        # self.createSystem()
-        # self.createTable()
-        # self.createControlPanel()
 
-        #self.createSim()
+        self.models = {}
+
+        self.model_num  = 1
+
         self.createParameterMenu()
 
         grid.addWidget(self.parameter_menu.toolbox, 0, 0)
         grid.addWidget(self.tabs, 0 , 1)
-        # grid.addLayout(self.control_layout, 0, 1)
-        # grid.addWidget(self.main_table, 0, 2)
 
-    def createSystem(self):
-        self.mutex = QMutex()
-        self.cond = QWaitCondition()
-        self.simulator = Simulator(self.mutex)
-        self.simulator_thread = QThread()
+    def createSystem(self, agent_params, env_params):
 
-        self.simulator.moveToThread(self.simulator_thread)
+        simulator_dict = {}
 
-        self.simulator_thread.started.connect(self.simulator.run_sim)
+        simulator_dict['mutex'] = QMutex()
+        simulator_dict['cond'] = QWaitCondition()
+        simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params)
+        simulator_dict['thread'] = QThread()
+
+        simulator_dict['sim'].moveToThread(simulator_dict['thread'])
+        simulator_dict['thread'].started.connect(simulator_dict['sim'].run_sim)
+
+        return simulator_dict
 
     def createParameterMenu(self):
 
         self.parameter_menu = ParameterToolbox(self)
 
-    def createTable(self):
+    def createTable(self, simulator):
 
-        self.main_table = TableDisplay(self, self.simulator)
+        return TableDisplay(self, simulator)
 
-    def createControlPanel(self):
+    def createControlPanel(self, main, simulator):
 
-        self.control_layout = QVBoxLayout()
+        control_panel = QVBoxLayout()
 
-        self.button_panel = ButtonPanel(self, self.simulator, self.simulator_thread, self.mutex)
-        self.slider = StepSlider(self)
+        button_panel = ButtonPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
+        slider = StepSlider(main)
 
-        self.control_layout.addWidget(self.button_panel.verticalGroupBox)
-        self.control_layout.addWidget(self.slider.stepslider)
+        control_panel.addWidget(button_panel.verticalGroupBox)
+        control_panel.addWidget(slider.stepslider)
 
+        return control_panel
+    
     Slot()
-    def createSim(self, num, params):
+    def createSim(self):
 
         self.tab = QGroupBox()
         self.tab_layout = QGridLayout()
+
+        self.models[self.model_num] = {}
+        self.models[self.model_num]['simulator'] = self.createSystem(self.parameter_menu.agent_toolbox.agent_params, 
+                                                                     self.parameter_menu.env_toolbox.env_params)
+        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
+        self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
+                                                                               self.models[self.model_num]['simulator'])
         
-        self.createSystem()
-        self.createControlPanel()
-        self.createTable()
-        
-        self.tab_layout.addLayout(self.control_layout, 0, 0)
-        self.tab_layout.addWidget(self.main_table, 0, 1)
+
+        self.tab_layout.addLayout(self.models[self.model_num]['control_panel'], 0, 0)
+        self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
 
         self.tab.setLayout(self.tab_layout)
 
-        self.tabs.addTab(self.tab, "Agent 1")
+        self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
+
+        print(self.models[self.model_num])
+
+        self.model_num += 1
 
 
 if __name__ == "__main__":

@@ -10,8 +10,9 @@ TO DO:
   - [ ] Provide descriptions
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
-- [ ] Multi-simulator mode
+- [x] Multi-simulator mode (There may be other bugs)
   - [x] Rough version
+  - [x] Test it!
 - [ ] Results Display
 - [ ] Real-time Mastery Display
 
@@ -30,7 +31,7 @@ Remember to look at mark scheme!
 - [ ] Technical Background
   - [ ] Projective Simulation
   - [ ] EEPS
-  - [ ] Graph/Network Visualisation
+  - [ ] Graph/Network Visualization
   - [ ] Where is PS in respects to other reinforcement learning models?
 - [ ] Project Execution
   - [ ] Software structure
