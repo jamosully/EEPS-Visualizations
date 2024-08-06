@@ -7,7 +7,6 @@ from matplotlib.figure import Figure
 
 import networkx as nx
 import numpy as np
-import itertools as it
 
 class NetworkVisualizer(QtWidgets.QWidget):
 

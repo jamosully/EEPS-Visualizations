@@ -57,7 +57,6 @@ class Simulator(QtCore.QObject):
             self.interaction.run_save()
             file_name = self.interaction.file_name
             print(file_name)
-            self.display_results()
 
     Slot()
     def continue_sim(self):
@@ -65,11 +64,6 @@ class Simulator(QtCore.QObject):
         if self.interaction is not None:
             self.interaction.continue_sim()
 
-    Slot()
-    def display_results(self):
-
-        self.results = intrc.Plot_results(self.file_name)
-        self.results.showResults()
 
     Slot()
     def on_pick(self, event):

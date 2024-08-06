@@ -5,19 +5,23 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-class ResultsWindow(QtWidgets.QWidget):
+class ResultsDisplay(QtWidgets.QWidget):
 
-    def __init__(self, parent, simulator):
-        super().__init__()
-        
-        self.setWindowTitle("Results")
-        
-        grid = QGridLayout()
-        self.setLayout(grid)
+    def __init__(self, simulator):
 
-        self.figure = Figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        QtWidgets.QWidget.__init__(self)
+        # self.simulator = simulator
+    
+        # grid = QGridLayout()
+        # self.setLayout(grid)
 
-        grid.addWidget(self.toolbar, 0, 0)
-        grid.addWidget(self.canvas, 1, 0)
+        # self.figure = Figure()
+        # self.canvas = FigureCanvas(self.figure)
+        # self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # grid.addWidget(self.toolbar, 0, 0)
+        # grid.addWidget(self.canvas, 1, 0)
+
+    # def displayResults(self):
+
+

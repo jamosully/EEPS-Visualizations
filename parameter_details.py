@@ -102,6 +102,7 @@ class EnvParamTable(QtWidgets.QWidget):
             case "max_trial" | "size_action_set" | "experiment_ID":
                 table_widget = QSpinBox(self)
                 table_widget.setMinimum(1)
+                table_widget.setMaximum(100000)
                 table_widget.setValue(value[0])
                 table_widget.valueChanged.connect(lambda: self.adjust_params(key, table_widget.value()))
                 return table_widget

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 from network_visualizer import NetworkVisualizer
 from rdt_visualizer import RDTVisualizer
 from heatmap_visualizer import HeatmapVisualizer
-from results_display import ResultsWindow
+from results_display import ResultsDisplay
 
 class TableDisplay(QtWidgets.QWidget):
 
@@ -34,7 +34,7 @@ class TableDisplay(QtWidgets.QWidget):
     def add_results(self):
 
         print("adding results")
-        self.results_tab = ResultsWindow(self, self.simulator)
+        self.results_tab = ResultsDisplay(self.simulator)
         self.tabs.addTab(self.results_tab, "Results")
 
     def delete_results(self):

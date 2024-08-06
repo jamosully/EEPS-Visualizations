@@ -5,7 +5,6 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory, QTabWidget, QGroupBox
 from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 
-
 from simulator import Simulator
 from table_setup import TableDisplay
 from control_panel import ButtonPanel, StepSlider
@@ -79,7 +78,6 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
-        
 
         self.tab_layout.addLayout(self.models[self.model_num]['control_panel'], 0, 0)
         self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
