@@ -1,5 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 
 from network_visualizer import NetworkVisualizer
@@ -27,6 +28,8 @@ class TableDisplay(QtWidgets.QWidget):
         self.tabs.addTab(self.network_tab, "Network")
         self.tabs.addTab(self.heatmap_tab, "Heatmap")
         self.tabs.addTab(self.rdt_tab, "RDT")
+
+        self.simulator.sim_complete.connect(self.add_results)
 
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)

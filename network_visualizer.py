@@ -1,6 +1,7 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QWidget, QGridLayout
+from PySide6.QtCore import Slot
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -71,3 +72,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     width=5)
 
         self.canvas.draw()
+
+    Slot()
+    def on_pick(self, event):
+        artist = event.artist
+        x_mouse, y_mouse = event.mouseevent.xdata, event.mouseevent.ydata
+        ax = event.canvas.figure.gca()
+        print(ax)
+        # x, y = artist.get_xdata(), artist.get_ydata()
+        print(str(x_mouse) + '\n' + str(y_mouse))

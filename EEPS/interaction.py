@@ -259,17 +259,17 @@ class Interaction(object):
         """
 
         results = self.experiment_results()
-        #show, result = self.plot_data(results)
+        show, result = self.plot_data(results)
 
-        # Simulation_data = {}
-        # Simulation_data['agent_parameter'] = self.agent_parameter
-        # Simulation_data['environment_parameter'] = self.environment_parameter
-        # Simulation_data['show'] = show
-        # Simulation_data['result'] = result
+        Simulation_data = {}
+        Simulation_data['agent_parameter'] = self.agent_parameter
+        Simulation_data['environment_parameter'] = self.environment_parameter
+        Simulation_data['show'] = show
+        Simulation_data['result'] = result
 
-        # result_save = open( self.file_name , "wb" )
-        # pickle.dump(Simulation_data, result_save)
-        # result_save.close()
+        result_save = open( self.file_name , "wb" )
+        pickle.dump(Simulation_data, result_save)
+        result_save.close()
 
 
     def plot_data(self, results): # Ok!

@@ -14,7 +14,12 @@ TO DO:
   - [x] Rough version
   - [x] Test it!
 - [ ] Results Display
+  - [x] Open up when sim ends
+  - [ ] Display results
 - [ ] Real-time Mastery Display
+- [ ] Fix step slider
+  - [ ] Add units
+- [ ] Drag and drop tabs
 
 ## Report Progress
 

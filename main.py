@@ -18,16 +18,13 @@ class MainWindow(QtWidgets.QWidget):
         self.setWindowTitle("Affinity.net")
 
         grid = QGridLayout()
-        
         self.setLayout(grid)
 
         self.tabs = QTabWidget()
+        self.createParameterMenu()
 
         self.models = {}
-
         self.model_num  = 1
-
-        self.createParameterMenu()
 
         grid.addWidget(self.parameter_menu.toolbox, 0, 0)
         grid.addWidget(self.tabs, 0 , 1)

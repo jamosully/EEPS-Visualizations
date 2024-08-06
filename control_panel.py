@@ -1,6 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider
+from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QHBoxLayout
 from PySide6.QtCore import Slot
 
 class ButtonPanel(QtWidgets.QWidget):
@@ -12,6 +12,8 @@ class ButtonPanel(QtWidgets.QWidget):
         self.simulator = simulator
         self.main_table = main_table
         self.simulator_thread = simulator_thread
+
+        self.step_count = 100
 
         layout = QVBoxLayout()
 
@@ -52,11 +54,13 @@ class ButtonPanel(QtWidgets.QWidget):
 
         print("Button Panel Created")
 
+        self.stepSlider = StepSlider(self)
+
     Slot()
     def build_model(self):
         
         self.simulator.initialize_model(
-            100,
+            self.main_table.step_value,
             self.main_table.network_tab,
             self.main_table.rdt_tab,
             self.main_table.heatmap_tab)
@@ -85,6 +89,11 @@ class StepSlider(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
 
         # TODO: Improve this, and link it to self.step
+
+        self.slider_layout = QHBoxLayout()
+
+        self.stepCounter = QSpinBox
+        self.stepCounter.setValue
         
         self.stepslider = QSlider()
         self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)

@@ -11,8 +11,7 @@ import EEPS.interaction as intrc
 
 class Simulator(QtCore.QObject):
 
-    wait_for_input = Signal()
-    proceed = Signal()
+    sim_complete = Signal()
 
     def __init__(self, mutex, agent_params, env_params):
         QtCore.QObject.__init__(self)
@@ -54,22 +53,12 @@ class Simulator(QtCore.QObject):
     def run_sim(self):
 
         if self.interaction is not None:
-            self.interaction.run_save()
-            file_name = self.interaction.file_name
-            print(file_name)
+            self.results = self.interaction.experiment_results
+            self.file_name = self.interaction.file_name
+            self.sim_complete.emit()
 
     Slot()
     def continue_sim(self):
 
         if self.interaction is not None:
             self.interaction.continue_sim()
-
-
-    Slot()
-    def on_pick(self, event):
-        artist = event.artist
-        x_mouse, y_mouse = event.mouseevent.xdata, event.mouseevent.ydata
-        ax = event.canvas.figure.gca()
-        print(ax)
-        # x, y = artist.get_xdata(), artist.get_ydata()
-        print(str(x_mouse) + '\n' + str(y_mouse))
