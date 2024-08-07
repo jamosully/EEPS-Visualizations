@@ -97,12 +97,7 @@ class Interaction(object):
                                                action, reward)
             self.rdt_visualizer.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                # self.agent.visualize_memory_network(self.memory_visualizer.canvas, self.memory_visualizer.figure)
-                # self.agent.visualize_rdt_data(self.rdt_visualizer.canvas, 
-                #                               self.rdt_visualizer.figure, 
-                #                               self.agent.rdt_class, 
-                #                               self.rdt_volume[self.agent.rdt_class], 
-                #                               self.rdt_density[self.agent.rdt_class])
+                print("here")
                 self.rdt_visualizer.visualize_rdt_data(self.agent.clip_space)
                 self.memory_visualizer.visualize_memory_network(self.agent.clip_space)
                 self.heatmap_visualizer.visualize_heatmaps(self.agent.clip_space)

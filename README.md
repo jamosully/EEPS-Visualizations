@@ -17,9 +17,11 @@ TO DO:
   - [x] Open up when sim ends
   - [ ] Display results
 - [ ] Real-time Mastery Display
-- [ ] Fix step slider
-  - [ ] Add units
+- [x] Fix step slider
+  - [ ] 10 step increments
+  - [ ] Allow for step update during sim
 - [ ] Drag and drop tabs
+- [ ] Add real-time control
 
 ## Report Progress
 

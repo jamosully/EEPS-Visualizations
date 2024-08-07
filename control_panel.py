@@ -1,12 +1,15 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QHBoxLayout
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, Signal
 
-class ButtonPanel(QtWidgets.QWidget):
+class ControlPanel(QtWidgets.QWidget):
     
     def __init__(self,  main_table, simulator, simulator_thread, mutex):
         QtWidgets.QWidget.__init__(self)
+
+        # TODO: This initialization is a mess
+        #       Could be potentially refactored?
         
         self.verticalGroupBox = QGroupBox()
         self.simulator = simulator
@@ -17,8 +20,8 @@ class ButtonPanel(QtWidgets.QWidget):
 
         layout = QVBoxLayout()
 
-        def addToLayout(button, layout):
-            layout.addWidget(button)
+        def addToLayout(widget, layout):
+            layout.addWidget(widget)
             layout.setSpacing(10)
             self.verticalGroupBox.setLayout(layout)
 
@@ -38,29 +41,29 @@ class ButtonPanel(QtWidgets.QWidget):
         self.stepButton.setObjectName("Proceed")
         addToLayout(self.stepButton, layout)
 
-        self.showResultsButton = QPushButton("Show Results", self)
-        self.showResultsButton.setObjectName("Show Results")
-        addToLayout(self.showResultsButton, layout)
-        #showResultsButton.clicked.connect()
-
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)
-        self.showResultsButton.clicked.connect(self.prepare_results)
 
         self.runSimButton.setDisabled(True)
         self.stepButton.setDisabled(True)
-        self.showResultsButton.setDisabled(True)
 
         print("Button Panel Created")
 
-        self.stepSlider = StepSlider(self)
+        self.stepSlider = StepControl(self, self.step_count)
+        layout.addWidget(self.stepSlider.stepslider, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        layout.setSpacing(10)
+        self.verticalGroupBox.setLayout(layout)
+
+        layout.addWidget(self.stepSlider.stepCounter, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        layout.setSpacing(10)
+        self.verticalGroupBox.setLayout(layout)
 
     Slot()
     def build_model(self):
         
         self.simulator.initialize_model(
-            self.main_table.step_value,
+            self.step_count,
             self.main_table.network_tab,
             self.main_table.rdt_tab,
             self.main_table.heatmap_tab)
@@ -74,42 +77,40 @@ class ButtonPanel(QtWidgets.QWidget):
         self.stepButton.setDisabled(False)
         print("Model Running")
 
-    Slot()
-    def prepare_results(self):
+class StepControl(QtWidgets.QWidget):
 
-        self.main_table.add_results()
-        self.showResultsButton.setDisabled(True)
-        print("Results Ready")
-
-
-
-class StepSlider(QtWidgets.QWidget):
-
-    def __init__(self, parent):
+    def __init__(self, parent, step):
         QtWidgets.QWidget.__init__(self)
 
         # TODO: Improve this, and link it to self.step
-
-        self.slider_layout = QHBoxLayout()
-
-        self.stepCounter = QSpinBox
-        self.stepCounter.setValue
+        self.control_panel = parent
         
         self.stepslider = QSlider()
-        self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)
-        self.stepslider.setTickInterval(5)
-        self.stepslider.setMinimum(1)
+        # self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)
+        # self.stepslider.setTickInterval(5)
+        self.stepslider.setMinimum(10)
+        self.stepslider.setMaximum(10000)
         self.stepslider.setEnabled(True)
-
-        self.stepslider.valueChanged.connect(self.adjust_step_count)
 
         print("Step Slider Created")
 
-    def adjust_step_count(self, value):
+        self.stepCounter = QSpinBox()
+        self.stepCounter.setMaximum(10000)
+        self.stepCounter.setMinimum(10)
+        self.stepCounter.setValue(self.stepslider.value())
+        self.stepCounter.setSingleStep(10)
+
+        self.stepCounter.valueChanged.connect(self.stepslider.setValue)
+        self.stepCounter.valueChanged.connect(self.adjust_step)
+        self.stepslider.valueChanged.connect(self.stepCounter.setValue)
+        self.stepslider.valueChanged.connect(self.adjust_step)
+
+    def adjust_step(self, value):
 
         # TODO: This might need to be linked better
 
-        print(self.step)
-        self.step = value * 100
+        self.control_panel.step_count = value
+        print(self.control_panel.step_count)
+
 
 

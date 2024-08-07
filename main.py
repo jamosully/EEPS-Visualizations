@@ -7,7 +7,7 @@ from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 
 from simulator import Simulator
 from table_setup import TableDisplay
-from control_panel import ButtonPanel, StepSlider
+from control_panel import ControlPanel
 from parameter_details import ParameterToolbox
 
 class MainWindow(QtWidgets.QWidget):
@@ -55,11 +55,9 @@ class MainWindow(QtWidgets.QWidget):
 
         control_panel = QVBoxLayout()
 
-        button_panel = ButtonPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
-        slider = StepSlider(main)
+        button_panel = ControlPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
 
         control_panel.addWidget(button_panel.verticalGroupBox)
-        control_panel.addWidget(slider.stepslider)
 
         return control_panel
     

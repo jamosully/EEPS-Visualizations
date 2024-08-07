@@ -24,7 +24,6 @@ class Simulator(QtCore.QObject):
     Slot()
     def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):
 
-        print("we've made it")
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
         # self.environment_parameter, self.agent_parameter = initialization.config()
@@ -53,7 +52,7 @@ class Simulator(QtCore.QObject):
     def run_sim(self):
 
         if self.interaction is not None:
-            self.results = self.interaction.experiment_results
+            self.results = self.interaction.experiment_results()
             self.file_name = self.interaction.file_name
             self.sim_complete.emit()
 
