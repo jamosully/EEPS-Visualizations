@@ -4,11 +4,11 @@ The original README can be found here: [EEPS](https://github.com/Asieh-A-Mofrad/
 
 TO DO:
 
-- [ ] Parameter toolbox
+- [x] Parameter toolbox
   - [x] Load parameters
   - [x] Modify parameters
-  - [ ] Provide descriptions
-  - [ ] Maybe switch to a json file?
+  - [ ] OPTIONAL Provide descriptions
+  - [ ] OPTIONAL Maybe switch to a json file?
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
 - [x] Multi-simulator mode (There may be other bugs)
@@ -17,12 +17,13 @@ TO DO:
 - [ ] Results Display
   - [x] Open up when sim ends
   - [x] Display results
-  - [ ] Add buttons
+  - [x] Add buttons
+  - [ ] Get all results to display on plot
 - [ ] Real-time Mastery Display
 - [x] Fix step slider
   - [ ] 10 step increments
-  - [ ] Allow for step update during sim
-- [ ] Drag and drop tabs
+  - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
+- [ ] OPTIONAL Drag and drop tabs
 - [ ] Add real-time control
 - [ ] Adjust figure size
 - [x] Add filename
