@@ -13,12 +13,13 @@ class Simulator(QtCore.QObject):
 
     sim_complete = Signal()
 
-    def __init__(self, mutex, agent_params, env_params):
+    def __init__(self, mutex, agent_params, env_params, filename):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
         # self.cond = cond
         self.agent = None
         self.agent_parameter = agent_params
+        self.file_name = filename
         self.environment_parameter = env_params
     
     Slot()
@@ -27,10 +28,6 @@ class Simulator(QtCore.QObject):
         # self.cond.wait(self.mtx)
         self.environment_detail = initialization_detail.environment_details()
         # self.environment_parameter, self.agent_parameter = initialization.config()
-
-        # TODO: Allow users to upload files
-        
-        self.file_name = None
 
         if self.file_name == None:
             self.agent = agn.Agent(self.agent_parameter)
@@ -44,7 +41,6 @@ class Simulator(QtCore.QObject):
                                                  rdt_visualizer,
                                                  heat_visualizer,
                                                  self.mtx)
-            self.file_name = self.interaction.file_name
 
         rdt_visualizer.createClassButtons(self.environment.num_classes)
             
@@ -52,7 +48,7 @@ class Simulator(QtCore.QObject):
     def run_sim(self):
 
         if self.interaction is not None:
-            self.results = self.interaction.experiment_results()
+            self.results = self.interaction.run_save()
             self.file_name = self.interaction.file_name
             self.sim_complete.emit()
 

@@ -89,7 +89,7 @@ class StepControl(QtWidgets.QWidget):
         # self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)
         # self.stepslider.setTickInterval(5)
         self.stepslider.setMinimum(10)
-        self.stepslider.setMaximum(10000)
+        self.stepslider.setMaximum(1000)
         self.stepslider.setEnabled(True)
 
         print("Step Slider Created")

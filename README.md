@@ -8,6 +8,7 @@ TO DO:
   - [x] Load parameters
   - [x] Modify parameters
   - [ ] Provide descriptions
+  - [ ] Maybe switch to a json file?
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
 - [x] Multi-simulator mode (There may be other bugs)
@@ -15,13 +16,17 @@ TO DO:
   - [x] Test it!
 - [ ] Results Display
   - [x] Open up when sim ends
-  - [ ] Display results
+  - [x] Display results
+  - [ ] Add buttons
 - [ ] Real-time Mastery Display
 - [x] Fix step slider
   - [ ] 10 step increments
   - [ ] Allow for step update during sim
 - [ ] Drag and drop tabs
 - [ ] Add real-time control
+- [ ] Adjust figure size
+- [x] Add filename
+  - [ ] Set filename to None
 
 ## Report Progress
 

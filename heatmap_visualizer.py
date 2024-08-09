@@ -27,7 +27,9 @@ class HeatmapVisualizer(QtWidgets.QWidget):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
 
+        self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.canvas, 1, 0)
 
     # TODO: This already exists in the RDT visualizer file,

@@ -26,6 +26,8 @@ class MainWindow(QtWidgets.QWidget):
         self.models = {}
         self.model_num  = 1
 
+        self.filename = None
+
         grid.addWidget(self.parameter_menu.toolbox, 0, 0)
         grid.addWidget(self.tabs, 0 , 1)
 
@@ -35,7 +37,7 @@ class MainWindow(QtWidgets.QWidget):
 
         simulator_dict['mutex'] = QMutex()
         simulator_dict['cond'] = QWaitCondition()
-        simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params)
+        simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
         simulator_dict['thread'] = QThread(parent=self)
 
         simulator_dict['sim'].moveToThread(simulator_dict['thread'])

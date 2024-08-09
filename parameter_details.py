@@ -3,7 +3,8 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox, 
                                QLabel, QGroupBox, QSizePolicy, 
                                QHeaderView, QPushButton, QHBoxLayout, 
-                               QCheckBox, QDoubleSpinBox, QSpinBox)
+                               QCheckBox, QDoubleSpinBox, QSpinBox,
+                               QTextEdit, QSpacerItem)
 
 import EEPS.initialization
 import EEPS.initialization_detail
@@ -32,7 +33,12 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.env_toolbox = EnvParamTable(self.environment_detail, self.environment_parameter)
         self.agent_toolbox = AgentParamTable(self.agent_parameter)
+        self.createFilenameEntry()
 
+        self.tableSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.box_layout.addWidget(self.fileTable)
+        #self.box_layout.addItem(self.tableSpacer)
         self.box_layout.addWidget(self.agent_label)
         self.box_layout.addWidget(self.agent_toolbox.table)
         self.box_layout.addWidget(self.env_label)
@@ -58,6 +64,31 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.button_layout.addWidget(self.exportParamsButton)
         self.button_layout.setSpacing(10)
 
+    def createFilenameEntry(self):
+
+        self.fileTable = QTableWidget(1, 2)
+        self.fileTable.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.fileTable.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        self.fileTable.verticalHeader().setVisible(False)
+        self.fileTable.horizontalHeader().setVisible(False)
+        self.fileTable.setMaximumHeight(self.fileTable.verticalHeader().length())
+        self.fileTable.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                     QSizePolicy.Policy.Minimum)
+
+        fileEntryLabel = QLabel()
+        fileEntryLabel.setIndent(5)
+        fileEntryLabel.setText("Filename: ")
+        self.fileTable.setCellWidget(0, 0, fileEntryLabel)
+
+        self.fileEntryField = QTextEdit()
+        self.fileEntryField.textChanged.connect(lambda: self.change_filename(self.fileEntryField.text()))
+        self.fileTable.setCellWidget(0, 1, self.fileEntryField)
+
+    def change_filename(self, text):
+
+        print("Filename: " + text)
+        self.main.filename = text
+
 
 class EnvParamTable(QtWidgets.QWidget):
 
@@ -66,8 +97,10 @@ class EnvParamTable(QtWidgets.QWidget):
 
         self.table = QTableWidget(len(env_params), 2)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
+        self.table.setMaximumHeight(self.table.verticalHeader().length())
 
         self.env_params = env_params
 
@@ -81,14 +114,6 @@ class EnvParamTable(QtWidgets.QWidget):
         self.table.resizeColumnsToContents()
 
     def createTableWidget(self, value, key):
-
-        # if param_type == bool:
-        #     table_widget = QCheckBox(self)
-        #     table_widget.setObjectName(key)
-        #     table_widget.clicked.connect(lambda: self.adjust_params(table_widget.checkState()))
-        #     return table_widget
-        # elif param_type ==  int:
-        #     if
 
         match key:
             case "environment_ID":
@@ -127,8 +152,10 @@ class AgentParamTable(QtWidgets.QWidget):
         # self.table.setSizePolicy(QSizePolicy.Policy.Expanding, 
         #                          QSizePolicy.Policy.Expanding)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
+        self.table.setMaximumHeight(self.table.verticalHeader().length())
 
         self.agent_params = agent_params
 
