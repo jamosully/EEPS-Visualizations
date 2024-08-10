@@ -1,6 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QHBoxLayout
+from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QHBoxLayout, QSizePolicy
 from PySide6.QtCore import Slot, Signal
 
 class ControlPanel(QtWidgets.QWidget):
@@ -55,7 +55,7 @@ class ControlPanel(QtWidgets.QWidget):
         layout.setSpacing(10)
         self.verticalGroupBox.setLayout(layout)
 
-        layout.addWidget(self.stepSlider.stepCounter, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.stepSlider.stepCounter)#, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
         layout.setSpacing(10)
         self.verticalGroupBox.setLayout(layout)
 
@@ -99,6 +99,7 @@ class StepControl(QtWidgets.QWidget):
         self.stepCounter.setMinimum(10)
         self.stepCounter.setValue(self.stepslider.value())
         self.stepCounter.setSingleStep(10)
+        #self.stepCounter.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
 
         self.stepCounter.valueChanged.connect(self.stepslider.setValue)
         self.stepCounter.valueChanged.connect(self.adjust_step)

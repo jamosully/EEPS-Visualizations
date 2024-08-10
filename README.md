@@ -21,13 +21,14 @@ TO DO:
   - [ ] Get all results to display on plot
 - [ ] Real-time Mastery Display
 - [x] Fix step slider
-  - [ ] 10 step increments
+  - [x] 10 step increments
   - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
 - [ ] OPTIONAL Drag and drop tabs
 - [ ] Add real-time control
 - [ ] Adjust figure size
 - [x] Add filename
   - [ ] Set filename to None
+- [x] Fix spinbox issue
 
 ## Report Progress
 

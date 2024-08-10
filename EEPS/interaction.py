@@ -363,7 +363,7 @@ class Plot_results(object):
 
         self.file_name=file_name
 
-    def showResults(self, bar_plot, heatmap_plot):
+    def showResults(self, plots):
 
         """
         reads the data and desired representations and plot them,
@@ -380,9 +380,9 @@ class Plot_results(object):
 
             # show the result
             if showType == 'bar':
-                self.barDiagramShow(name, result, bar_plot)    # result is a dataframe
+                self.barDiagramShow(name, result, plots[i])    # result is a dataframe
             elif showType == 'heatmap':
-                self.heatmapShow(name, result, heatmap_plot)       # result is a dataframe
+                self.heatmapShow(name, result, plots[i])       # result is a dataframe
 
 
     def barDiagramShow(self, name, data, plot):
@@ -390,13 +390,13 @@ class Plot_results(object):
         """ bar plot"""
 
         data.plot(kind = 'bar', color = ['royalblue','lightgreen', 'red','cyan'], ax=plot)
-        plt.legend(fontsize = 20)
-        plt.tick_params(labelsize = 20)
-        plt.title(name, fontsize = 20)
-        plt.ylabel('Correct match ratio', fontsize = 20)
-        plt.tight_layout()
-        plt.xticks( rotation=45, fontsize = 18, horizontalalignment = 'right')
-        plt.show()
+        # plt.legend(fontsize = 20)
+        # plt.tick_params(labelsize = 20)
+        # plt.title(name, fontsize = 20)
+        # plt.ylabel('Correct match ratio', fontsize = 20)
+        # plt.tight_layout()
+        # plt.xticks( rotation=45, fontsize = 18, horizontalalignment = 'right')
+        # plt.show()
 
 
     def heatmapShow(self, name, data, plot):
@@ -408,10 +408,10 @@ class Plot_results(object):
         sns.heatmap(data.round(3),xticklabels=True, yticklabels=True, annot = True,
                     annot_kws = {"size": 14}, linewidths =.15, fmt="g", cmap="Blues", ax=plot) # cmap="Greens"
 
-        plt.title(name, fontsize = 16)
-        plt.tick_params(labelsize = 16)
-        plt.tight_layout()
-        plt.show()
+        # plt.title(name, fontsize = 16)
+        # plt.tick_params(labelsize = 16)
+        # plt.tight_layout()
+        # plt.show()
 
     def print_setting(self):
 
