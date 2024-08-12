@@ -27,7 +27,9 @@ TO DO:
   - [x] 10 step increments
   - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
 - [ ] OPTIONAL Drag and drop tabs
-- [ ] Add real-time control
+- [ ] Add real-time control (USE MPLCURSORS)
+  - [ ] Create stimuli_editor
+  - [ ] Figure out how to sort out heatmap interaction
 - [x] Adjust figure size
 - [x] Add filename
   - [x] Set filename to None

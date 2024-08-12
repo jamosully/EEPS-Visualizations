@@ -35,7 +35,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.env_toolbox = EnvParamTable(self.environment_detail, self.environment_parameter)
         self.agent_toolbox = AgentParamTable(self.agent_parameter)
-        
+
         self.createFilenameEntry()
 
         self.tableSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -122,6 +122,8 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.data = pickle.load(resultFile)
         resultFile.close()
 
+        # TODO: This approach isn't working?
+
         print(self.data['environment_parameter'])
 
         for i, (param_name, value) in enumerate(self.data['environment_parameter'].items()):
@@ -133,9 +135,6 @@ class ParameterToolbox(QtWidgets.QWidget):
                 for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
                     if value[0] == id:
                         self.env_toolbox.table.item(i, 1).setCurrentIndex(x)
-
-
-
 
 class EnvParamTable(QtWidgets.QWidget):
 

@@ -9,6 +9,7 @@ import seaborn as sns
 import networkx as nx
 import pandas as pd
 from sklearn import preprocessing
+import mplcursors
 
 
 class HeatmapVisualizer(QtWidgets.QWidget):
@@ -64,6 +65,8 @@ class HeatmapVisualizer(QtWidgets.QWidget):
 
     def visualize_heatmaps(self, clip_space):
 
+        # TODO: mplcursor doesn't work with seaborn, might change to matplotlib heatmaps
+
         self.figure.clf()
 
         scaler = preprocessing.MinMaxScaler()
@@ -72,8 +75,14 @@ class HeatmapVisualizer(QtWidgets.QWidget):
         norm_heat_df = norm_heat_df.reindex(sorted(norm_heat_df.columns), axis=1).sort_index()
 
         heatmap_plot = self.figure.add_subplot(111, picker=1)
-        sns.heatmap(norm_heat_df, ax=heatmap_plot)
+        map = sns.heatmap(norm_heat_df, ax=heatmap_plot)
         heatmap_plot.set(xlabel="Percept Stimuli", ylabel="Action Stimuli")
+
+        heatmap_cursor = mplcursors.cursor(map)
+
+        @heatmap_cursor.connect("add")
+        def on_add(sel):
+            print(sel)
 
         self.canvas.draw()
         print(heat_df)

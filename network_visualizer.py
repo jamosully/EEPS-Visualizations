@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 
 import networkx as nx
 import numpy as np
+import mplcursors
 
 class NetworkVisualizer(QtWidgets.QWidget):
 
@@ -51,7 +52,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         weights = np.array([weight for weight in weight_labels.values()])
         normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
 
-        memory_plot = self.figure.add_subplot(111, picker=1)
+        memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
@@ -63,6 +64,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         
         nx.draw_networkx_nodes(ordered_clip_space, pos, ax=memory_plot, node_size=500)
         nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot)
+        self.edge_artist = []
         for key, weight in normalized_weights.items():
             nx.draw_networkx_edges(ordered_clip_space,
                                     pos,
@@ -72,15 +74,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     arrows=True,
                                     alpha=weight,
                                     width=5)
+            
+        network_cursor = mplcursors.cursor(self.figure, hover=True)
+
+        @network_cursor.connect("add")
+        def on_add(sel):
+            print(sel)
 
         self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
-
-    Slot()
-    def on_pick(self, event):
-        artist = event.artist
-        x_mouse, y_mouse = event.mouseevent.xdata, event.mouseevent.ydata
-        ax = event.canvas.figure.gca()
-        print(ax)
-        # x, y = artist.get_xdata(), artist.get_ydata()
-        print(str(x_mouse) + '\n' + str(y_mouse))
