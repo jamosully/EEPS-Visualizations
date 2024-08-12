@@ -35,6 +35,7 @@ TO DO:
   - [x] Set filename to None
   - [x] Open file browser to find file
   - [ ] Add functionality for running files
+  - [ ] Update parameter toolbox when file is added
 - [x] Fix spinbox issue
 - [ ] OPTIONAL create new experiment design
 
