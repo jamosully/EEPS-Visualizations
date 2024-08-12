@@ -17,8 +17,8 @@ class MainWindow(QtWidgets.QWidget):
 
         self.setWindowTitle("Affinity.net")
 
-        grid = QGridLayout()
-        self.setLayout(grid)
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
 
         self.tabs = QTabWidget()
         self.createParameterMenu()
@@ -28,8 +28,10 @@ class MainWindow(QtWidgets.QWidget):
 
         self.filename = None
 
-        grid.addWidget(self.parameter_menu.toolbox, 0, 0)
-        grid.addWidget(self.tabs, 0 , 1)
+        self.grid.addWidget(self.parameter_menu.toolbox, 0, 0)
+        self.grid.addWidget(self.tabs, 0 , 1)
+
+        self.setFixedSize(self.grid.sizeHint())
 
     def createSystem(self, agent_params, env_params):
 
@@ -61,6 +63,8 @@ class MainWindow(QtWidgets.QWidget):
 
         control_panel.addWidget(button_panel.verticalGroupBox)
 
+        self.setFixedSize(self.grid.sizeHint())
+
         return control_panel
     
     Slot()
@@ -84,6 +88,8 @@ class MainWindow(QtWidgets.QWidget):
         self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
 
         print(self.models[self.model_num])
+
+        self.setFixedSize(self.grid.sizeHint())
 
         self.model_num += 1
 

@@ -25,7 +25,7 @@ class HeatmapVisualizer(QtWidgets.QWidget):
 
         self.name = "Heatmap Visualizer"
 
-        self.figure = Figure()
+        self.figure = Figure(tight_layout=False)
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 

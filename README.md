@@ -14,21 +14,27 @@ TO DO:
 - [x] Multi-simulator mode (There may be other bugs)
   - [x] Rough version
   - [x] Test it!
-- [ ] Results Display
+- [x] Results Display
   - [x] Open up when sim ends
   - [x] Display results
   - [x] Add buttons
-  - [ ] Get all results to display on plot
+  - [x] Get all results to display on plot
+  - [ ] Get window to show all results without weird formatting
+    - [ ] Maybe display results with mouse over
 - [ ] Real-time Mastery Display
+  - [ ] Do more research on this
 - [x] Fix step slider
   - [x] 10 step increments
   - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
 - [ ] OPTIONAL Drag and drop tabs
 - [ ] Add real-time control
-- [ ] Adjust figure size
+- [x] Adjust figure size
 - [x] Add filename
-  - [ ] Set filename to None
+  - [x] Set filename to None
+  - [x] Open file browser to find file
+  - [ ] Add functionality for running files
 - [x] Fix spinbox issue
+- [ ] OPTIONAL create new experiment design
 
 ## Report Progress
 
@@ -59,8 +65,9 @@ Remember to look at mark scheme!
   - [ ] Feedback from Freddy
   - [ ] Experiment replication
     - [ ] Classical study RDT
+  - [ ] Pathway to RFT simulation
 - [ ] Discussion
-  - [ ] Future work (modularity)
+  - [ ] Future work (modularity, create new experiments in interface)
 - [ ] Conclusion
 - [ ] Abstract
 - [ ] Slides

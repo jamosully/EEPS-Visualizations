@@ -15,10 +15,11 @@ class TableDisplay(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
         self.layout = QVBoxLayout(self)
         self.simulator = simulator
+        self.main_display = parent
         self.visualizers = []
 
         self.tabs = QTabWidget()
-        self.network_tab = NetworkVisualizer(self, simulator)
+        self.network_tab = NetworkVisualizer(self.main_display, simulator)
         self.visualizers.append(self.network_tab)
         self.rdt_tab = RDTVisualizer(self, simulator)
         self.visualizers.append(self.rdt_tab)
@@ -37,8 +38,9 @@ class TableDisplay(QtWidgets.QWidget):
     def add_results(self):
 
         print("adding results")
-        self.results_tab = ResultsDisplay(self.simulator)
+        self.results_tab = ResultsDisplay(self.main_display, self.simulator)
         self.tabs.addTab(self.results_tab, "Results")
+        self.main_display.setFixedSize(self.main_display.grid.sizeHint())
 
     def delete_results(self):
 

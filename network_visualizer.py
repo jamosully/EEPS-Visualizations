@@ -17,17 +17,19 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         QtWidgets.QWidget.__init__(self)
 
-        grid = QGridLayout()
-        self.setLayout(grid)
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
+
+        self.main_display = parent
 
         self.name = "Memory Network Visualizer"
 
-        self.figure = Figure()
+        self.figure = Figure(tight_layout=False)
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-        grid.addWidget(self.toolbar, 0, 0)
-        grid.addWidget(self.canvas, 1, 0)
+        self.grid.addWidget(self.toolbar, 0, 0)
+        self.grid.addWidget(self.canvas, 1, 0)
 
         # simulator.setCanvasAndFigure(self.canvas, self.figure)
 
@@ -71,6 +73,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     alpha=weight,
                                     width=5)
 
+        self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
 
     Slot()

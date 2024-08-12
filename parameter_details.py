@@ -4,12 +4,14 @@ from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox,
                                QLabel, QGroupBox, QSizePolicy, 
                                QHeaderView, QPushButton, QHBoxLayout, 
                                QCheckBox, QDoubleSpinBox, QSpinBox,
-                               QTextEdit, QSpacerItem)
+                               QTextEdit, QSpacerItem, QFileDialog)
 
 import EEPS.initialization
 import EEPS.initialization_detail
 
 import os.path
+from pathlib import Path
+import pickle
 
 class ParameterToolbox(QtWidgets.QWidget):
 
@@ -33,6 +35,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.env_toolbox = EnvParamTable(self.environment_detail, self.environment_parameter)
         self.agent_toolbox = AgentParamTable(self.agent_parameter)
+        
         self.createFilenameEntry()
 
         self.tableSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -66,7 +69,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
     def createFilenameEntry(self):
 
-        self.fileTable = QTableWidget(1, 2)
+        self.fileTable = QTableWidget(2, 2)
         self.fileTable.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.fileTable.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         self.fileTable.verticalHeader().setVisible(False)
@@ -81,13 +84,57 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.fileTable.setCellWidget(0, 0, fileEntryLabel)
 
         self.fileEntryField = QTextEdit()
-        self.fileEntryField.textChanged.connect(lambda: self.change_filename(self.fileEntryField.text()))
+        #self.fileEntryField.textChanged.connect(lambda: self.change_filename(self.fileEntryField.text()))
         self.fileTable.setCellWidget(0, 1, self.fileEntryField)
+
+        self.loadFileButton = QPushButton("Load File")
+        self.fileTable.setCellWidget(1, 0, self.loadFileButton)
+        self.loadFileButton.clicked.connect(self.open_file_dialog)
+
+        self.newFileButton = QPushButton("New File")
+        self.fileTable.setCellWidget(1, 1, self.newFileButton)
+        self.newFileButton.clicked.connect(self.reset_filename)
 
     def change_filename(self, text):
 
         print("Filename: " + text)
         self.main.filename = text
+
+    def open_file_dialog(self):
+
+        self.filename, ok = QFileDialog.getOpenFileName(
+            self,
+            "Select a File",
+            filter="EEPS Files (*.p)"
+        )
+        if self.filename:
+            self.change_filename(str(Path(self.filename)))
+            self.fileEntryField.setText(str(Path(self.filename)))
+            self.updateParamsFromFile(self.filename)
+    
+    def reset_filename(self):
+
+        self.main.filename = None
+
+    def updateParamsFromFile(self, filename):
+
+        resultFile = open(filename, 'rb')
+        self.data = pickle.load(resultFile)
+        resultFile.close()
+
+        print(self.data['environment_parameter'])
+
+        for i, (param_name, value) in enumerate(self.data['environment_parameter'].items()):
+            self.env_toolbox.env_params[param_name] = value
+            print(self.env_toolbox.table.item(i, 0))
+            if isinstance(self.env_toolbox.table.item(i, 1), QSpinBox):
+                self.env_toolbox.table.item(i, 1).setValue(value)
+            elif isinstance(self.env_toolbox.table.item(i, 1), QComboBox):
+                for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
+                    if value[0] == id:
+                        self.env_toolbox.table.item(i, 1).setCurrentIndex(x)
+
+
 
 
 class EnvParamTable(QtWidgets.QWidget):
@@ -107,7 +154,7 @@ class EnvParamTable(QtWidgets.QWidget):
         for i, (param_name, value) in enumerate(self.env_params.items()):
             param_label = QLabel()
             param_label.setIndent(5)
-            param_label.setText(param_name)
+            param_label.setText(param_name + "  ")
             self.table.setCellWidget(i, 1, self.createTableWidget(value, param_name))
             self.table.setCellWidget(i, 0, param_label)
 

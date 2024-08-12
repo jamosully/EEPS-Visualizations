@@ -14,15 +14,16 @@ import EEPS.interaction
 
 class ResultsDisplay(QtWidgets.QWidget):
 
-    def __init__(self, simulator):
+    def __init__(self, main, simulator):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
         self.results_layout = QHBoxLayout()
+        self.main_display = main
     
         self.visual_grid = QGridLayout()
 
-        self.figure = Figure()
+        self.figure = Figure(tight_layout=False)
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
@@ -85,6 +86,7 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.figure.tight_layout()
                 print("Added heatmap")
             self.canvas.draw()
+            self.main_display.setFixedSize(self.main_display.grid.sizeHint())
             self.figure_id = value
         
 
