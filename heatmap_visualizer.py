@@ -85,4 +85,3 @@ class HeatmapVisualizer(QtWidgets.QWidget):
             print(sel)
 
         self.canvas.draw()
-        print(heat_df)

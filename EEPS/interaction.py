@@ -65,23 +65,8 @@ class Interaction(object):
 
         """ This method run the experiment for one agent/participant"""
 
+        # TODO: Need a way to jump out of the for loop to update the model's parameters
 
-        # num_steps = 0
-        # while (self.environment.Training):
-
-        #     if num_steps == self.max_trial:
-        #         sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
-        #                                                        self.max_trial))
-        #     percept, action_set_t = self.environment.next_trial()
-        #     num_steps += 1
-        #     self.agent.trial_preprocess(percept, action_set_t)
-        #     action = self.agent.action_selection(percept, action_set_t)
-        #     reward = self.environment.feedback(percept, action)
-        #     self.agent.training_update_network(percept, action_set_t,
-        #                                        action, reward)
-        #     if num_steps % self.vis_step == 0:
-        #         self.agent.visualize_memory(self.canvas, self.figure)
-        #         self.proceed = False
         num_steps = 0
         for num_steps in range(self.max_trial):
 

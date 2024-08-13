@@ -21,23 +21,29 @@ TO DO:
   - [x] Get all results to display on plot
   - [ ] Get window to show all results without weird formatting
     - [ ] Maybe display results with mouse over
-- [ ] Real-time Mastery Display
+- [ ] OPTIONAL Real-time Mastery Display
   - [ ] Do more research on this
 - [x] Fix step slider
   - [x] 10 step increments
   - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
+  - [ ] Step counter is still showing wrong value
 - [ ] OPTIONAL Drag and drop tabs
 - [ ] Add real-time control (USE MPLCURSORS)
-  - [ ] Create stimuli_editor
+  - [x] Create stimuli_editor
+    - [ ] Keep adding to it!
   - [ ] Figure out how to sort out heatmap interaction
 - [x] Adjust figure size
 - [x] Add filename
   - [x] Set filename to None
   - [x] Open file browser to find file
-  - [ ] Add functionality for running files
+  - [x] Add functionality for running files
   - [ ] Update parameter toolbox when file is added
 - [x] Fix spinbox issue
-- [ ] OPTIONAL create new experiment design
+- [ ] OPTIONAL create new experiment design menu?
+- [ ] Add comments to code!
+- [ ] Uniformise function names
+  - [ ] Snake case non-gui variables
+  - [ ] Camel case for functions and gui components
 
 ## Report Progress
 

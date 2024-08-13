@@ -12,7 +12,7 @@ import mplcursors
 
 class NetworkVisualizer(QtWidgets.QWidget):
 
-    def __init__(self, parent, simulator):
+    def __init__(self, parent, table, simulator):
 
         # TODO: Get clicking working again
 
@@ -22,6 +22,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
         self.main_display = parent
+        self.table = table
 
         self.name = "Memory Network Visualizer"
 
@@ -47,6 +48,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.figure.clf()
         
         nx.set_node_attributes(clip_space, subsets, name="layers")
+
         weight_labels = nx.get_edge_attributes(clip_space, 'weight')
 
         weights = np.array([weight for weight in weight_labels.values()])
@@ -60,8 +62,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
-        print(pos)
-        
+
         nx.draw_networkx_nodes(ordered_clip_space, pos, ax=memory_plot, node_size=500)
         nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot)
         self.edge_artist = []
@@ -75,11 +76,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     alpha=weight,
                                     width=5)
             
-        network_cursor = mplcursors.cursor(self.figure, hover=True)
+        network_cursor = mplcursors.cursor(self.figure)
 
         @network_cursor.connect("add")
         def on_add(sel):
-            print(sel)
+            self.table.deleteStimuliEditor()
+            self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
 
         self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

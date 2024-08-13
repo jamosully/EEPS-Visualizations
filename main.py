@@ -15,7 +15,7 @@ class MainWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Affinity.net")
+        self.setWindowTitle("Affinity")
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)
@@ -60,6 +60,8 @@ class MainWindow(QtWidgets.QWidget):
         control_panel = QVBoxLayout()
 
         button_panel = ControlPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
+
+        # TODO: Set the layout of control panel to the vertical group box itself
 
         control_panel.addWidget(button_panel.verticalGroupBox)
 
