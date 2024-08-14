@@ -1,7 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QWidget, QGridLayout
-from PySide6.QtCore import Slot
+from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -13,8 +12,6 @@ import mplcursors
 class NetworkVisualizer(QtWidgets.QWidget):
 
     def __init__(self, parent, table, simulator):
-
-        # TODO: Get clicking working again
 
         QtWidgets.QWidget.__init__(self)
 
@@ -33,12 +30,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.canvas, 1, 0)
 
-        # simulator.setCanvasAndFigure(self.canvas, self.figure)
-
     def visualize_memory_network(self, clip_space):
-
-        # Produce a visualisation of the agent's memory
-        # TODO: Make things clickable
 
         subsets = dict()
         for stimuli in clip_space.nodes:

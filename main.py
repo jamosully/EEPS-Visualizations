@@ -8,7 +8,7 @@ from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 from simulator import Simulator
 from table_setup import TableDisplay
 from control_panel import ControlPanel
-from parameter_details import ParameterToolbox
+from parameter_toolbox import ParameterToolbox
 
 class MainWindow(QtWidgets.QWidget):
 

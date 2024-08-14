@@ -80,3 +80,14 @@ Remember to look at mark scheme!
 - [ ] Conclusion
 - [ ] Abstract
 - [ ] Slides
+
+## Figures
+
+- [ ] Visualzations
+  - [x] Heatmap
+  - [ ] network
+  - [ ] rdt
+- [ ] affinity structure diagram
+- [ ] results
+- [ ] parameter toolbox
+- [ ] stimuli editor
