@@ -54,7 +54,6 @@ Remember to look at mark scheme!
   - [ ] SE
   - [ ] RDT
   - [ ] RFT
-- [ ] Aims/Hypothesis
 - [ ] Challenges
 - [ ] Objectives?
 - [ ] Technical Background
@@ -65,7 +64,7 @@ Remember to look at mark scheme!
 - [ ] Project Execution
   - [ ] Software structure
   - [ ] Init and custom params
-  - [ ] Heatmap
+  - [x] Heatmap
   - [ ] Network
   - [ ] Mastery
   - [ ] RDT stuff
@@ -85,9 +84,10 @@ Remember to look at mark scheme!
 
 - [ ] Visualzations
   - [x] Heatmap
-  - [ ] network
-  - [ ] rdt
-- [ ] affinity structure diagram
-- [ ] results
-- [ ] parameter toolbox
-- [ ] stimuli editor
+  - [ ] Network
+  - [ ] RDT
+- [ ] Affinity structure diagram
+- [ ] EEPS structure
+- [ ] Results display
+- [ ] Parameter toolbox
+- [ ] Stimuli editor

@@ -82,13 +82,12 @@ class Interaction(object):
                                                action, reward)
             self.rdt_visualizer.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                print("here")
                 self.rdt_visualizer.visualize_rdt_data(self.agent.clip_space)
                 self.memory_visualizer.visualize_memory_network(self.agent.clip_space)
                 self.heatmap_visualizer.visualize_heatmaps(self.agent.clip_space)
-                print("Trying to visualise")
                 self.pause.lock()
-    
+                #self.update_values()
+
         if num_steps == self.max_trial:
             sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
                                                             self.max_trial))
@@ -375,13 +374,13 @@ class Plot_results(object):
         """ bar plot"""
 
         data.plot(kind = 'bar', color = ['royalblue','lightgreen', 'red','cyan'], ax=plot)
-        # plt.legend(fontsize = 20)
-        # plt.tick_params(labelsize = 20)
-        # plt.title(name, fontsize = 20)
-        # plt.ylabel('Correct match ratio', fontsize = 20)
-        # plt.tight_layout()
-        # plt.xticks( rotation=45, fontsize = 18, horizontalalignment = 'right')
-        # plt.show()
+        plt.legend(fontsize = 20)
+        plt.tick_params(labelsize = 20)
+        plt.title(name, fontsize = 20)
+        plt.ylabel('Correct match ratio', fontsize = 20)
+        plt.tight_layout()
+        plt.xticks( rotation=45, fontsize = 18, horizontalalignment = 'right')
+        plt.show()
 
 
     def heatmapShow(self, name, data, plot):
@@ -393,10 +392,10 @@ class Plot_results(object):
         sns.heatmap(data.round(3),xticklabels=True, yticklabels=True, annot = True,
                     annot_kws = {"size": 14}, linewidths =.15, fmt="g", cmap="Blues", ax=plot) # cmap="Greens"
 
-        # plt.title(name, fontsize = 16)
-        # plt.tick_params(labelsize = 16)
-        # plt.tight_layout()
-        # plt.show()
+        plt.title(name, fontsize = 16)
+        plt.tick_params(labelsize = 16)
+        plt.tight_layout()
+        plt.show()
 
     def print_setting(self):
 

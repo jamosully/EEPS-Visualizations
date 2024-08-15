@@ -12,6 +12,8 @@ from parameter_toolbox import ParameterToolbox
 
 class MainWindow(QtWidgets.QWidget):
 
+    values_changed = Signal()
+
     def __init__(self):
         super().__init__()
 
