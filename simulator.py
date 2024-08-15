@@ -11,15 +11,26 @@ import EEPS.interaction as intrc
 
 import pickle
 
+"""
+simulator.py
+
+Responsible for intializing, running, and displaying
+results from EEPS. All parameters obtained from a
+parameter toolbox
+"""
+
 class Simulator(QtCore.QObject):
+
+    """
+    Contains all objects related to EEPS \n
+    Runs on separate thread to rest of GUI
+    """
 
     sim_complete = Signal()
 
     def __init__(self, mutex, agent_params, env_params, filename):
         QtCore.QObject.__init__(self)
         self.mtx = mutex
-        # self.cond = cond
-        self.agent = None
         self.agent_parameter = agent_params
         self.file_name = filename
         self.environment_parameter = env_params
@@ -27,9 +38,7 @@ class Simulator(QtCore.QObject):
     Slot()
     def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):
 
-        # self.cond.wait(self.mtx)
-        self.environment_detail = initialization_detail.environment_details()
-        # self.environment_parameter, self.agent_parameter = initialization.config()
+        # Load parameters from a file, if there is one
 
         if self.file_name is not None:
             self.open_file()
@@ -38,6 +47,10 @@ class Simulator(QtCore.QObject):
 
         self.agent = agn.Agent(self.agent_parameter)
         self.environment = env.Environment(self.environment_parameter)
+
+        # TODO: This is a lot of parameters to be passing, see if 
+        #       you can reduce them
+
         self.interaction = intrc.Interaction(self.agent, 
                                                 self.environment, 
                                                 self.agent_parameter, 
@@ -47,7 +60,8 @@ class Simulator(QtCore.QObject):
                                                 rdt_visualizer,
                                                 heat_visualizer,
                                                 self.mtx)
-            
+        
+        # For the RDT visualizer
         rdt_visualizer.createClassButtons(self.environment.num_classes)
             
     Slot()
@@ -63,9 +77,3 @@ class Simulator(QtCore.QObject):
 
         if self.interaction is not None:
             self.interaction.continue_sim()
-
-    def open_file(self):
-
-        resultFile = open(self.file_name, 'rb')
-        self.data = pickle.load(resultFile)
-        resultFile.close()

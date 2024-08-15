@@ -25,13 +25,14 @@ class StimuliEditor(QtWidgets.QWidget):
         self.editor_layout.addWidget(self.table_holder)
 
         self.setLayout(self.editor_layout)
+        self.in_relation_table.resizeColumnsToContents()
 
         self.main_display.setFixedSize(self.main_display.grid.sizeHint())
 
     def createRelationTables(self):
         
         # Column One: Stimuli name
-        # Column Two: Is this stimuli the correct choice
+        # Column Two: Is this stimuli the correct choice? GREEN = YES, RED = NO
         # Column Three: Strength of relation
 
         self.table_holder = QTabWidget()
@@ -57,7 +58,6 @@ class StimuliEditor(QtWidgets.QWidget):
         table.verticalHeader().setVisible(False)
         table.horizontalHeader().setVisible(False)
         table.setMaximumHeight(table.verticalHeader().length())
-        #table.setMinimumWidth(table.horizontalHeader().length())
 
         for i, edge in enumerate(edge_list):
             edgeNameLabel = QLabel()
@@ -71,4 +71,5 @@ class StimuliEditor(QtWidgets.QWidget):
             edgeWeightSpinBox = QDoubleSpinBox()
             edgeWeightSpinBox.setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
             edgeWeightSpinBox.setMaximum(100000)
+            edgeWeightSpinBox.setDecimals(5)
             table.setCellWidget(i, 2, edgeWeightSpinBox)

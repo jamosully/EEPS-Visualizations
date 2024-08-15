@@ -10,7 +10,19 @@ from table_setup import TableDisplay
 from control_panel import ControlPanel
 from parameter_toolbox import ParameterToolbox
 
+"""
+main.py
+
+Primary script. Running main.py will launch Affinity
+"""
+
 class MainWindow(QtWidgets.QWidget):
+
+    """
+    Essentially the main window of Affinity
+    
+    All roads start from here.
+    """
 
     values_changed = Signal()
 
@@ -25,8 +37,12 @@ class MainWindow(QtWidgets.QWidget):
         self.tabs = QTabWidget()
         self.createParameterMenu()
 
+        # Each model is added to a dictionary, and numbered
+
         self.models = {}
         self.model_num  = 1
+
+        # Filename is none at start, once a user adds a file it changes
 
         self.filename = None
 
@@ -35,12 +51,18 @@ class MainWindow(QtWidgets.QWidget):
 
         self.setFixedSize(self.grid.sizeHint())
 
-    def createSystem(self, agent_params, env_params):
+    def createSim(self, agent_params, env_params):
+
+        """
+        Provides all nescessary features for this version
+        of EEPS, including threading and mutex
+        """
+
+        # Create a version of EEPS, and give it a thread + mutex
 
         simulator_dict = {}
 
         simulator_dict['mutex'] = QMutex()
-        simulator_dict['cond'] = QWaitCondition()
         simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
         simulator_dict['thread'] = QThread(parent=self)
 
@@ -51,13 +73,29 @@ class MainWindow(QtWidgets.QWidget):
 
     def createParameterMenu(self):
 
+        """
+        The parameter toolbox allows the user to set environment 
+        and agent parameters, load in existing configurations,
+        and save parameters as default in intialization.py
+        """
+
         self.parameter_menu = ParameterToolbox(self)
 
     def createTable(self, simulator):
 
+        """
+        The table display holds visualizations and results
+        """
+
         return TableDisplay(self, simulator)
 
     def createControlPanel(self, main, simulator):
+
+        """
+        Primary source of interaction with visualizations,
+        including assigning step values and updating 
+        parameters
+        """
 
         control_panel = QVBoxLayout()
 
@@ -72,13 +110,21 @@ class MainWindow(QtWidgets.QWidget):
         return control_panel
     
     Slot()
-    def createSim(self):
+    def createSystem(self):
+
+        """
+        Called from the parameter toolbox, a system includes 
+        EEPS model, control panel, and visualization display.
+        Allows for multiple models to be created at once
+        """
+
+        # Separate agents exist on separate tabs
 
         self.tab = QGroupBox()
         self.tab_layout = QGridLayout()
 
         self.models[self.model_num] = {}
-        self.models[self.model_num]['simulator'] = self.createSystem(self.parameter_menu.agent_toolbox.agent_params, 
+        self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.agent_toolbox.agent_params, 
                                                                      self.parameter_menu.env_toolbox.env_params)
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
@@ -92,6 +138,10 @@ class MainWindow(QtWidgets.QWidget):
         self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
 
         print(self.models[self.model_num])
+
+        # NOTE: The command below allows Affinity to adjust dynamically
+        #       as the user use it. However, it does result in some funky
+        #       behavior. TODO: Fix fixed size behavior
 
         self.setFixedSize(self.grid.sizeHint())
 
