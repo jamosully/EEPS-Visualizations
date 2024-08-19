@@ -93,7 +93,6 @@ class ResultsDisplay(QtWidgets.QWidget):
     def display_results(self):
 
         self.filename = self.simulator.file_name
-        #self.results_runner = EEPS.interaction.Plot_results(self.filename)
 
         self.obtain_and_organise_data()
 
@@ -116,12 +115,6 @@ class ResultsDisplay(QtWidgets.QWidget):
             result['type'] = self.data['show'][i][1]
             result['name'] = self.data['show'][i][0] + '_' + result['type']
             self.results.append(result)
-            # # show the result
-            # if showType == 'bar':
-            #     self.barDiagramShow(name, result)    # result is a dataframe
-            # elif showType == 'heatmap':
-            #     self.heatmapShow(name, result)    
-        #return len(data['show'])
 
 
 

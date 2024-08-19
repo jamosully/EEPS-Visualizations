@@ -33,9 +33,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
     def visualize_memory_network(self, clip_space):
 
         subsets = dict()
+        color_map = []
         for stimuli in clip_space.nodes:
             subsets[stimuli] = stimuli[0]
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
+
+        for item in subsets.items():
+            color_map.append(1.0 / float(item[0][1]) - 0.1)
+
+        print(color_map)
 
         self.figure.clf()
         
@@ -50,13 +56,13 @@ class NetworkVisualizer(QtWidgets.QWidget):
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
-        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)), size=10000)
+        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
-        nx.draw_networkx_nodes(ordered_clip_space, pos, ax=memory_plot, node_size=500)
-        nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot)
+        nx.draw_networkx_nodes(ordered_clip_space, pos, node_color=color_map, ax=memory_plot, node_size=500)
+        nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot, font_color='white')
         self.edge_artist = []
         for key, weight in normalized_weights.items():
             nx.draw_networkx_edges(ordered_clip_space,
