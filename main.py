@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory, QTabWidge
 from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 
 from simulator import Simulator
-from table_setup import TableDisplay
+from visualization_display import VisualizationDisplay
 from control_panel import ControlPanel
 from parameter_toolbox import ParameterToolbox
 
@@ -87,7 +87,7 @@ class MainWindow(QtWidgets.QWidget):
         The table display holds visualizations and results
         """
 
-        return TableDisplay(self, simulator)
+        return VisualizationDisplay(self, simulator)
 
     def createControlPanel(self, main, simulator):
 

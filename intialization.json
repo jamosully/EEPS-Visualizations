@@ -1,0 +1,61 @@
+{
+    "environment_parameters": [
+        {
+            "name": "experiment_ID",
+            "description": "PLACEHOLDER",
+            "value": 0
+        },
+        {
+            "name": "environment_ID",
+            "description": "PLACEHOLDER",
+            "value": 4
+        },
+        {
+            "name": "max_trial",
+            "description": "PLACEHOLDER",
+            "value": 10000
+        },
+        {
+            "name": "num_agents",
+            "description": "PLACEHOLDER",
+            "value": 1 
+        },
+        {
+            "name": "size_action_set",
+            "description": "PLACEHOLDER",
+            "value": 3
+        }
+    ],
+    "agent_parameters": [
+        {
+            "name": "network_enhancement",
+            "description": "True or False; if True: we use the localized network (adoubly stochastic matrix) and Symmetric Network Enhancement (SNE); if False: we use the probability matrix and Directed Network Enhancement (DNE)",
+            "value": "False"
+        },
+        {
+            "name": "beta_h",
+            "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
+            "value": 0.07
+        },
+        {
+            "name": "beta_t",
+            "description": "float >=0, controls agent’s function in a trial at test phase (derived relation)",
+            "value": 8
+        },
+        {
+            "name": "K",
+            "description": "parameter for symmetry relation. K=1 means that the relations are bidirectional and network is symmetric at the end of the training phase.",
+            "value": 1
+        },
+        {
+            "name": "gamma_damping",
+            "description": "float between 0 and 1, controls forgetting/damping of h-values",
+            "value": 0.001
+        },
+        {
+            "name": "alpha",
+            "description": "the regularization parameter",
+            "value": 0.8
+        }
+    ]
+}

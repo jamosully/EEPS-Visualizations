@@ -9,7 +9,7 @@ from heatmap_visualizer import HeatmapVisualizer
 from results_display import ResultsDisplay
 from stimuli_editor import StimuliEditor
 
-class TableDisplay(QtWidgets.QWidget):
+class VisualizationDisplay(QtWidgets.QWidget):
 
     def __init__(self, parent, simulator):
         #super(QWidget, self).__init__(parent)

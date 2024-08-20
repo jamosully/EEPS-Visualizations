@@ -52,7 +52,7 @@ Remember to look at mark scheme!
 - [ ] Introduction
 - [ ] Motivation
   - [ ] SE
-  - [ ] RDT
+  - [x] RDT
   - [ ] RFT
 - [ ] Challenges
 - [ ] Objectives?
@@ -65,10 +65,11 @@ Remember to look at mark scheme!
   - [ ] Software structure
   - [ ] Init and custom params
   - [x] Heatmap
-  - [ ] Network
+  - [x] Network
   - [ ] Mastery
   - [ ] RDT stuff
-  - [ ] Multi-agent mode
+  - [x] Multi-agent mode
+  - [ ] Stimuli-editor
 - [ ] Evaluation
   - [ ] Feedback from Freddy
   - [ ] Experiment replication
@@ -82,12 +83,12 @@ Remember to look at mark scheme!
 
 ## Figures
 
-- [ ] Visualzations
+- [x] Visualzations
   - [x] Heatmap
-  - [ ] Network
-  - [ ] RDT
+  - [x] Network
+  - [x] RDT
 - [ ] Affinity structure diagram
-- [ ] EEPS structure
+- [x] EEPS structure
 - [ ] Results display
-- [ ] Parameter toolbox
+- [x] Parameter toolbox
 - [ ] Stimuli editor
