@@ -9,6 +9,8 @@ TO DO:
   - [x] Modify parameters
   - [ ] OPTIONAL Provide descriptions
   - [ ] OPTIONAL Maybe switch to a json file?
+    - [x] Create JSON file
+    - [ ] Edit code to support
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
 - [x] Multi-simulator mode (There may be other bugs)
@@ -30,7 +32,7 @@ TO DO:
 - [ ] OPTIONAL Drag and drop tabs
 - [ ] Add real-time control (USE MPLCURSORS)
   - [x] Create stimuli_editor
-    - [ ] Keep adding to it!
+    - [x] Keep adding to it!
   - [ ] Figure out how to sort out heatmap interaction
 - [x] Adjust figure size
 - [x] Add filename
@@ -50,17 +52,19 @@ TO DO:
 Remember to look at mark scheme!
 
 - [ ] Introduction
-- [ ] Motivation
-  - [ ] SE
-  - [x] RDT
-  - [ ] RFT
-- [ ] Challenges
-- [ ] Objectives?
-- [ ] Technical Background
-  - [ ] Projective Simulation
-  - [ ] EEPS
-  - [ ] Graph/Network Visualization
-  - [ ] Where is PS in respects to other reinforcement learning models?
+- [ ] Background
+  - [ ] Motivation
+    - [ ] SE
+    - [x] RDT
+    - [ ] RFT
+  - [ ] Related Work
+  - [ ] Challenges
+  - [ ] Objectives?
+  - [ ] Technical Background
+    - [ ] Projective Simulation
+    - [ ] EEPS
+    - [ ] Graph/Network Visualization
+    - [ ] Where is PS in respects to other reinforcement learning models?
 - [ ] Project Execution
   - [ ] Software structure
   - [ ] Init and custom params
@@ -80,6 +84,7 @@ Remember to look at mark scheme!
 - [ ] Conclusion
 - [ ] Abstract
 - [ ] Slides
+  - [ ] Follow report format?
 
 ## Figures
 

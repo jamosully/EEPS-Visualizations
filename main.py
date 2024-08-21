@@ -124,8 +124,8 @@ class MainWindow(QtWidgets.QWidget):
         self.tab_layout = QGridLayout()
 
         self.models[self.model_num] = {}
-        self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.agent_toolbox.agent_params, 
-                                                                     self.parameter_menu.env_toolbox.env_params)
+        self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.agent_params, 
+                                                                     self.parameter_menu.env_params)
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])

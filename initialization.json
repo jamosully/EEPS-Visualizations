@@ -3,59 +3,70 @@
         {
             "name": "experiment_ID",
             "description": "PLACEHOLDER",
-            "value": 0
+            "value": 0,
+            "type": "int"
         },
         {
             "name": "environment_ID",
             "description": "PLACEHOLDER",
-            "value": 4
+            "value": 4,
+            "type": "env_id"
         },
         {
             "name": "max_trial",
             "description": "PLACEHOLDER",
-            "value": 10000
+            "value": 10000,
+            "type": "int"
         },
         {
             "name": "num_agents",
             "description": "PLACEHOLDER",
-            "value": 1 
+            "value": 1,
+            "type": "int" 
         },
         {
             "name": "size_action_set",
             "description": "PLACEHOLDER",
-            "value": 3
+            "value": 3,
+            "type": "int"
         }
     ],
     "agent_parameters": [
         {
             "name": "network_enhancement",
             "description": "True or False; if True: we use the localized network (adoubly stochastic matrix) and Symmetric Network Enhancement (SNE); if False: we use the probability matrix and Directed Network Enhancement (DNE)",
-            "value": "False"
+            "value": false,
+            "type": "bool"
         },
         {
             "name": "beta_h",
             "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
-            "value": 0.07
+            "value": 0.07,
+            "type": "unit_interval"
         },
         {
             "name": "beta_t",
             "description": "float >=0, controls agent’s function in a trial at test phase (derived relation)",
-            "value": 8
+            "value": 8,
+            "type": "float"
         },
         {
             "name": "K",
             "description": "parameter for symmetry relation. K=1 means that the relations are bidirectional and network is symmetric at the end of the training phase.",
-            "value": 1
+            "value": 1,
+            "type": "unit_interval"
         },
         {
             "name": "gamma_damping",
             "description": "float between 0 and 1, controls forgetting/damping of h-values",
-            "value": 0.001
+            "value": 0.001,
+            "type": "unit_interval"
         },
         {
             "name": "alpha",
             "description": "the regularization parameter",
-            "value": 0.8
+            "value": 0.8,
+            "type": "unit_interval"
         }
     ]
 }

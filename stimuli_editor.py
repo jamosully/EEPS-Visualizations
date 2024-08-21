@@ -42,6 +42,9 @@ class StimuliEditor(QtWidgets.QWidget):
         self.setLayout(self.editorLayout)
         self.actionRelationTable.resizeColumnsToContents()
 
+        # TODO: Fix below
+        #       The following command is creating issues in the wider document
+
         self.main_display.setFixedSize(self.main_display.grid.sizeHint())
 
     def createRelationTables(self):
@@ -109,3 +112,5 @@ class StimuliEditor(QtWidgets.QWidget):
             edgeWeightSpinBox.setMaximum(100000)
             edgeWeightSpinBox.setDecimals(5)
             table.setCellWidget(i, 2, edgeWeightSpinBox)
+
+        table.resizeColumnsToContents()
