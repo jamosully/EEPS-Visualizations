@@ -4,6 +4,8 @@ from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpi
 from PySide6.QtCore import Slot, Signal
 
 class ControlPanel(QtWidgets.QWidget):
+
+    update_params = Signal()
     
     def __init__(self,  main_table, simulator, simulator_thread, mutex):
         QtWidgets.QWidget.__init__(self)
@@ -41,6 +43,8 @@ class ControlPanel(QtWidgets.QWidget):
         self.stepButton.setObjectName("Proceed")
         addToLayout(self.stepButton, layout)
 
+        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.main_table.main_display.parameter_menu.model_agent_params,
+                                                                                             self.main_table.main_display.parameter_menu.model_env_params))
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)

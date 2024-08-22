@@ -3,7 +3,7 @@
         {
             "name": "experiment_ID",
             "description": "PLACEHOLDER",
-            "value": 0,
+            "value": 6,
             "type": "int"
         },
         {
@@ -22,7 +22,7 @@
             "name": "num_agents",
             "description": "PLACEHOLDER",
             "value": 1,
-            "type": "int" 
+            "type": "int"
         },
         {
             "name": "size_action_set",
@@ -46,7 +46,7 @@
         },
         {
             "name": "beta_t",
-            "description": "float >=0, controls agent’s function in a trial at test phase (derived relation)",
+            "description": "float >=0, controls agent\u2019s function in a trial at test phase (derived relation)",
             "value": 8,
             "type": "float"
         },

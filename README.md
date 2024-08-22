@@ -8,9 +8,10 @@ TO DO:
   - [x] Load parameters
   - [x] Modify parameters
   - [ ] OPTIONAL Provide descriptions
-  - [ ] OPTIONAL Maybe switch to a json file?
+  - [x] OPTIONAL Maybe switch to a json file?
     - [x] Create JSON file
-    - [ ] Edit code to support
+    - [x] Edit code to support
+    - [ ] Export parameters to JSON
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
 - [x] Multi-simulator mode (There may be other bugs)

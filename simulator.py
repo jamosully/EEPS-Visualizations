@@ -26,6 +26,7 @@ class Simulator(QtCore.QObject):
     Runs on separate thread to rest of GUI
     """
 
+    parameters_updated = Signal()
     sim_complete = Signal()
 
     def __init__(self, mutex, agent_params, env_params, filename):
@@ -34,6 +35,12 @@ class Simulator(QtCore.QObject):
         self.agent_parameter = agent_params
         self.file_name = filename
         self.environment_parameter = env_params
+
+    def update_parameters(self, agent_params, env_params):
+
+        self.agent_parameter = agent_params
+        self.environment_parameter = env_params
+        print("Parameters updated")
     
     Slot()
     def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):

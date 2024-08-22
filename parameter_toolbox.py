@@ -38,25 +38,21 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.box_layout = QVBoxLayout(self)
         
-        # The parameters and environmental detail are loaded in
-        # from the intialization.py and intialization_detail.py
-        # respectivly
-
-        # TODO: Improve the parameter and environment definitions
-        #       in each file, so they can be loaded in to the toolbox
+        # The parameters are now loaded in from a single 
+        # json file, which contains names, values, descriptions,
+        # and the type
 
         self.load_json()
 
         self.environment_detail = EEPS.initialization_detail.environment_details()
 
-        #self.environment_parameter, self.agent_parameter = EEPS.initialization.config()
-        self.full_environment_parameters = self.json_params['environment_parameters']
-        self.full_agent_parameters = self.json_params['agent_parameters']
+        self.json_env_params = self.json_params['environment_parameters']
+        self.json_agent_params = self.json_params['agent_parameters']
 
-        self.env_params = self.create_param_dict(self.full_environment_parameters)
-        self.agent_params = self.create_param_dict(self.full_agent_parameters)
+        self.model_env_params = self.create_param_dict(self.json_env_params)
+        self.model_agent_params = self.create_param_dict(self.json_agent_params)
 
-        print(self.agent_params)
+        print(self.model_agent_params)
 
         self.agent_label = QLabel(self)
         self.agent_label.setText("Agent Parameters")
@@ -64,8 +60,8 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.env_label = QLabel(self)
         self.env_label.setText("Environment Parameters")
 
-        self.env_toolbox = EnvParamTable(self, self.environment_detail, self.full_environment_parameters)
-        self.agent_toolbox = AgentParamTable(self, self.full_agent_parameters)
+        self.env_toolbox = EnvParamTable(self, self.environment_detail, self.json_env_params)
+        self.agent_toolbox = AgentParamTable(self, self.json_agent_params)
 
         self.createFilenameEntry()
 
@@ -99,10 +95,11 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.button_layout.setSpacing(10)
         self.createSimButton.clicked.connect(lambda: self.main.createSystem())
 
-        self.exportParamsButton = QPushButton("Export Parameters")
-        self.exportParamsButton.setObjectName("Export Parameters")
+        self.exportParamsButton = QPushButton("Set Default Parameters")
+        self.exportParamsButton.setObjectName("Set Default Parameters")
         self.button_layout.addWidget(self.exportParamsButton)
         self.button_layout.setSpacing(10)
+        self.exportParamsButton.clicked.connect(self.export_params_to_json)
 
     def createFilenameEntry(self):
 
@@ -139,19 +136,6 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.fileTable.setCellWidget(1, 1, self.newFileButton)
         self.newFileButton.clicked.connect(self.reset_filename)
 
-    def load_json(self):
-
-        with open("initialization.json", 'r', encoding='utf8') as init_params:
-            self.json_params = json.load(init_params)
-
-    def create_param_dict(self, detailed_params):
-
-        new_param_dict = {}
-        for param in detailed_params:
-            new_param_dict[param['name']] = [param['value']]
-
-        return new_param_dict
-
     def change_filename(self, text):
 
         print("Filename: " + text)
@@ -168,10 +152,6 @@ class ParameterToolbox(QtWidgets.QWidget):
             self.change_filename(str(Path(self.filename)))
             self.fileEntryField.setText(str(Path(self.filename)))
             self.updateParamsFromFile(self.filename)
-    
-    def reset_filename(self):
-
-        self.main.filename = None
 
     def updateParamsFromFile(self, filename):
 
@@ -198,16 +178,56 @@ class ParameterToolbox(QtWidgets.QWidget):
                 for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
                     if value[0] == id:
                         self.env_toolbox.table.item(i, 1).setCurrentIndex(x)
+    
+    def reset_filename(self):
+
+        self.main.filename = None
+
+    def load_json(self):
+
+        with open("initialization.json", 'r', encoding='utf8') as init_params:
+            self.json_params = json.load(init_params)
+
+    def create_param_dict(self, detailed_params):
+
+        new_param_dict = {}
+        for param in detailed_params:
+            new_param_dict[param['name']] = [param['value']]
+
+        return new_param_dict
+
+    def export_params_to_json(self):
+
+        print("Parameters exported")
+        with open("initialization.json", "w", encoding="utf8") as init_params:
+            json.dump(self.json_params, init_params, indent=4)
+
 
     def adjust_params(self, key, value):
+
+        """
+        Assigning variable in the dictionary that is used
+        by the createSystem function in main.py
+        """
         
-        if key in self.agent_params:
-            self.agent_params[key] = [value]
+        if key in self.model_agent_params:
+            self.model_agent_params[key] = [value]
+            for param in self.json_params['agent_parameters']:
+                if param['name'] == key:
+                    param['value'] = value
         else:
-            self.env_params[key] = [value]
+            self.model_env_params[key] = [value]
+            for param in self.json_params['environment_parameters']:
+                if param['name'] == key:
+                    param['value'] = value
 
 
     def createParamWidget(self, key, value, type):
+
+        """
+        Based on the type provided in initialization.json,
+        create a widget for the table
+        """
 
         match type:
             case 'int':
@@ -246,7 +266,10 @@ class ParameterToolbox(QtWidgets.QWidget):
                         widget.setCurrentIndex(x)
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, widget.currentIndex()))
                 return widget
-            
+
+
+# TODO: Create one class for making tables/
+#       include it as a function in the above class
 
 class EnvParamTable(QtWidgets.QWidget):
 
@@ -266,7 +289,7 @@ class EnvParamTable(QtWidgets.QWidget):
         self.table.horizontalHeader().setVisible(False)
         self.table.setMaximumHeight(self.table.verticalHeader().length())
 
-        self.env_params = env_params
+        self.model_env_params = env_params
         print(env_params)
 
         for i in range(len(env_params)):
@@ -296,7 +319,7 @@ class AgentParamTable(QtWidgets.QWidget):
         self.table.horizontalHeader().setVisible(False)
         self.table.setMaximumHeight(self.table.verticalHeader().length())
 
-        self.agent_params = agent_params
+        self.model_agent_params = agent_params
 
         for i in range(len(agent_params)):
             param_label = QLabel()
