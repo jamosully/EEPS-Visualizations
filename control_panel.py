@@ -3,11 +3,32 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QHBoxLayout, QSizePolicy
 from PySide6.QtCore import Slot, Signal
 
+"""
+control_panel.py
+
+Simulation progression and step control
+"""
+
 class ControlPanel(QtWidgets.QWidget):
+
+    """
+    Four buttons and a slider
+
+    Update parameters: pass parameters in the toolbox to 
+                       the simulator
+    
+    Initialise model: runs initialize_model in simulator.py
+
+    Run Model: starts the model
+
+    Proceed: step forward through the simulation
+
+    Step Slider: controls the rate of progression
+    """
 
     update_params = Signal()
     
-    def __init__(self,  main_table, simulator, simulator_thread, mutex):
+    def __init__(self,  main_display, simulator, simulator_thread, mutex):
         QtWidgets.QWidget.__init__(self)
 
         # TODO: This initialization is a mess
@@ -15,36 +36,36 @@ class ControlPanel(QtWidgets.QWidget):
         
         self.verticalGroupBox = QGroupBox()
         self.simulator = simulator
-        self.main_table = main_table
+        self.main_display = main_display
         self.simulator_thread = simulator_thread
 
         self.step_count = 100
 
-        layout = QVBoxLayout()
+        self.panel_layout = QVBoxLayout()
 
-        def addToLayout(widget, layout):
-            layout.addWidget(widget)
-            layout.setSpacing(10)
-            self.verticalGroupBox.setLayout(layout)
+        def addToLayout(widget):
+            self.panel_layout.addWidget(widget)
+            self.panel_layout.setSpacing(10)
+            self.verticalGroupBox.setLayout(self.panel_layout)
 
         self.modifyParametersButton = QPushButton("Update Parameters", self)
         self.modifyParametersButton.setObjectName("Update Parameters")
-        addToLayout(self.modifyParametersButton, layout)
+        addToLayout(self.modifyParametersButton)
         
         self.initSimButton = QPushButton("Initialize Parameters", self)
         self.initSimButton.setObjectName("Initialize Parameters")
-        addToLayout(self.initSimButton, layout)
+        addToLayout(self.initSimButton)
 
         self.runSimButton = QPushButton("Run Simulation", self)
         self.runSimButton.setObjectName("Run Simulation")
-        addToLayout(self.runSimButton, layout)
+        addToLayout(self.runSimButton)
 
         self.stepButton = QPushButton("Proceed", self)
         self.stepButton.setObjectName("Proceed")
-        addToLayout(self.stepButton, layout)
+        addToLayout(self.stepButton)
 
-        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.main_table.main_display.parameter_menu.model_agent_params,
-                                                                                             self.main_table.main_display.parameter_menu.model_env_params))
+        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.main_display.main.parameter_menu.model_agent_params,
+                                                                                             self.main_display.main.parameter_menu.model_env_params))
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)
@@ -55,22 +76,21 @@ class ControlPanel(QtWidgets.QWidget):
         print("Button Panel Created")
 
         self.stepSlider = StepControl(self, self.step_count)
-        layout.addWidget(self.stepSlider.stepslider, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
-        layout.setSpacing(10)
-        self.verticalGroupBox.setLayout(layout)
+        self.panel_layout.addWidget(self.stepSlider.stepslider, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.panel_layout.setSpacing(10)
+        self.verticalGroupBox.setLayout(self.panel_layout)
 
-        layout.addWidget(self.stepSlider.stepCounter)#, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
-        layout.setSpacing(10)
-        self.verticalGroupBox.setLayout(layout)
+        self.panel_layout.addWidget(self.stepSlider.stepCounter)#, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.panel_layout.setSpacing(10)
+        self.verticalGroupBox.setLayout(self.panel_layout)
+        self.setLayout(self.panel_layout)
 
     Slot()
     def build_model(self):
         
         self.simulator.initialize_model(
             self.step_count,
-            self.main_table.network_tab,
-            self.main_table.rdt_tab,
-            self.main_table.heatmap_tab)
+            self.main_display)
         self.runSimButton.setDisabled(False)
         print("Parameters Loaded")
     
@@ -82,6 +102,11 @@ class ControlPanel(QtWidgets.QWidget):
         print("Model Running")
 
 class StepControl(QtWidgets.QWidget):
+
+    """
+    Vertical slider and spin box for controlling
+    rate of progession
+    """
 
     def __init__(self, parent, step):
         QtWidgets.QWidget.__init__(self)
@@ -115,6 +140,7 @@ class StepControl(QtWidgets.QWidget):
         # TODO: This might need to be linked better
 
         self.control_panel.step_count = value
+        self.control_panel.main_display.step_changed = True
         print(self.control_panel.step_count)
 
 

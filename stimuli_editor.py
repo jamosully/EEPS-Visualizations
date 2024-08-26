@@ -27,7 +27,12 @@ class StimuliEditor(QtWidgets.QWidget):
         self.simulator = simulator
         self.main_display = main
         self.stimuli = stimuli
-        self.clip_space = clip_space
+
+        if self.main_display.edited_clip_space is not None:
+            print("change")
+            self.clip_space = self.main_display.edited_clip_space
+        else:
+            self.clip_space = clip_space
 
         self.editorLayout = QVBoxLayout()
 
@@ -45,7 +50,7 @@ class StimuliEditor(QtWidgets.QWidget):
         # TODO: Fix below
         #       The following command is creating issues in the wider document
 
-        self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+        self.main_display.main.setFixedSize(self.main_display.main.grid.sizeHint())
 
     def createRelationTables(self):
 
@@ -65,20 +70,20 @@ class StimuliEditor(QtWidgets.QWidget):
         # stimuli was the chosen response
         
         self.actionRelationTable = QTableWidget(len(self.clip_space.in_edges(self.stimuli)), 3)
-        self.formatTable(self.actionRelationTable, self.clip_space.in_edges(self.stimuli))
+        self.formatTable(self.actionRelationTable, self.clip_space.in_edges(self.stimuli), 0)
 
         # Create table for the relations in which the current
         # stimuli was perceived first
 
         self.perceptRelationTable = QTableWidget(len(self.clip_space.out_edges(self.stimuli)), 3)
-        self.formatTable(self.perceptRelationTable, self.clip_space.out_edges(self.stimuli)) 
+        self.formatTable(self.perceptRelationTable, self.clip_space.out_edges(self.stimuli), 1) 
 
         self.tableHolder.addTab(self.actionRelationTable, "As Action")
         self.tableHolder.addTab(self.perceptRelationTable, "As Percept")
 
     # TODO: This function is useful, maybe update the parameter toolbox to include something similar
 
-    def formatTable(self, table: QTableWidget, edge_list):
+    def formatTable(self, table: QTableWidget, edge_list, edgeIndex):
 
         """
         The relation table contains three columns:
@@ -100,17 +105,37 @@ class StimuliEditor(QtWidgets.QWidget):
 
         for i, edge in enumerate(edge_list):
             edgeNameLabel = QLabel()
-            edgeNameLabel.setText(edge[0])
+            edgeNameLabel.setText(edge[edgeIndex])
             table.setCellWidget(i, 0, edgeNameLabel)
             table.setItem(i, 1, QTableWidgetItem())
-            if edge[0][1] == self.stimuli[1]:
+            if edge[edgeIndex][1] == self.stimuli[1]:
                 table.item(i, 1).setBackground(QColor("Green"))
             else:
                 table.item(i, 1).setBackground(QColor("Red"))
-            edgeWeightSpinBox = QDoubleSpinBox()
+            # edgeWeightSpinBox = QDoubleSpinBox(table)
+            # edgeWeightSpinBox.setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
+            # edgeWeightSpinBox.setMaximum(100000)
+            # edgeWeightSpinBox.setDecimals(5)
+            
+            edgeWeightSpinBox = EdgeWeightSpinBox(edge)
             edgeWeightSpinBox.setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
-            edgeWeightSpinBox.setMaximum(100000)
-            edgeWeightSpinBox.setDecimals(5)
+            edgeWeightSpinBox.valueChanged.connect(lambda: self.edge_weight_changed(edgeWeightSpinBox.edge, edgeWeightSpinBox.value()))
             table.setCellWidget(i, 2, edgeWeightSpinBox)
 
         table.resizeColumnsToContents()
+
+    def edge_weight_changed(self, edge, new_value):
+
+        self.clip_space.edges[edge[0], edge[1]]['weight'] = new_value
+        self.main_display.edits_made = True
+        self.main_display.edited_clip_space = self.clip_space
+
+class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
+
+    def __init__(self, edge):
+        super(EdgeWeightSpinBox, self).__init__()
+
+        self.edge = edge
+        self.setMaximum(100000)
+        self.setDecimals(5)
+

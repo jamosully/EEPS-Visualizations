@@ -16,14 +16,18 @@ class VisualizationDisplay(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
-        self.main_display = parent
+        self.main = parent
         self.visualizers = []
 
         self.stim_editor = None
+        self.edited_clip_space = None
+        self.edits_made = False
+        self.step_changed = False
+
         self.results_tab = None
 
         self.tabs = QTabWidget()
-        self.network_tab = NetworkVisualizer(self.main_display, self, simulator)
+        self.network_tab = NetworkVisualizer(self.main, self, simulator)
         self.visualizers.append(self.network_tab)
         self.rdt_tab = RDTVisualizer(self, simulator)
         self.visualizers.append(self.rdt_tab)
@@ -42,9 +46,9 @@ class VisualizationDisplay(QtWidgets.QWidget):
     def add_results(self):
 
         print("adding results")
-        self.results_tab = ResultsDisplay(self.main_display, self.simulator)
+        self.results_tab = ResultsDisplay(self.main, self.simulator)
         self.tabs.addTab(self.results_tab, "Results")
-        self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+        self.main.setFixedSize(self.main.grid.sizeHint())
 
     def delete_results(self):
 
@@ -56,7 +60,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
     Slot()
     def createStimuliEditor(self, stimuli, clip_space):
         
-        self.stim_editor = StimuliEditor(self.main_display, self.simulator, stimuli, clip_space)
+        self.stim_editor = StimuliEditor(self, self.simulator, stimuli, clip_space)
         self.layout.addWidget(self.stim_editor)
 
     def deleteStimuliEditor(self):
@@ -65,4 +69,20 @@ class VisualizationDisplay(QtWidgets.QWidget):
             self.layout.removeWidget(self.stim_editor)
             self.stim_editor.deleteLater()
             self.stim_editor = None
+
+    def assign_control_panel(self, control_panel):
+
+        self.control_panel = control_panel
+
+    def update_clip_space(self):
+
+        self.edits_made = False
+        self.new_cs = self.edited_clip_space
+        self.edited_clip_space = None
+        return self.new_cs
+    
+    def update_step_count(self):
+
+        self.step_changed = False
+        return self.control_panel.step_count
 

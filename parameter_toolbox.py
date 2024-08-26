@@ -167,17 +167,18 @@ class ParameterToolbox(QtWidgets.QWidget):
         # TODO: Get this working
         #       Could be an issue with how tables are generated
 
-        print(self.data['environment_parameter'])
-
         for i, (param_name, value) in enumerate(self.data['environment_parameter'].items()):
-            self.env_toolbox.env_params[param_name] = value
-            print(self.env_toolbox.table.item(i, 0))
-            if isinstance(self.env_toolbox.table.item(i, 1), QSpinBox):
-                self.env_toolbox.table.item(i, 1).setValue(value)
-            elif isinstance(self.env_toolbox.table.item(i, 1), QComboBox):
-                for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
-                    if value[0] == id:
-                        self.env_toolbox.table.item(i, 1).setCurrentIndex(x)
+            self.model_env_params[param_name] = value
+            for j in range(self.env_toolbox.table.rowCount()):
+                if self.env_toolbox.table.cellWidget(j, 1).param_name == param_name:
+                    self.env_toolbox.table.cellWidget(j, 1).update_param_value(value[0])
+
+        for i, (param_name, value) in enumerate(self.data['agent_parameter'].items()):
+            self.model_agent_params[param_name] = value
+            for j in range(self.agent_toolbox.table.rowCount()):
+                if self.agent_toolbox.table.cellWidget(j, 1).param_name == param_name:
+                    self.agent_toolbox.table.cellWidget(j, 1).update_param_value(value[0]) 
+    
     
     def reset_filename(self):
 
@@ -231,14 +232,14 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         match type:
             case 'int':
-                widget = QSpinBox()
+                widget = ParamSpinBox(key)
                 widget.setMinimum(1)
                 widget.setMaximum(100000)
                 widget.setValue(value)
                 widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
                 return widget
             case 'unit_interval':
-                widget = QDoubleSpinBox()
+                widget = ParamDoubleSpinBox(key)
                 widget.setMaximum(1.00)
                 widget.setMinimum(0.00)
                 widget.setDecimals(3)
@@ -247,19 +248,19 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
                 return widget
             case 'float':
-                widget = QDoubleSpinBox()
+                widget = ParamDoubleSpinBox(key)
                 widget.setMinimum(0.01)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
                 widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
                 return widget
             case 'bool':
-                widget = QCheckBox()
+                widget = ParamCheckBox(key)
                 widget.setChecked(value)
                 widget.clicked.connect(lambda: self.adjust_params(key, widget.checkState()))
                 return widget
             case 'env_id':
-                widget = QComboBox()
+                widget = ParamComboBox(key)
                 for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
                     widget.insertItem(x, str(id))
                     if value == id:
@@ -329,6 +330,50 @@ class AgentParamTable(QtWidgets.QWidget):
             self.table.setCellWidget(i, 0, param_label)
 
         self.table.resizeColumnsToContents()
+
+class ParamDoubleSpinBox(QtWidgets.QDoubleSpinBox):
+
+    def __init__(self, param_name):
+        super(ParamDoubleSpinBox, self).__init__()
+
+        self.param_name = param_name
+
+    def update_param_value(self, value):
+
+        self.setValue(value)
+
+class ParamComboBox(QtWidgets.QComboBox):
+
+    def __init__(self, param_name):
+        super(ParamComboBox, self).__init__()
+
+        self.param_name = param_name
+
+    def update_param_value(self, value):
+
+        self.setCurrentIndex(value)
+
+class ParamSpinBox(QtWidgets.QSpinBox):
+
+    def __init__(self, param_name):
+        super(ParamSpinBox, self).__init__()
+
+        self.param_name = param_name
+
+    def update_param_value(self, value):
+
+        self.setValue(value)
+
+class ParamCheckBox(QtWidgets.QCheckBox):
+
+    def __init__(self, param_name):
+        super(ParamCheckBox, self).__init__()
+
+        self.param_name = param_name
+
+    def update_param_value(self, value):
+
+        self.setChecked(value)
     
 
 

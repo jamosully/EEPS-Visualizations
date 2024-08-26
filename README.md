@@ -11,7 +11,7 @@ TO DO:
   - [x] OPTIONAL Maybe switch to a json file?
     - [x] Create JSON file
     - [x] Edit code to support
-    - [ ] Export parameters to JSON
+    - [x] Export parameters to JSON
 - [x] Heatmap visualization
 - [x] Fix network edges overlapping
 - [x] Multi-simulator mode (There may be other bugs)
@@ -28,10 +28,10 @@ TO DO:
   - [ ] Do more research on this
 - [x] Fix step slider
   - [x] 10 step increments
-  - [ ] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
+  - [x] Allow for step update during sim (NOT POSSIBLE ON CURRENT VERSION)
   - [ ] Step counter is still showing wrong value
 - [ ] OPTIONAL Drag and drop tabs
-- [ ] Add real-time control (USE MPLCURSORS)
+- [x] Add real-time control (USE MPLCURSORS)
   - [x] Create stimuli_editor
     - [x] Keep adding to it!
   - [ ] Figure out how to sort out heatmap interaction
@@ -40,7 +40,7 @@ TO DO:
   - [x] Set filename to None
   - [x] Open file browser to find file
   - [x] Add functionality for running files
-  - [ ] Update parameter toolbox when file is added
+  - [x] Update parameter toolbox when file is added
 - [x] Fix spinbox issue
 - [ ] OPTIONAL create new experiment design menu?
 - [ ] Add comments to code!
@@ -63,15 +63,15 @@ Remember to look at mark scheme!
   - [ ] Objectives?
   - [ ] Technical Background
     - [ ] Projective Simulation
+      - [ ] Where is PS in respects to other reinforcement learning models?
+    - [ ] EPS
     - [ ] EEPS
     - [ ] Graph/Network Visualization
-    - [ ] Where is PS in respects to other reinforcement learning models?
 - [ ] Project Execution
   - [ ] Software structure
   - [ ] Init and custom params
   - [x] Heatmap
   - [x] Network
-  - [ ] Mastery
   - [ ] RDT stuff
   - [x] Multi-agent mode
   - [ ] Stimuli-editor

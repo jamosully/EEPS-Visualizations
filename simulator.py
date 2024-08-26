@@ -26,7 +26,6 @@ class Simulator(QtCore.QObject):
     Runs on separate thread to rest of GUI
     """
 
-    parameters_updated = Signal()
     sim_complete = Signal()
 
     def __init__(self, mutex, agent_params, env_params, filename):
@@ -43,7 +42,7 @@ class Simulator(QtCore.QObject):
         print("Parameters updated")
     
     Slot()
-    def initialize_model(self, step, memory_visualizer, rdt_visualizer, heat_visualizer):
+    def initialize_model(self, step, main_display):
 
         # Load parameters from a file, if there is one
 
@@ -63,13 +62,11 @@ class Simulator(QtCore.QObject):
                                                 self.agent_parameter, 
                                                 self.environment_parameter, 
                                                 step, 
-                                                memory_visualizer,
-                                                rdt_visualizer,
-                                                heat_visualizer,
+                                                main_display,
                                                 self.mtx)
         
         # For the RDT visualizer
-        rdt_visualizer.createClassButtons(self.environment.num_classes)
+        main_display.rdt_tab.createClassButtons(self.environment.num_classes)
             
     Slot()
     def run_sim(self):

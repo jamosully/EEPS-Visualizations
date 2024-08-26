@@ -35,9 +35,7 @@ class Interaction(object):
                  agent_parameter, 
                  environment_parameter, 
                  vis_step,
-                 memory_visualizer,
-                 rdt_visualizer,
-                 heatmap_visualizer,
+                 vis_display,
                  wait_signal):
 
         """
@@ -55,9 +53,7 @@ class Interaction(object):
         file_name = 'Env_'+ str(environment_parameter['environment_ID'][0])+ \
         '_ExpID_'+ str(environment_parameter['experiment_ID'][0])
         self.file_name = "results/{}.p".format(file_name)#
-        self.memory_visualizer = memory_visualizer
-        self.rdt_visualizer = rdt_visualizer
-        self.heatmap_visualizer = heatmap_visualizer
+        self.vis_display = vis_display
         self.pause = wait_signal
 
 
@@ -80,13 +76,17 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward)
-            self.rdt_visualizer.track_rdt_data(self.agent.clip_space)
+            self.vis_display.rdt_tab.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                self.rdt_visualizer.visualize_rdt_data(self.agent.clip_space)
-                self.memory_visualizer.visualize_memory_network(self.agent.clip_space)
-                self.heatmap_visualizer.visualize_heatmaps(self.agent.clip_space)
+                print(self.vis_step)
+                self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
+                self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
+                self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
                 self.pause.lock()
-                #self.update_values()
+                if self.vis_display.edits_made:
+                    self.agent.clip_space = self.vis_display.update_clip_space()
+                if self.vis_display.step_changed:
+                    self.vis_step = self.vis_display.update_step_count()
 
         if num_steps == self.max_trial:
             sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(

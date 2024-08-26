@@ -66,9 +66,6 @@ class MainWindow(QtWidgets.QWidget):
         simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
         simulator_dict['thread'] = QThread(parent=self)
 
-        simulator_dict['sim'].parameters_updated.connect(simulator_dict['sim'].update_parameters(self.parameter_menu.model_agent_params,
-                                                                                                 self.parameter_menu.model_env_params))
-
         simulator_dict['sim'].moveToThread(simulator_dict['thread'])
         simulator_dict['thread'].started.connect(simulator_dict['sim'].run_sim)
 
@@ -100,13 +97,7 @@ class MainWindow(QtWidgets.QWidget):
         parameters
         """
 
-        control_panel = QVBoxLayout()
-
-        button_panel = ControlPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
-
-        # TODO: Set the layout of control panel to the vertical group box itself
-
-        control_panel.addWidget(button_panel.verticalGroupBox)
+        control_panel = ControlPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
 
         self.setFixedSize(self.grid.sizeHint())
 
@@ -132,8 +123,10 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
+        
+        self.models[self.model_num]['main_display'].assign_control_panel(self.models[self.model_num]['control_panel'])
 
-        self.tab_layout.addLayout(self.models[self.model_num]['control_panel'], 0, 0)
+        self.tab_layout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
         self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
 
         self.tab.setLayout(self.tab_layout)
