@@ -45,10 +45,9 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     def add_results(self):
 
-        print("adding results")
-        self.results_tab = ResultsDisplay(self.main, self.simulator)
+        self.results_tab = ResultsDisplay(self.main, self.simulator, self.rdt_tab.rdt_volume, self.rdt_tab.rdt_volume)
         self.tabs.addTab(self.results_tab, "Results")
-        self.main.setFixedSize(self.main.grid.sizeHint())
+        #self.main.setFixedSize(self.main.grid.sizeHint())
 
     def delete_results(self):
 
@@ -62,6 +61,11 @@ class VisualizationDisplay(QtWidgets.QWidget):
         
         self.stim_editor = StimuliEditor(self, self.simulator, stimuli, clip_space)
         self.layout.addWidget(self.stim_editor)
+
+    def updateStimuliEditor(self, clip_space):
+
+        if self.stim_editor is not None:
+            self.stim_editor.update_editor(clip_space)
 
     def deleteStimuliEditor(self):
 

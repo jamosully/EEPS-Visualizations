@@ -55,12 +55,10 @@ Remember to look at mark scheme!
 - [ ] Introduction
 - [ ] Background
   - [ ] Motivation
-    - [ ] SE
+    - [x] SE
     - [x] RDT
-    - [ ] RFT
+    - [x] RFT
   - [ ] Related Work
-  - [ ] Challenges
-  - [ ] Objectives?
   - [ ] Technical Background
     - [ ] Projective Simulation
       - [ ] Where is PS in respects to other reinforcement learning models?
@@ -69,14 +67,14 @@ Remember to look at mark scheme!
     - [ ] Graph/Network Visualization
 - [ ] Project Execution
   - [ ] Software structure
-  - [ ] Init and custom params
+  - [x] Init and custom params
   - [x] Heatmap
   - [x] Network
   - [ ] RDT stuff
   - [x] Multi-agent mode
-  - [ ] Stimuli-editor
+  - [x] Stimuli-editor
 - [ ] Evaluation
-  - [ ] Feedback from Freddy
+  - [x] Feedback from Freddy
   - [ ] Experiment replication
     - [ ] Classical study RDT
   - [ ] Pathway to RFT simulation
@@ -86,6 +84,8 @@ Remember to look at mark scheme!
 - [ ] Abstract
 - [ ] Slides
   - [ ] Follow report format?
+- [ ] Second Draft
+- [ ] Third and Final
 
 ## Figures
 

@@ -29,7 +29,6 @@ class StimuliEditor(QtWidgets.QWidget):
         self.stimuli = stimuli
 
         if self.main_display.edited_clip_space is not None:
-            print("change")
             self.clip_space = self.main_display.edited_clip_space
         else:
             self.clip_space = clip_space
@@ -50,7 +49,7 @@ class StimuliEditor(QtWidgets.QWidget):
         # TODO: Fix below
         #       The following command is creating issues in the wider document
 
-        self.main_display.main.setFixedSize(self.main_display.main.grid.sizeHint())
+        #self.main_display.main.setFixedSize(self.main_display.main.grid.sizeHint())
 
     def createRelationTables(self):
 
@@ -112,11 +111,6 @@ class StimuliEditor(QtWidgets.QWidget):
                 table.item(i, 1).setBackground(QColor("Green"))
             else:
                 table.item(i, 1).setBackground(QColor("Red"))
-            # edgeWeightSpinBox = QDoubleSpinBox(table)
-            # edgeWeightSpinBox.setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
-            # edgeWeightSpinBox.setMaximum(100000)
-            # edgeWeightSpinBox.setDecimals(5)
-            
             edgeWeightSpinBox = EdgeWeightSpinBox(edge)
             edgeWeightSpinBox.setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
             edgeWeightSpinBox.valueChanged.connect(lambda: self.edge_weight_changed(edgeWeightSpinBox.edge, edgeWeightSpinBox.value()))
@@ -130,6 +124,12 @@ class StimuliEditor(QtWidgets.QWidget):
         self.main_display.edits_made = True
         self.main_display.edited_clip_space = self.clip_space
 
+    def update_editor(self, clip_space):
+
+        self.clip_space = clip_space
+        self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimuli), 0)
+        self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimuli), 1) 
+
 class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
 
     def __init__(self, edge):
@@ -138,4 +138,8 @@ class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
         self.edge = edge
         self.setMaximum(100000)
         self.setDecimals(5)
+
+    def update_value(self, new_value):
+
+        self.setValue(new_value)
 

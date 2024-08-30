@@ -14,7 +14,7 @@ import EEPS.interaction
 
 class ResultsDisplay(QtWidgets.QWidget):
 
-    def __init__(self, main, simulator):
+    def __init__(self, main, simulator, rdt_volume, rdt_density):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
@@ -40,7 +40,7 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.setLayout(self.results_layout)
 
-        self.display_results()
+        self.display_results(rdt_volume, rdt_density)
 
     def createButtons(self):
 
@@ -90,7 +90,7 @@ class ResultsDisplay(QtWidgets.QWidget):
             self.figure_id = value
         
 
-    def display_results(self):
+    def display_results(self, rdt_volume, rdt_density):
 
         self.filename = self.simulator.file_name
 
@@ -115,6 +115,8 @@ class ResultsDisplay(QtWidgets.QWidget):
             result['type'] = self.data['show'][i][1]
             result['name'] = self.data['show'][i][0] + '_' + result['type']
             self.results.append(result)
+
+
 
 
 

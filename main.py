@@ -49,7 +49,8 @@ class MainWindow(QtWidgets.QWidget):
         self.grid.addWidget(self.parameter_menu.toolbox, 0, 0)
         self.grid.addWidget(self.tabs, 0 , 1)
 
-        self.setFixedSize(self.grid.sizeHint())
+        self.grid.setColumnStretch(0, 1)
+        self.grid.setColumnStretch(1, 4)
 
     def createSim(self, agent_params, env_params):
 
@@ -99,7 +100,7 @@ class MainWindow(QtWidgets.QWidget):
 
         control_panel = ControlPanel(main, simulator['sim'], simulator['thread'], simulator['mutex'])
 
-        self.setFixedSize(self.grid.sizeHint())
+        #self.setFixedSize(self.grid.sizeHint())
 
         return control_panel
     
@@ -139,9 +140,8 @@ class MainWindow(QtWidgets.QWidget):
         #       as the user use it. However, it does result in some funky
         #       behavior. TODO: Fix fixed size behavior
 
-        self.setFixedSize(self.grid.sizeHint())
-
         self.model_num += 1
+
 
 
 if __name__ == "__main__":
@@ -151,6 +151,6 @@ if __name__ == "__main__":
     widget = MainWindow()
     widget.resize(1400, 800)
     widget.show()
-    #widget.showMaximized()
+    widget.showMaximized()
 
     sys.exit(app.exec())

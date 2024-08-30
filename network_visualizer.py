@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+import matplotlib.colors as mcolors
 
 import networkx as nx
 import numpy as np
@@ -32,6 +33,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
     def visualize_memory_network(self, clip_space):
 
+        if self.table.stim_editor is not None:
+            self.table.updateStimuliEditor(clip_space)
+
         subsets = dict()
         color_map = []
         for stimuli in clip_space.nodes:
@@ -39,7 +43,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
 
         for item in subsets.items():
-            color_map.append(1.0 / float(item[0][1]) - 0.1)
+            color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1])])
 
         print(color_map)
 
@@ -81,5 +85,5 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.deleteStimuliEditor()
             self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
 
-        self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+        #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

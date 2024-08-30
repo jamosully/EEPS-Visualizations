@@ -78,7 +78,6 @@ class Interaction(object):
                                                action, reward)
             self.vis_display.rdt_tab.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                print(self.vis_step)
                 self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
                 self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
