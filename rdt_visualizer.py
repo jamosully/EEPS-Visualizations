@@ -11,7 +11,10 @@ import numpy as np
 
 class RDTVisualizer(QtWidgets.QWidget):
 
-    # TODO: Implement RDT view
+    """
+    Records relational density theory data in real-time
+    (density, volume, mass)
+    """
 
     def __init__(self, parent, simulator):
         QtWidgets.QWidget.__init__(self)

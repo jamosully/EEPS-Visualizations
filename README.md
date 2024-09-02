@@ -52,15 +52,15 @@ TO DO:
 
 Remember to look at mark scheme!
 
-- [ ] Introduction
-- [ ] Background
-  - [ ] Motivation
+- [x] Introduction
+- [x] Background
+  - [x] Motivation
     - [x] SE
     - [x] RDT
     - [x] RFT
   - [ ] Related Work
   - [ ] Technical Background
-    - [ ] Projective Simulation
+    - [x] Projective Simulation
       - [ ] Where is PS in respects to other reinforcement learning models?
     - [ ] EPS
     - [ ] EEPS
@@ -70,7 +70,7 @@ Remember to look at mark scheme!
   - [x] Init and custom params
   - [x] Heatmap
   - [x] Network
-  - [ ] RDT stuff
+  - [x] RDT stuff
   - [x] Multi-agent mode
   - [x] Stimuli-editor
 - [ ] Evaluation
@@ -79,7 +79,7 @@ Remember to look at mark scheme!
     - [ ] Classical study RDT
   - [ ] Pathway to RFT simulation
 - [ ] Discussion
-  - [ ] Future work (modularity, create new experiments in interface)
+  - [x] Future work (modularity, create new experiments in interface)
 - [ ] Conclusion
 - [ ] Abstract
 - [ ] Slides

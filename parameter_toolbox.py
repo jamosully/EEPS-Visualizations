@@ -4,7 +4,8 @@ from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox,
                                QLabel, QGroupBox, QSizePolicy, 
                                QHeaderView, QPushButton, QHBoxLayout, 
                                QCheckBox, QDoubleSpinBox, QSpinBox,
-                               QTextEdit, QSpacerItem, QFileDialog)
+                               QTextEdit, QSpacerItem, QFileDialog,
+                               QPlainTextEdit)
 
 import EEPS.initialization
 import EEPS.initialization_detail
@@ -60,8 +61,8 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.env_label = QLabel(self)
         self.env_label.setText("Environment Parameters")
 
-        self.env_toolbox = EnvParamTable(self, self.environment_detail, self.json_env_params)
-        self.agent_toolbox = AgentParamTable(self, self.json_agent_params)
+        self.env_toolbox = ParamTable(self, self.json_env_params)
+        self.agent_toolbox = ParamTable(self, self.json_agent_params)
 
         self.createFilenameEntry()
 
@@ -70,8 +71,10 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.box_layout.addWidget(self.fileTable)
         self.box_layout.addWidget(self.agent_label)
         self.box_layout.addWidget(self.agent_toolbox.table)
+        self.box_layout.addWidget(self.agent_toolbox.descriptionField)
         self.box_layout.addWidget(self.env_label)
         self.box_layout.addWidget(self.env_toolbox.table)
+        self.box_layout.addWidget(self.env_toolbox.descriptionField)
 
         self.createButtons()
         self.box_layout.addLayout(self.button_layout)
@@ -268,68 +271,52 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, widget.currentIndex()))
                 return widget
 
-
-# TODO: Create one class for making tables/
-#       include it as a function in the above class
-
-class EnvParamTable(QtWidgets.QWidget):
-
-    """
-    Table containing all environmental parameters
-    """
-
-    def __init__(self, toolbox, env_detail, env_params):
-        QtWidgets.QWidget.__init__(self)
-
-        self.toolbox = toolbox
-
-        self.table = QTableWidget(len(env_params), 2)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.table.verticalHeader().setVisible(False)
-        self.table.horizontalHeader().setVisible(False)
-        self.table.setMaximumHeight(self.table.verticalHeader().length())
-
-        self.model_env_params = env_params
-        print(env_params)
-
-        for i in range(len(env_params)):
-            param_label = QLabel()
-            param_label.setIndent(5)
-            param_label.setText(env_params[i]['name'] + "  ")
-            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(env_params[i]['name'], env_params[i]['value'], env_params[i]['type']))
-            self.table.setCellWidget(i, 0, param_label)
-
-        self.table.resizeColumnsToContents()
-
-class AgentParamTable(QtWidgets.QWidget):
+class ParamTable(QtWidgets.QWidget):
 
     """
     Table containing all agent parameters
     """
 
-    def __init__(self, toolbox, agent_params):
+    def __init__(self, toolbox, params):
         QtWidgets.QWidget.__init__(self)
 
         self.toolbox = toolbox
 
-        self.table = QTableWidget(len(agent_params), 2)
+        self.table = QTableWidget(len(params), 2)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
         self.table.setMaximumHeight(self.table.verticalHeader().length())
+        self.table.setMouseTracking(True)
 
-        self.model_agent_params = agent_params
-
-        for i in range(len(agent_params)):
-            param_label = QLabel()
+        for i in range(len(params)):
+            param_label = ParamLabel(params[i]['description'])
             param_label.setIndent(5)
-            param_label.setText(agent_params[i]['name'] + "  ")
-            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(agent_params[i]['name'], agent_params[i]['value'], agent_params[i]['type']))
+            param_label.setText(params[i]['name'] + "  ")
+            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type']))
             self.table.setCellWidget(i, 0, param_label)
 
+        self.descriptionField = QPlainTextEdit()
+        self.descriptionField.setPlainText(" ")
+        self.descriptionField.setReadOnly(True)
+
+        self.table.cellEntered.connect(self.cellHover)
+
         self.table.resizeColumnsToContents()
+
+    def cellHover(self, row, column):
+
+        widget = self.table.cellWidget(row, 0)
+        if self.descriptionField.toPlainText != widget.desc:
+            self.descriptionField.setPlainText(widget.desc)
+
+class ParamLabel(QtWidgets.QLabel):
+
+    def __init__(self, desc):
+        super(ParamLabel, self).__init__()
+
+        self.desc = desc
 
 class ParamDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 

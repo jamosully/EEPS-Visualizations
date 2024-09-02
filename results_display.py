@@ -61,8 +61,6 @@ class ResultsDisplay(QtWidgets.QWidget):
         self.figure.clf()
         self.r_ax = self.figure.add_subplot(111)
 
-        print(self.results)
-
         if value >= 0 and value < len(self.results):
             if self.results[value]['type'] == 'bar':
                 self.results[value]['result'].plot(kind='bar',
@@ -77,16 +75,20 @@ class ResultsDisplay(QtWidgets.QWidget):
                 # This one below doesn't seem to have a corresponding function with the canvas
 
                 #self.r_ax( rotation=45, fontsize = 18, horizontalalignment = 'right')
-                print("Added bar")
             elif self.results[value]['type'] == 'heatmap':
                 sns.heatmap(self.results[value]['result'].round(3),xticklabels=True, yticklabels=True, annot = True,
                         annot_kws = {"size": 14}, linewidths =.15, fmt="g", cmap="Blues", ax=self.r_ax) # cmap="Greens"
                 self.r_ax.set_title(self.results[value]['name'], fontsize = 16)
                 self.r_ax.tick_params(labelsize = 16)
                 self.figure.tight_layout()
-                print("Added heatmap")
+            elif self.results[value]['type'] == 'line':
+                for i in range(len(self.results[value]['result'])):
+                    self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)))
+                self.r_ax.legend(fontsize = 20)
+                self.r_ax.tick_params(labelsize = 20)
+                self.r_ax.set_title(self.results[value]['name'], fontsize = 20)
             self.canvas.draw()
-            self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+            #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
             self.figure_id = value
         
 
@@ -94,13 +96,13 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.filename = self.simulator.file_name
 
-        self.obtain_and_organise_data()
+        self.obtain_and_organise_data(rdt_volume, rdt_density)
 
         self.switch_figure(self.figure_id)
 
         self.canvas.draw()
 
-    def obtain_and_organise_data(self):
+    def obtain_and_organise_data(self, rdt_volume, rdt_density):
 
         resultFile = open(self.filename, 'rb')
         self.data = pickle.load(resultFile)
@@ -116,6 +118,30 @@ class ResultsDisplay(QtWidgets.QWidget):
             result['name'] = self.data['show'][i][0] + '_' + result['type']
             self.results.append(result)
 
+        self.add_rdt_data(rdt_volume, rdt_density)
+
+    def add_rdt_data(self, rdt_volume, rdt_density):
+
+        result = {}
+        result['result'] = rdt_volume
+        result['type'] = 'line'
+        result['name'] = "Relational volume over sim"
+        self.results.append(result)
+        
+        result = {}
+        result['result'] = rdt_density
+        result['type'] = 'line'
+        result['name'] = "Relational density over sim"
+        self.results.append(result)
+
+        result = {}
+        r_mass = []
+        for i in range(len(rdt_density)):
+            r_mass.append(np.multiply(rdt_density[i], rdt_volume[i]))
+        result['result'] = r_mass
+        result['type'] = 'line'
+        result['name'] = "Relational mass over sim"
+        self.results.append(result)
 
 
 
