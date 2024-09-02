@@ -117,7 +117,7 @@ class StepControl(QtWidgets.QWidget):
         self.stepslider = QSlider()
         # self.stepslider.setTickPosition(QSlider.TickPosition.TicksAbove)
         # self.stepslider.setTickInterval(5)
-        self.stepslider.setMinimum(10)
+        self.stepslider.setMinimum(1)
         self.stepslider.setMaximum(1000)
         self.stepslider.setEnabled(True)
 
@@ -125,9 +125,9 @@ class StepControl(QtWidgets.QWidget):
 
         self.stepCounter = QSpinBox()
         self.stepCounter.setMaximum(10000)
-        self.stepCounter.setMinimum(10)
+        self.stepCounter.setMinimum(1)
         self.stepCounter.setValue(self.stepslider.value())
-        self.stepCounter.setSingleStep(10)
+        self.stepCounter.setSingleStep(1)
         #self.stepCounter.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
 
         self.stepCounter.valueChanged.connect(self.stepslider.setValue)

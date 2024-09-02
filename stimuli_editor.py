@@ -124,11 +124,11 @@ class StimuliEditor(QtWidgets.QWidget):
         self.main_display.edits_made = True
         self.main_display.edited_clip_space = self.clip_space
 
-    def update_editor(self, clip_space):
+    # def update_editor(self, clip_space):
 
-        self.clip_space = clip_space
-        self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimuli), 0)
-        self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimuli), 1) 
+    #     # self.clip_space = clip_space
+    #     # self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimuli), 0)
+    #     # self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimuli), 1) 
 
 class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
 
