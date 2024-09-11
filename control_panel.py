@@ -39,7 +39,7 @@ class ControlPanel(QtWidgets.QWidget):
         self.main_display = main_display
         self.simulator_thread = simulator_thread
 
-        self.step_count = 100
+        self.step_count = 1
 
         self.panel_layout = QVBoxLayout()
 
@@ -126,7 +126,7 @@ class StepControl(QtWidgets.QWidget):
         self.stepCounter = QSpinBox()
         self.stepCounter.setMaximum(10000)
         self.stepCounter.setMinimum(1)
-        self.stepCounter.setValue(self.stepslider.value())
+        self.stepCounter.setValue(self.control_panel.step_count)
         self.stepCounter.setSingleStep(1)
         #self.stepCounter.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
 

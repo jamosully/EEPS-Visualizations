@@ -64,8 +64,9 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     def updateStimuliEditor(self, clip_space):
 
-        if self.stim_editor is not None:
-            self.stim_editor.update_editor(clip_space)
+        print("haha")
+        # if self.stim_editor is not None:
+        #     self.stim_editor.update_editor(clip_space)
 
     def deleteStimuliEditor(self):
 
