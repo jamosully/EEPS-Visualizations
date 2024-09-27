@@ -9,6 +9,7 @@ from simulator import Simulator
 from visualization_display import VisualizationDisplay
 from control_panel import ControlPanel
 from parameter_toolbox import ParameterToolbox
+from stimuli_editor import StimuliEditor
 
 """
 main.py
@@ -82,6 +83,16 @@ class MainWindow(QtWidgets.QWidget):
 
         self.parameter_menu = ParameterToolbox(self)
 
+    def createStimuliEditor(self, main, simulator):
+
+        """
+        The editor allows modifications to the agent's clip-space
+        via the graph network visualisation (and the heatmap
+        visualisation at some point)
+        """
+
+        return StimuliEditor(self, main, simulator)
+
     def createTable(self, simulator):
 
         """
@@ -127,8 +138,15 @@ class MainWindow(QtWidgets.QWidget):
         
         self.models[self.model_num]['main_display'].assign_control_panel(self.models[self.model_num]['control_panel'])
 
+        self.models[self.model_num]['stim_editor'] = self.createStimuliEditor(self.models[self.model_num]['main_display'],
+                                                                              self.models[self.model_num]['simulator']['sim'])
+        
+
         self.tab_layout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
         self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
+        self.tab_layout.addWidget(self.models[self.model_num]['stim_editor'], 0, 2)
+
+        self.tab_layout.setColumnStretch(1, 3)
 
         self.tab.setLayout(self.tab_layout)
 

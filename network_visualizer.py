@@ -10,7 +10,21 @@ import networkx as nx
 import numpy as np
 import mplcursors
 
+"""
+network_visualizer.py
+
+Creates graph network visualisations of an agent's
+clip-space via networkx and matplotlib. Also leverages
+mplcursors, letting users select stimuli in the view
+and modify their connected edge weights via the
+stimuli editor
+"""
+
 class NetworkVisualizer(QtWidgets.QWidget):
+
+    """
+    Visualiser for graph networks
+    """
 
     def __init__(self, parent, table, simulator):
 
@@ -32,6 +46,16 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.grid.addWidget(self.canvas, 1, 0)
 
     def visualize_memory_network(self, clip_space):
+
+        """
+        Called by the simulator, creates a new visualization via three steps:
+
+        1. Separate stimuli into respective classes, and apply colour mappings
+
+        2. Create array of normalised weights used in edge opacity 
+
+        3. Visualise each feature of the network on the provided plot
+        """
 
         if self.table.stim_editor is not None:
             self.table.updateStimuliEditor(clip_space)
@@ -80,10 +104,10 @@ class NetworkVisualizer(QtWidgets.QWidget):
             
         network_cursor = mplcursors.cursor(self.figure)
 
-        @network_cursor.connect("add")
-        def on_add(sel):
-            self.table.deleteStimuliEditor()
-            self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+        #@network_cursor.connect("add")
+        # def on_add(sel):
+        #     # self.table.deleteStimuliEditor()
+        #     # self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

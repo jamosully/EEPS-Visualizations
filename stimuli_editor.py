@@ -21,35 +21,41 @@ class StimuliEditor(QtWidgets.QWidget):
     for the selection of edges so this will have to do
     """
 
-    def __init__(self, main, simulator, stimuli, clip_space):
+    # TODO: Expand MPLCursors/switch to events for edge weights
+
+    def __init__(self, backend, main, simulator):
         QtWidgets.QWidget.__init__(self)
 
         self.simulator = simulator
         self.main_display = main
-        self.stimuli = stimuli
+        self.stimulus = None
 
-        if self.main_display.edited_clip_space is not None:
-            self.clip_space = self.main_display.edited_clip_space
-        else:
-            self.clip_space = clip_space
+        # if self.main_display.edited_clip_space is not None:
+        #     self.clip_space = self.main_display.edited_clip_space
+        # else:
+        #     self.clip_space = self.simulator.agent.clip_space
+
+        # self.clip_space = 
 
         self.editorLayout = QVBoxLayout()
 
-        self.stimuliNameLabel = QLabel()
-        self.stimuliNameLabel.setText(self.stimuli)
-        self.stimuliNameLabel.setFont(QFont('Arial', 20))
-        self.editorLayout.addWidget(self.stimuliNameLabel)
+        self.stimulusNameLabel = QLabel()
+        self.stimulusNameLabel.setText("")
+        self.stimulusNameLabel.setFont(QFont('Arial', 20))
+        self.editorLayout.addWidget(self.stimulusNameLabel)
 
         self.createRelationTables()
         self.editorLayout.addWidget(self.tableHolder)
 
         self.setLayout(self.editorLayout)
-        self.actionRelationTable.resizeColumnsToContents()
+        # self.actionRelationTable.resizeColumnsToContents()
 
-        # TODO: Fix below
-        #       The following command is creating issues in the wider document
+    def set_stimuli(self, stimulus):
 
-        #self.main_display.main.setFixedSize(self.main_display.main.grid.sizeHint())
+        self.stimulus = stimulus
+        self.stimulusNameLabel.setText(stimulus)
+        self.createRelationTables()
+        self.editorLayout.addWidget(self.tableHolder)
 
     def createRelationTables(self):
 
@@ -68,14 +74,23 @@ class StimuliEditor(QtWidgets.QWidget):
         # Create table for the relations in which the current
         # stimuli was the chosen response
         
-        self.actionRelationTable = QTableWidget(len(self.clip_space.in_edges(self.stimuli)), 3)
-        self.formatTable(self.actionRelationTable, self.clip_space.in_edges(self.stimuli), 0)
+        # self.actionRelationTable = QTableWidget(len(self.clip_space.in_edges(self.stimulus)), 3)
+        # self.formatTable(self.actionRelationTable, self.clip_space.in_edges(self.stimulus), 0)
 
-        # Create table for the relations in which the current
-        # stimuli was perceived first
+        # # Create table for the relations in which the current
+        # # stimuli was perceived first
 
-        self.perceptRelationTable = QTableWidget(len(self.clip_space.out_edges(self.stimuli)), 3)
-        self.formatTable(self.perceptRelationTable, self.clip_space.out_edges(self.stimuli), 1) 
+        # self.perceptRelationTable = QTableWidget(len(self.clip_space.out_edges(self.stimulus)), 3)
+        # self.formatTable(self.perceptRelationTable, self.clip_space.out_edges(self.stimulus), 1) 
+
+        self.actionRelationTable = QTableWidget(0, 3)
+        self.perceptRelationTable = QTableWidget(0, 3)
+
+        self.actionRelationTable.verticalHeader().setVisible(False)
+        self.actionRelationTable.horizontalHeader().setVisible(False)
+
+        self.perceptRelationTable.verticalHeader().setVisible(False)
+        self.perceptRelationTable.horizontalHeader().setVisible(False)
 
         self.tableHolder.addTab(self.actionRelationTable, "As Action")
         self.tableHolder.addTab(self.perceptRelationTable, "As Percept")
@@ -107,7 +122,7 @@ class StimuliEditor(QtWidgets.QWidget):
             edgeNameLabel.setText(edge[edgeIndex])
             table.setCellWidget(i, 0, edgeNameLabel)
             table.setItem(i, 1, QTableWidgetItem())
-            if edge[edgeIndex][1] == self.stimuli[1]:
+            if edge[edgeIndex][1] == self.stimulus[1]:
                 table.item(i, 1).setBackground(QColor("Green"))
             else:
                 table.item(i, 1).setBackground(QColor("Red"))
@@ -127,8 +142,8 @@ class StimuliEditor(QtWidgets.QWidget):
     # def update_editor(self, clip_space):
 
     #     # self.clip_space = clip_space
-    #     # self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimuli), 0)
-    #     # self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimuli), 1) 
+    #     # self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimulus), 0)
+    #     # self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimulus), 1) 
 
 class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
 
