@@ -141,6 +141,7 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num]['stim_editor'] = self.createStimuliEditor(self.models[self.model_num]['main_display'],
                                                                               self.models[self.model_num]['simulator']['sim'])
         
+        self.models[self.model_num]['main_display'].assign_stim_editor(self.models[self.model_num]['stim_editor'])
 
         self.tab_layout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
         self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
@@ -151,12 +152,6 @@ class MainWindow(QtWidgets.QWidget):
         self.tab.setLayout(self.tab_layout)
 
         self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
-
-        print(self.models[self.model_num])
-
-        # NOTE: The command below allows Affinity to adjust dynamically
-        #       as the user use it. However, it does result in some funky
-        #       behavior. TODO: Fix fixed size behavior
 
         self.model_num += 1
 

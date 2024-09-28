@@ -9,10 +9,22 @@ from heatmap_visualizer import HeatmapVisualizer
 from results_display import ResultsDisplay
 from stimuli_editor import StimuliEditor
 
+"""
+visualization_display.py
+
+Provides tab display which holds each visualisation
+as well as results
+
+Also handles communication with stimuli editor
+"""
+
 class VisualizationDisplay(QtWidgets.QWidget):
 
-    def __init__(self, parent, simulator):
-        #super(QWidget, self).__init__(parent)
+    """
+    Tab display for visualisations and results    
+    """
+
+    def __init__(self, parent, simulator, stimuli_editor):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
@@ -56,28 +68,17 @@ class VisualizationDisplay(QtWidgets.QWidget):
             self.results_tab.deleteLater()
             self.results_tab = None
 
-    Slot()
-    def createStimuliEditor(self, stimuli, clip_space):
-        
-        self.stim_editor = StimuliEditor(self, self.simulator, stimuli, clip_space)
-        self.layout.addWidget(self.stim_editor)
-
-    def updateStimuliEditor(self, clip_space):
-
-        print("haha")
-        # if self.stim_editor is not None:
-        #     self.stim_editor.update_editor(clip_space)
-
-    def deleteStimuliEditor(self):
-
-        if self.stim_editor is not None:
-            self.layout.removeWidget(self.stim_editor)
-            self.stim_editor.deleteLater()
-            self.stim_editor = None
-
     def assign_control_panel(self, control_panel):
 
         self.control_panel = control_panel
+
+    def assign_stim_editor(self, stim_editor):
+
+        self.stim_editor = stim_editor
+
+    def updateEditor(self, stimuli, clip_space):
+
+        self.stim_editor.updateEditor(stimuli, clip_space)
 
     def update_clip_space(self):
 

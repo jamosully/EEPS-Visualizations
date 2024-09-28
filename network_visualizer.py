@@ -69,8 +69,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
         for item in subsets.items():
             color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1])])
 
-        print(color_map)
-
         self.figure.clf()
         
         nx.set_node_attributes(clip_space, subsets, name="layers")
@@ -104,10 +102,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
             
         network_cursor = mplcursors.cursor(self.figure)
 
-        #@network_cursor.connect("add")
-        # def on_add(sel):
-        #     # self.table.deleteStimuliEditor()
-        #     # self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+        @network_cursor.connect("add")
+        def on_add(sel):
+            self.table.updateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

@@ -109,6 +109,15 @@ class StimuliEditor(QtWidgets.QWidget):
         Column 3: Strength of the relation
         """
 
+        # Add/remove rows using edge list length
+
+        if table.rowCount() < len(edge_list):
+            for x in range(len(edge_list) - table.rowCount()):
+                table.insertRow(table.rowCount())
+        elif table.rowCount() > len(edge_list):
+            for x in range(table.rowCount() - len(edge_list)):
+                table.removeRow(table.rowCount())
+
         # TODO: Maybe normalise relation weights
 
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
@@ -139,11 +148,24 @@ class StimuliEditor(QtWidgets.QWidget):
         self.main_display.edits_made = True
         self.main_display.edited_clip_space = self.clip_space
 
-    # def update_editor(self, clip_space):
+    def populateEditor(self, stimuli, clip_space):
 
-    #     # self.clip_space = clip_space
-    #     # self.actionRelationTable = self.formatTable(self.actionRelationTable, clip_space.in_edges(self.stimulus), 0)
-    #     # self.perceptRelationTable = self.formatTable(self.perceptRelationTable, clip_space.out_edges(self.stimulus), 1) 
+        action_edges = clip_space.in_edges(stimuli)
+        percept_edges = clip_space.out_edges(stimuli)
+
+        self.formatTable(self.actionRelationTable, action_edges, 0)
+        self.formatTable(self.perceptRelationTable, percept_edges, 1)
+
+        self.stimulus = stimuli
+
+    def updateEditor(self, clip_space):
+
+        action_edges = clip_space.in_edges(self.stimulus)
+        percept_edges = clip_space.out_edges(self.stimulus)
+
+        self.formatTable(self.actionRelationTable, action_edges, 0)
+        self.formatTable(self.perceptRelationTable, percept_edges, 1)
+         
 
 class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
 
