@@ -36,6 +36,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.main_display = parent
         self.table = table
 
+        self.selected_stim = None
+
         self.name = "Memory Network Visualizer"
 
         self.figure = Figure(tight_layout=False)
@@ -56,9 +58,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         3. Visualise each feature of the network on the provided plot
         """
-
-        if self.table.stim_editor is not None:
-            self.table.updateStimuliEditor(clip_space)
 
         subsets = dict()
         color_map = []
@@ -104,7 +103,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         @network_cursor.connect("add")
         def on_add(sel):
-            self.table.updateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+            self.table.populateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+            self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
