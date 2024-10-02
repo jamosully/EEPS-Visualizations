@@ -81,7 +81,6 @@ class Interaction(object):
                 self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
                 self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
-                self.vis_display.updateEditor(self.agent.clip_space)
                 self.pause.lock()
                 if self.vis_display.edits_made:
                     self.agent.clip_space = self.vis_display.update_clip_space()

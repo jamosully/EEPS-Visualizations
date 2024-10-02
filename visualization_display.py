@@ -24,7 +24,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
     Tab display for visualisations and results    
     """
 
-    #update_editor = Signal()
+    update_editor = Signal()
 
     def __init__(self, parent, simulator):
         QtWidgets.QWidget.__init__(self)
@@ -82,9 +82,9 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
         self.stim_editor.populateEditor(stimuli, clip_space)
 
-    def updateEditor(self, clip_space):
+    def updateEditor(self):
 
-        self.stim_editor.updateEditor(clip_space)
+        self.stim_editor.updateEditor()
 
     def update_clip_space(self):
 

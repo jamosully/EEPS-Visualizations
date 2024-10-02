@@ -1,5 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -58,6 +59,10 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         3. Visualise each feature of the network on the provided plot
         """
+
+        if self.selected_stim is not None:
+            self.table.stim_editor.update_clip_space(clip_space)
+            self.table.update_editor.emit()
 
         subsets = dict()
         color_map = []

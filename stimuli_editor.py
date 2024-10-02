@@ -38,6 +38,8 @@ class StimuliEditor(QtWidgets.QWidget):
         self.stimulusNameLabel.setFont(QFont('Arial', 20))
         self.editorLayout.addWidget(self.stimulusNameLabel)
 
+        self.main_display.update_editor.connect(self.updateEditor)
+
         self.createRelationTables()
         self.editorLayout.addWidget(self.tableHolder)
 
@@ -114,7 +116,6 @@ class StimuliEditor(QtWidgets.QWidget):
         # TODO: Maybe normalise relation weights
 
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        #table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.verticalHeader().setVisible(False)
         table.horizontalHeader().setVisible(False)
         table.setMaximumHeight(table.verticalHeader().length())
@@ -135,16 +136,6 @@ class StimuliEditor(QtWidgets.QWidget):
 
         table.resizeColumnsToContents()
 
-    def updateTable(self, table: QTableWidget, edge_list, edge_index):
-
-        # TODO: This method can't add new cells yet? Need to figure out how
-
-        for i, edge in enumerate(edge_list):
-            for x in range(table.rowCount()):
-                if table.cellWidget(x, 0).text() == edge[edge_index]:
-                    table.cellWidget(x, 2).setValue(self.clip_space.edges[edge[0], edge[1]]['weight'])
-
-
     def edge_weight_changed(self, edge, new_value):
 
         self.clip_space.edges[edge[0], edge[1]]['weight'] = new_value
@@ -162,17 +153,22 @@ class StimuliEditor(QtWidgets.QWidget):
         self.formatTable(self.actionRelationTable, action_edges, 0)
         self.formatTable(self.perceptRelationTable, percept_edges, 1)
 
-    def updateEditor(self, clip_space):
+    def updateEditor(self):
 
         if self.stimulus is not None:
-            self.clip_space = clip_space
+            # self.clip_space = clip_space
 
-            action_edges = clip_space.in_edges(self.stimulus)
-            percept_edges = clip_space.out_edges(self.stimulus)
+            action_edges = self.clip_space.in_edges(self.stimulus)
+            percept_edges = self.clip_space.out_edges(self.stimulus)
 
-            self.updateTable(self.actionRelationTable, action_edges, 0)
-            self.updateTable(self.perceptRelationTable, percept_edges, 1)
-         
+            self.formatTable(self.actionRelationTable, action_edges, 0)
+            self.formatTable(self.perceptRelationTable, percept_edges, 1)
+
+            self.update()
+
+    def update_clip_space(self, clip_space):
+
+        self.clip_space = clip_space
 
 class EdgeWeightSpinBox(QtWidgets.QDoubleSpinBox):
 
