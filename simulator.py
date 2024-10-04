@@ -54,6 +54,8 @@ class Simulator(QtCore.QObject):
         self.agent = agn.Agent(self.agent_parameter)
         self.environment = env.Environment(self.environment_parameter)
 
+        self.step = step
+
         # TODO: This is a lot of parameters to be passing, see if 
         #       you can reduce them
 
@@ -70,6 +72,36 @@ class Simulator(QtCore.QObject):
             
     Slot()
     def run_sim(self):
+
+        # Some thoughts on how to build modularity
+        # Need to operate each step of the run_save function
+        # at the top level of this model,
+        # rather than in the bottom level in the interaction
+
+        # run_save:
+        # results = self.experiment_results()
+        # show, result = self.plot_data(results)
+
+        # Simulation_data = {}
+        # Simulation_data['agent_parameter'] = self.agent_parameter
+        # Simulation_data['environment_parameter'] = self.environment_parameter
+        # Simulation_data['show'] = show
+        # Simulation_data['result'] = result
+
+        # result_save = open( self.file_name , "wb" )
+        # pickle.dump(Simulation_data, result_save)
+        # result_save.close()
+
+        # Focus would be to overide this function
+        # at the top level, from the simulator
+
+        # Maybe users should pick their:
+        # - experiment function
+        # - loop function
+        # - results function
+        # - saving function
+
+        # Maybe look at basics contained in projective simulation
 
         if self.interaction is not None:
             self.results = self.interaction.run_save()

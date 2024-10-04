@@ -8,6 +8,8 @@ Future Work:
 - [ ] Heatmap interaction
 - [ ] Experiment design menu
 - [ ] Support for other EEPS/EPS/PS variants
+- [x] Fixed stim_editor not updating
+- [ ] Run NE during training
 - [ ] Documentation
 - [ ] Code comments
 - [ ] Uniformise function names

@@ -155,8 +155,6 @@ class MainWindow(QtWidgets.QWidget):
 
         self.model_num += 1
 
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     #app.setStyle(QStyleFactory)
