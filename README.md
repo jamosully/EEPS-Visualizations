@@ -10,6 +10,8 @@ Future Work:
 - [ ] Support for other EEPS/EPS/PS variants
 - [x] Fixed stim_editor not updating
 - [ ] Run NE during training
+- [ ] Find a third approach?
+- [ ] Fix RDT
 - [ ] Documentation
 - [ ] Code comments
 - [ ] Uniformise function names

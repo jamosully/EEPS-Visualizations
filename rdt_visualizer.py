@@ -8,6 +8,8 @@ from matplotlib.figure import Figure
 import EEPS.initialization
 import EEPS.initialization_detail
 import numpy as np
+import networkx as nx
+import itertools
 
 class RDTVisualizer(QtWidgets.QWidget):
 
@@ -45,6 +47,11 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         # self.button_group_box = QGroupBox()
         self.class_layout = QHBoxLayout()
+        self.num_classes = num_classes
+
+        self.class_count = []
+        for i in range(self.num_classes):
+            self.class_count.append([])
 
         def addToLayout(button, layout):
             self.class_layout.addWidget(button)
@@ -96,7 +103,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.canvas.draw()
 
-    def track_rdt_data(self, clip_space):
+    def track_rdt_data(self, clip_space: nx.DiGraph):
 
         # TODO: Figure out how to calculate densities
         
@@ -104,15 +111,36 @@ class RDTVisualizer(QtWidgets.QWidget):
         rdt_density_value = []
 
         # print(clip_space.edges(data=True))
+
+        # TODO: Need to create a list of all possible relations within a class
+        # HINT: USE THE PLOT BLOCKS! USE THE PLOT BLOCKS!
+        # HINT: USE THE PLOT BLOCKS! 
+        # HINT: USE THE PLOT BLOCKS!
+        
+        for stimulus in clip_space.nodes:
+            if stimulus not in self.class_count[int(stimulus[1]) - 1]:
+                self.class_count[int(stimulus[1]) - 1].append(stimulus)
+
+        relations = []
+        for i in range(len(self.class_count)):
+            relations.append(list(itertools.product(self.class_count[i], repeat=2)))
         
         for i in range(self.num_classes):
             rdt_volume_count.append(0)
             rdt_density_value.append(0)
 
+        print(clip_space.edges)
+
         for edge in clip_space.edges(data=True):
             if edge[0][1] == edge[1][1]:
-                rdt_volume_count[(int(edge[0][1]) - 1)] += 1
                 rdt_density_value[(int(edge[0][1]) - 1)] += edge[2]['weight']
+
+        for i in range(self.num_classes):
+            for relation in relations[i]:
+                if relations[0] == relation[1]:
+                    continue
+                elif relation not in clip_space.edges:
+                    print("A relation?????????")
 
         for i in range(self.num_classes):
             self.rdt_volume[i].append(rdt_volume_count[i])
