@@ -93,13 +93,13 @@ class MainWindow(QtWidgets.QWidget):
 
         return StimuliEditor(self, main, simulator)
 
-    def createTable(self, simulator):
+    def createTable(self, simulator, env_params):
 
         """
         The table display holds visualizations and results
         """
 
-        return VisualizationDisplay(self, simulator)
+        return VisualizationDisplay(self, simulator, env_params)
 
     def createControlPanel(self, main, simulator):
 
@@ -132,7 +132,8 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num] = {}
         self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.model_agent_params, 
                                                                      self.parameter_menu.model_env_params)
-        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
+        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'],
+                                                                       self.parameter_menu.model_env_params)
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
         

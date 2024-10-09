@@ -26,7 +26,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     update_editor = Signal()
 
-    def __init__(self, parent, simulator):
+    def __init__(self, parent, simulator, env_params):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
@@ -43,7 +43,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.tabs = QTabWidget()
         self.network_tab = NetworkVisualizer(self.main, self, simulator)
         self.visualizers.append(self.network_tab)
-        self.rdt_tab = RDTVisualizer(self, simulator)
+        self.rdt_tab = RDTVisualizer(self, simulator, env_params)
         self.visualizers.append(self.rdt_tab)
         self.heatmap_tab = HeatmapVisualizer(self, simulator)
         self.visualizers.append(self.heatmap_tab)

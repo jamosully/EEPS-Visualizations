@@ -11,7 +11,8 @@ Future Work:
 - [x] Fixed stim_editor not updating
 - [ ] Run NE during training
 - [ ] Find a third approach?
-- [ ] Fix RDT
+- [x] Fix RDT
+  - [ ] Add option to alter metrics
 - [ ] Documentation
 - [ ] Code comments
 - [ ] Uniformise function names
