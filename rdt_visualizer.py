@@ -75,10 +75,6 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.class_layout = QHBoxLayout()
         self.num_classes = num_classes
 
-        self.class_count = []
-        for i in range(self.num_classes):
-            self.class_count.append([])
-
         def addToLayout(button, layout):
             self.class_layout.addWidget(button)
             self.class_layout.setSpacing(10)
@@ -131,31 +127,14 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.canvas.draw()
 
     def track_rdt_data(self, clip_space: nx.DiGraph):
-
-        # TODO: Figure out how to calculate densities
         
         rdt_volume_count = []
         rdt_density_value = []
         rdt_edge_count = []
         rdt_h_vectors = []
 
-        # print(clip_space.edges(data=True))
-
-        # TODO: Need to create a list of all possible relations within a class
-        # HINT: USE THE PLOT BLOCKS! USE THE PLOT BLOCKS!
-        # HINT: USE THE PLOT BLOCKS! 
-        # HINT: USE THE PLOT BLOCKS!
-
         # Nodal distance = number of nodes that link two stimuli
         #                  that are not related by direct training
-        
-        for stimulus in clip_space.nodes:
-            if stimulus[0] not in self.class_count[int(stimulus[1]) - 1]:
-                self.class_count[int(stimulus[1]) - 1].append(stimulus[0])
-
-        relations = []
-        for i in range(len(self.class_count)):
-            relations.append([''.join(x) for x in itertools.product(self.class_count[i], repeat=2)])
         
         for i in range(self.num_classes):
             rdt_volume_count.append(0)
@@ -165,7 +144,6 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         for edge in clip_space.edges(data=True):
             if edge[0][1] == edge[1][1]:
-                #rdt_density_value[(int(edge[0][1]) - 1)] += edge[2]['weight']
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
@@ -176,7 +154,7 @@ class RDTVisualizer(QtWidgets.QWidget):
                 relation_pair = stimulus[0] + action[0]
                 if relation_pair in self.relation_types['Baseline']:
                     continue
-                elif stimulus[1] == action[1]: # Check if they are the same class
+                elif stimulus[1] == action[1]:
                     rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
 
         for i in range(len(rdt_h_vectors)):

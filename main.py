@@ -66,7 +66,7 @@ class MainWindow(QtWidgets.QWidget):
 
         simulator_dict['mutex'] = QMutex()
         simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
-        simulator_dict['thread'] = QThread(parent=self)
+        simulator_dict['thread'] = QThread(parent=simulator_dict['sim'])
 
         simulator_dict['sim'].moveToThread(simulator_dict['thread'])
         simulator_dict['thread'].started.connect(simulator_dict['sim'].run_sim)
