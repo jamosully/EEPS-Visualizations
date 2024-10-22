@@ -1,5 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -10,7 +11,21 @@ import networkx as nx
 import numpy as np
 import mplcursors
 
+"""
+network_visualizer.py
+
+Creates graph network visualisations of an agent's
+clip-space via networkx and matplotlib. Also leverages
+mplcursors, letting users select stimuli in the view
+and modify their connected edge weights via the
+stimuli editor
+"""
+
 class NetworkVisualizer(QtWidgets.QWidget):
+
+    """
+    Visualiser for graph networks
+    """
 
     def __init__(self, parent, table, simulator):
 
@@ -21,6 +36,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         self.main_display = parent
         self.table = table
+
+        self.selected_stim = None
 
         self.name = "Memory Network Visualizer"
 
@@ -33,8 +50,19 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
     def visualize_memory_network(self, clip_space):
 
-        if self.table.stim_editor is not None:
-            self.table.updateStimuliEditor(clip_space)
+        """
+        Called by the simulator, creates a new visualization via three steps:
+
+        1. Separate stimuli into respective classes, and apply colour mappings
+
+        2. Create array of normalised weights used in edge opacity 
+
+        3. Visualise each feature of the network on the provided plot
+        """
+
+        if self.selected_stim is not None:
+            self.table.stim_editor.update_clip_space(clip_space)
+            self.table.update_editor.emit()
 
         subsets = dict()
         color_map = []
@@ -44,8 +72,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         for item in subsets.items():
             color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1])])
-
-        print(color_map)
 
         self.figure.clf()
         
@@ -82,8 +108,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         @network_cursor.connect("add")
         def on_add(sel):
-            self.table.deleteStimuliEditor()
-            self.table.createStimuliEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+            self.table.populateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+            self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

@@ -141,7 +141,3 @@ class StepControl(QtWidgets.QWidget):
 
         self.control_panel.step_count = value
         self.control_panel.main_display.step_changed = True
-        print(self.control_panel.step_count)
-
-
-

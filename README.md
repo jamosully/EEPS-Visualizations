@@ -8,6 +8,13 @@ Future Work:
 - [ ] Heatmap interaction
 - [ ] Experiment design menu
 - [ ] Support for other EEPS/EPS/PS variants
+- [ ] Fix QThread Error
+- [ ] Keyboard shortcuts
+- [x] Fixed stim_editor not updating
+- [ ] Run NE during training
+- [ ] Find a third approach?
+- [x] Fix RDT
+  - [ ] Add option to alter metrics
 - [ ] Documentation
 - [ ] Code comments
 - [ ] Uniformise function names

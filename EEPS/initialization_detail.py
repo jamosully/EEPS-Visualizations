@@ -403,6 +403,25 @@ def environment_details():
         "mastery_training": 0.9
         },
 
+     14: { # Cotter and Stewart 2023
+         "num_classes": 4,
+         "training_order": {
+                            1:[('A','B',36)],
+                            2:[('B','C',36)],
+                            3:[('C','D',36)],
+                            4:[('D','E',36)],
+                            },
+        "plot_blocks": {'relation_type':{
+                                        'Baseline':[],
+                                        'Equivalence':[],
+
+
+                                        }
+                        },
+        "plot_blocks_ID": {},
+        "mastery_training": 0.9
+        }
+
         }
 
     return environment_parameters_detail

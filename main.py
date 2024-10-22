@@ -9,6 +9,7 @@ from simulator import Simulator
 from visualization_display import VisualizationDisplay
 from control_panel import ControlPanel
 from parameter_toolbox import ParameterToolbox
+from stimuli_editor import StimuliEditor
 
 """
 main.py
@@ -65,7 +66,7 @@ class MainWindow(QtWidgets.QWidget):
 
         simulator_dict['mutex'] = QMutex()
         simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
-        simulator_dict['thread'] = QThread(parent=self)
+        simulator_dict['thread'] = QThread(parent=simulator_dict['sim'])
 
         simulator_dict['sim'].moveToThread(simulator_dict['thread'])
         simulator_dict['thread'].started.connect(simulator_dict['sim'].run_sim)
@@ -82,13 +83,23 @@ class MainWindow(QtWidgets.QWidget):
 
         self.parameter_menu = ParameterToolbox(self)
 
-    def createTable(self, simulator):
+    def createStimuliEditor(self, main, simulator):
+
+        """
+        The editor allows modifications to the agent's clip-space
+        via the graph network visualisation (and the heatmap
+        visualisation at some point)
+        """
+
+        return StimuliEditor(self, main, simulator)
+
+    def createTable(self, simulator, env_params):
 
         """
         The table display holds visualizations and results
         """
 
-        return VisualizationDisplay(self, simulator)
+        return VisualizationDisplay(self, simulator, env_params)
 
     def createControlPanel(self, main, simulator):
 
@@ -121,28 +132,29 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num] = {}
         self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.model_agent_params, 
                                                                      self.parameter_menu.model_env_params)
-        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'])
+        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'],
+                                                                       self.parameter_menu.model_env_params)
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
         
         self.models[self.model_num]['main_display'].assign_control_panel(self.models[self.model_num]['control_panel'])
 
+        self.models[self.model_num]['stim_editor'] = self.createStimuliEditor(self.models[self.model_num]['main_display'],
+                                                                              self.models[self.model_num]['simulator']['sim'])
+        
+        self.models[self.model_num]['main_display'].assign_stim_editor(self.models[self.model_num]['stim_editor'])
+
         self.tab_layout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
         self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
+        self.tab_layout.addWidget(self.models[self.model_num]['stim_editor'], 0, 2)
+
+        self.tab_layout.setColumnStretch(1, 3)
 
         self.tab.setLayout(self.tab_layout)
 
         self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
 
-        print(self.models[self.model_num])
-
-        # NOTE: The command below allows Affinity to adjust dynamically
-        #       as the user use it. However, it does result in some funky
-        #       behavior. TODO: Fix fixed size behavior
-
         self.model_num += 1
-
-
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
