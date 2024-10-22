@@ -53,7 +53,6 @@ class HeatmapVisualizer(QtWidgets.QWidget):
             button = QPushButton(button_name)
             button.setObjectName(button_name)
             self.class_dict[button.objectName] = i
-            print(i)
             addToLayout(button, self.class_layout)
             button.clicked.connect(self.visualizeClass)
         
