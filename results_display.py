@@ -8,6 +8,8 @@ from matplotlib.figure import Figure
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.transforms as mtrans
+import pandas as pd
 import seaborn as sns
 import pickle
 import EEPS.interaction
@@ -82,8 +84,26 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.tick_params(labelsize = 16)
                 self.figure.tight_layout()
             elif self.results[value]['type'] == 'line':
-                for i in range(len(self.results[value]['result'])):
-                    self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)))
+                rdt_df = pd.DataFrame(self.results[value]['result']).T
+                rdt_df.columns = rdt_df.columns.get_level_values(0)
+                self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())
+                for i, col in enumerate(rdt_df):
+                    rdt_df.plot(y=col, ax=self.r_ax,
+                                transform=mtrans.offset_copy(self.r_ax.transData,
+                                                             fig=self.figure, 
+                                                             x=0.0, 
+                                                             y=3*(i-1), 
+                                                             units='points'))
+                # for i in range(len(self.results[value]['result'])):
+                #     self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
+                #                    alpha=0.5, linewidth=4,
+                #                    ax=self.r_ax 
+                #                    transform=mtrans.offset_copy(self.r_ax.transData, 
+                #                                                 fig=self.figure, 
+                #                                                 x=0.05, 
+                #                                                 y=0.3*(i), 
+                #                                                 units='inches'))
+                    
                 self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'], fontsize = 20)

@@ -36,6 +36,8 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.env_params = env_params
         
         self.plot_blocks = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[2]
+        print(self.plot_blocks)
+
         if not self.plot_blocks:
             self.relation_types_available = False # Have to rely on training order instead
             self.obtain_direct_relations()
@@ -64,7 +66,7 @@ class RDTVisualizer(QtWidgets.QWidget):
         for key in training_order:
             for step in training_order[key]:
                 relation = step[0] + step[1]
-                self.relation_types["Direct"].append(relation)
+                self.relation_types["Baseline"].append(relation)
 
         print(self.relation_types)
 

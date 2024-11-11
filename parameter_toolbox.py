@@ -268,7 +268,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                     widget.insertItem(x, str(id))
                     if value == id:
                         widget.setCurrentIndex(x)
-                widget.currentIndexChanged.connect(lambda: self.adjust_params(key, widget.currentIndex()))
+                widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):

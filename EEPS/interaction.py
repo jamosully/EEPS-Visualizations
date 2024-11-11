@@ -19,6 +19,7 @@ import copy
 import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import seaborn as sns; sns.set()
 import pdb
 
@@ -109,6 +110,10 @@ class Interaction(object):
             self.environment = copy.deepcopy(environment)
             self.agent = copy.deepcopy(agent)
             self.run_experiment()
+
+            self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
+            self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
+            self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
 
             if i_trial == 0:
                 avg_time_training = self.environment.num_iteration_training.copy()
@@ -210,7 +215,7 @@ class Interaction(object):
             for relation in v:
                 sum_prob += prob_dict[relation]
                 i += 1
-            avg_relations[k] = sum_prob/i
+            avg_relations[k] = np.divide(sum_prob, i)
 
         return avg_relations
 
@@ -304,6 +309,8 @@ class Interaction(object):
                 index = sorted(plot_blocks[k_].keys())
                 index = plot_blocks_ID[k_]
                 agn_2 = [agn_prob[k] for k in index]
+                print(agn_2)
+                print(index)
                 result_ = pd.DataFrame({'Connection Probabilities': agn_2},
                                         index = index)
                 show.append((k_, 'bar'))

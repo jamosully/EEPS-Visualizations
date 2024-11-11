@@ -13,6 +13,7 @@ This code is used for simulation results reported in an article entitled:
 
 import numpy as np
 import random
+from string import ascii_uppercase
 
 import EEPS.initialization_detail as inid
 
@@ -112,23 +113,52 @@ class Environment(object):
 
         self.Block_list = []
         self.num_trials = 0
+
+        self.class_ranges = self.obtain_class_ranges()
+        print(self.class_ranges)
+
         for pair in self.training_order[self.step]:
             repeat_no = pair[2]
             self.num_trials += repeat_no
             percept = pair[0]
             action = pair[1]
-            act_list = list(range(self.num_classes))
+
+            # TODO: This can be improved to avoid having stimuli outside the bounds of the experiment
+
+            # act_list = list(range(self.num_classes))
+            act_list = list(range(self.class_ranges[action[0]]))
             act_list.remove(int(action[1])-1)
+            print(act_list)
             for rpt in range(repeat_no):
                 action_list = []
                 action_list.append(str(action))
-                comparison_list = np.random.choice(act_list,
-                                         self.size_action_set-1, replace=False)
+                if len(act_list) > 1:
+                    comparison_list = np.random.choice(act_list,
+                                            self.size_action_set-1, replace=False)
+                else:
+                    comparison_list = [act_list[0]]
                 for k in comparison_list:
                     action_list.append(str(pair[1][0]+ str(k+1)))
                 self.Block_list.append({percept: random.sample(action_list,
                                                             len(action_list))})
         return random.shuffle(self.Block_list)
+
+    
+    def obtain_class_ranges(self):
+
+        class_ranges = {}
+
+        stimuli = []
+        for block in list(self.training_order.items()):
+            for pair in block[1]:
+                for x in range(2):
+                    if pair[x][0] not in list(class_ranges.keys()):
+                        class_ranges[pair[x][0]] = 0
+                    if pair[x] not in stimuli:
+                        stimuli.append(pair[x])
+                        class_ranges[pair[x][0]] += 1
+
+        return class_ranges
 
 
     def feedback(self, percept, action): # Ok!

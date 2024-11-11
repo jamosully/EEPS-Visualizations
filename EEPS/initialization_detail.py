@@ -406,19 +406,26 @@ def environment_details():
      14: { # Cotter and Stewart 2023
          "num_classes": 4,
          "training_order": {
-                            1:[('A','B',36)],
-                            2:[('B','C',36)],
-                            3:[('C','D',36)],
-                            4:[('D','E',36)],
+                            1:[('A1','B1',12),('A2','B2',12),
+                               ('A3','B3',12),('A4','B4',12)],
+                            2:[('B1','C1',12),('B2','C2',12),
+                               ('B3','C3',12),('B4','C4',12)],
+                            3:[('C1','D1',12),('C2','D2',12)],
+                            4:[('D1','E1',12),('D2','E2',12)],
+                            5:[('A1','B1',6),('A2','B2',6),
+                               ('A3','B3',6),('A4','B4',6),
+                               ('B1','C1',6),('B2','C2',6),
+                               ('B3','C3',6),('B4','C4',6),
+                               ('C1','D1',6),('C2','D2',6),
+                               ('D1','E1',6),('D2','E2',6)],
                             },
         "plot_blocks": {'relation_type':{
-                                        'Baseline':[],
-                                        'Equivalence':[],
-
-
+                                        'Baseline':['AB','BC','CD','DE'],
+                                        'Equivalence':['AC','CA','CB','BA',
+                                                       'DC','ED','AE','EA']
                                         }
                         },
-        "plot_blocks_ID": {},
+        "plot_blocks_ID": {'relation_type':['Baseline', 'Equivalence']},
         "mastery_training": 0.9
         }
 
