@@ -67,7 +67,7 @@ class Interaction(object):
         num_steps = 0
         for num_steps in range(self.max_trial):
 
-            percept, action_set_t = self.environment.next_trial()
+            percept, action_set_t, new_trial = self.environment.next_trial()
 
             if self.environment.Training is not True:
                 break
@@ -76,7 +76,7 @@ class Interaction(object):
             action = self.agent.action_selection(percept, action_set_t)
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
-                                               action, reward)
+                                               action, reward, new_trial)
             self.vis_display.rdt_tab.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
                 self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)

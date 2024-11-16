@@ -54,6 +54,7 @@ class Environment(object):
         self.step = 1
         self.trial_no = 0
         self.correct = 0
+        self.next_step = False
         self.new_block = True
         self.Block_list = []
         self.Block_results_training = {}
@@ -93,6 +94,8 @@ class Environment(object):
 
         if self.new_block:
             self.reset_block()
+        else:
+            self.next_step = False
         for k, v in self.Block_list[self.trial_no].items():
             percept = k
             action_set = v
@@ -100,7 +103,7 @@ class Environment(object):
             if self.trial_no == self.num_trials:
                 self.new_block = True
 
-            return percept, action_set
+            return percept, action_set, self.next_step
 
 
     def form_block(self): # Ok!
@@ -113,20 +116,21 @@ class Environment(object):
 
         self.Block_list = []
         self.num_trials = 0
+        use_class_range =  False
 
-        self.class_ranges = self.obtain_class_ranges()
-        print(self.class_ranges)
+        if len(list(self.training_order.items())[0][1][1][0]) == 2:
+            self.class_ranges = self.obtain_class_ranges()
+            use_class_range = True
 
         for pair in self.training_order[self.step]:
             repeat_no = pair[2]
             self.num_trials += repeat_no
             percept = pair[0]
             action = pair[1]
-
-            # TODO: This can be improved to avoid having stimuli outside the bounds of the experiment
-
-            # act_list = list(range(self.num_classes))
-            act_list = list(range(self.class_ranges[action[0]]))
+            if use_class_range:
+                act_list = list(range(self.class_ranges[action[0]]))
+            else:
+                act_list = list(range(self.num_classes))
             act_list.remove(int(action[1])-1)
             print(act_list)
             for rpt in range(repeat_no):
@@ -141,6 +145,7 @@ class Environment(object):
                     action_list.append(str(pair[1][0]+ str(k+1)))
                 self.Block_list.append({percept: random.sample(action_list,
                                                             len(action_list))})
+        
         return random.shuffle(self.Block_list)
 
     
@@ -188,8 +193,9 @@ class Environment(object):
             if (self.correct/self.trial_no) >= self.mastery_training:
                 self.Block_results_training[self.step] = self.correct/self.trial_no
                 self.Block_training_order[self.step] = [s[0]+s[1]
-                 for s in self.training_order[self.step]]
+                for s in self.training_order[self.step]]
                 self.step += 1
+                self.next_step = True
                 if self.step == len(self.training_order)+1:
                     self.Training = False
 

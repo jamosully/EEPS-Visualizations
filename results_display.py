@@ -14,7 +14,20 @@ import seaborn as sns
 import pickle
 import EEPS.interaction
 
+"""
+results_display.py
+
+At the end of an experiment, this script is leveraged
+to provide an additional tab in the display of Affinity
+which displays result visualisations provided in the original 
+version of EEPS and new RDT visualisations
+"""
+
 class ResultsDisplay(QtWidgets.QWidget):
+
+    """
+    Tab for displaying results at the end of an experiment
+    """
 
     def __init__(self, main, simulator, rdt_volume, rdt_density):
 
@@ -46,19 +59,28 @@ class ResultsDisplay(QtWidgets.QWidget):
 
     def createButtons(self):
 
+        """
+        Buttons which allow a user to switch which visualisation
+        is displayed
+        """
+
         self.forwardButton = QPushButton(self)
         self.forwardButton.setText(">")
         self.forwardButton.clicked.connect(lambda: self.switch_figure(self.figure_id + 1))
-        #self.forwardButton.setIcon()
-        #self.forwardButton.clicked.connect()
 
         self.backButton = QPushButton(self)
         self.backButton.setText("<")
         self.backButton.clicked.connect(lambda: self.switch_figure(self.figure_id - 1))
 
-        # SP_ArrowForward, SP_ArrowBack
 
     def switch_figure(self, value):
+
+        """
+        Generates each graph visualisation
+
+        The majority of this code is lifted from the original
+        version of EEPS
+        """
 
         self.figure.clf()
         self.r_ax = self.figure.add_subplot(111)
@@ -86,16 +108,9 @@ class ResultsDisplay(QtWidgets.QWidget):
             elif self.results[value]['type'] == 'line':
                 rdt_df = pd.DataFrame(self.results[value]['result']).T
                 rdt_df.columns = rdt_df.columns.get_level_values(0)
-                # rdt_df = rdt_df.T
-                # # self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())
-                # print(rdt_df)
-                # for i, col in enumerate(rdt_df):
-                #     rdt_df.plot(y=col, ax=self.r_ax,
-                #                 transform=mtrans.offset_copy(self.r_ax.transData,
-                #                                              fig=self.figure, 
-                #                                              x=0.0, 
-                #                                              y=1.5, 
-                #                                              units='points'))
+
+                # TODO: Fix this, make better
+
                 for i in range(len(self.results[value]['result'])):
                     self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
                                    alpha=0.5, linewidth=4,
@@ -110,7 +125,6 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'], fontsize = 20)
             self.canvas.draw()
-            #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
             self.figure_id = value
         
 

@@ -41,6 +41,7 @@ class Agent(object):
         self.NE = parameter["network_enhancement"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
+        self.trained_edges = None
         self.rdt_class = 0
 
     def trial_preprocess(self, percept, action): # Ok!
@@ -76,7 +77,7 @@ class Agent(object):
         return action_set_t[Action]
 
 
-    def training_update_network(self, percept, action_set_t, action, reward): # Ok!
+    def training_update_network(self, percept, action_set_t, action, reward, new_trial): # Ok!
 
         """Given a history of what happend, i.e. the percept, the action set,
         the chosen action by the agent
@@ -96,7 +97,10 @@ class Agent(object):
             d['weight']= (1- self.gamma_damping) *d['weight']
 
         self.clip_space[percept][action]['weight'] += reward
-        self.clip_space[action][percept]['weight'] += (self.K * reward)     
+        self.clip_space[action][percept]['weight'] += (self.K * reward)
+
+        if new_trial:
+            self.network_enhancement_in_progress()
 
 
     def softmax(self, h_vec, beta): # Ok!
@@ -171,7 +175,43 @@ class Agent(object):
 #            print('Error: ', Error_2)
 
         return W_in, P, Tau, W_new
+    
 
+    def network_enhancement_in_progress(self):
+
+        # TODO: This inclusion prevents the mastery criterion being reached to progress
+        #       to the next step of training.
+        #       Need to find a work around/alternative
+        
+        if self.trained_edges is None:
+            self.trained_edges = self.clip_space.edges
+
+        W_in = nx.to_pandas_adjacency(self.clip_space, 
+                                      nodelist=sorted(self.clip_space.nodes()))
+        for i in W_in.index:
+            W_in.at[i, i] = W_in.max(axis = 1)[i]
+
+        print(W_in)
+        original_W = W_in
+
+        P = self.softmax_matrix(W_in)
+        W_old = P.copy()
+
+        if self.NE:
+            Tau = self.Tau_matrix(P, W_old.copy())
+        else:
+            Tau = P
+
+        Error = 10
+        self.NE_itr = 0
+        while Error > 0.0001:
+            W_new = self.alpha*Tau.dot(W_old).dot(Tau) + (1-self.alpha)*Tau
+            W_error = W_new.copy()
+            Error = W_error.sub(W_old).abs().sum().sum()
+            W_old = W_new.copy()
+            self.NE_itr += 1
+
+        self.clip_space = nx.Graph(W_new)
 
     def Tau_matrix(self, P, W): # Ok!
 

@@ -101,8 +101,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     edgelist=[key],
                                     ax=memory_plot,
                                     arrows=True,
-                                    arrowsize=weight,
-                                    #alpha=weight,
+                                    #arrowsize=weight,
+                                    alpha=weight,
                                     width=5)
             
         network_cursor = mplcursors.cursor(self.figure)
