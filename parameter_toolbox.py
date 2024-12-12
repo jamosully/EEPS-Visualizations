@@ -263,11 +263,13 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.clicked.connect(lambda: self.adjust_params(key, widget.checkState()))
                 return widget
             case 'env_id':
-                widget = ParamComboBox(key)
+                widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))
                 for x, (id, details) in enumerate(EEPS.initialization_detail.environment_details().items()):
                     widget.insertItem(x, str(id))
                     if value == id:
                         widget.setCurrentIndex(x)
+                widget.insertItem(len(EEPS.initialization_detail.environment_details().items()),
+                                  "Create experiment")
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
                 return widget
 
@@ -331,14 +333,18 @@ class ParamDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
 class ParamComboBox(QtWidgets.QComboBox):
 
-    def __init__(self, param_name):
+    def __init__(self, param_name, num_experiments):
         super(ParamComboBox, self).__init__()
 
         self.param_name = param_name
+        self.num_experiments = num_experiments
 
     def update_param_value(self, value):
 
-        self.setCurrentIndex(value)
+        if value == self.num_experiments - 1:
+            print("Creating experiments")
+        else:
+            self.setCurrentIndex(value)
 
 class ParamSpinBox(QtWidgets.QSpinBox):
 

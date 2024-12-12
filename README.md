@@ -11,7 +11,7 @@ Future Work:
 - [ ] Fix QThread Error
 - [ ] Keyboard shortcuts
 - [x] Fixed stim_editor not updating
-- [ ] Run NE during training
+- [x] Run NE during training
 - [ ] Find a third approach?
 - [x] Fix RDT
   - [ ] Add option to alter metrics

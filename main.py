@@ -41,6 +41,7 @@ class MainWindow(QtWidgets.QWidget):
         # Each model is added to a dictionary, and numbered
 
         self.models = {}
+        self.threads = []
         self.model_num  = 1
 
         # Filename is none at start, once a user adds a file it changes
@@ -66,7 +67,7 @@ class MainWindow(QtWidgets.QWidget):
 
         simulator_dict['mutex'] = QMutex()
         simulator_dict['sim'] = Simulator(simulator_dict['mutex'], agent_params, env_params, self.filename)
-        simulator_dict['thread'] = QThread(parent=simulator_dict['sim'])
+        simulator_dict['thread'] = QThread(parent=self)
 
         simulator_dict['sim'].moveToThread(simulator_dict['thread'])
         simulator_dict['thread'].started.connect(simulator_dict['sim'].run_sim)
@@ -99,7 +100,11 @@ class MainWindow(QtWidgets.QWidget):
         The table display holds visualizations and results
         """
 
-        return VisualizationDisplay(self, simulator, env_params)
+        return VisualizationDisplay(self, 
+                                    simulator['sim'], 
+                                    simulator['thread'], 
+                                    simulator['mutex'],
+                                    env_params)
 
     def createControlPanel(self, main, simulator):
 
@@ -132,8 +137,11 @@ class MainWindow(QtWidgets.QWidget):
         self.models[self.model_num] = {}
         self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.model_agent_params, 
                                                                      self.parameter_menu.model_env_params)
-        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator']['sim'],
+        self.threads.append(self.models[self.model_num]['simulator']['thread'])
+
+        self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator'],
                                                                        self.parameter_menu.model_env_params)
+        
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
         

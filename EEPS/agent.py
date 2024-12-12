@@ -39,6 +39,7 @@ class Agent(object):
         self.K = parameter["K"][0]
         self.alpha = parameter["alpha"][0]
         self.NE = parameter["network_enhancement"][0]
+        self.training_NE = parameter["NE_during_training"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
         self.trained_edges = None
@@ -99,7 +100,7 @@ class Agent(object):
         self.clip_space[percept][action]['weight'] += reward
         self.clip_space[action][percept]['weight'] += (self.K * reward)
 
-        if new_trial:
+        if new_trial and self.training_NE:
             self.network_enhancement_in_progress()
 
 

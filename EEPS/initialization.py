@@ -64,7 +64,8 @@ def agent_parameters():
                        "beta_t": [8],
                        "K": [1],
                        "gamma_damping": [0.001],
-                       "alpha": [0.8]
+                       "alpha": [0.8],
+                       "NE_during_training": [False]
                        }
 
     return agent_parameter

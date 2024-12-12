@@ -67,6 +67,12 @@
             "description": "the regularization parameter",
             "value": 0.8,
             "type": "unit_interval"
+        },
+        {
+            "name": "NE_during_training",
+            "description": "If true, network enhancement will occur when an agent progresses to a new block during training",
+            "value": false,
+            "type": "bool"
         }
     ]
 }

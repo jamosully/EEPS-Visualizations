@@ -26,10 +26,11 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     update_editor = Signal()
 
-    def __init__(self, parent, simulator, env_params):
+    def __init__(self, parent, simulator, simulator_thread, simulator_mutex, env_params):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
+        self.simulator_thread = simulator_thread
         self.main = parent
         self.visualizers = []
 
@@ -59,6 +60,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     def add_results(self):
 
+        self.simulator_thread.quit()
         self.results_tab = ResultsDisplay(self.main, self.simulator, self.rdt_tab.rdt_volume, self.rdt_tab.rdt_density)
         self.tabs.addTab(self.results_tab, "Results")
         #self.main.setFixedSize(self.main.grid.sizeHint())
