@@ -1,8 +1,26 @@
-# Affinity.net
+# Affinity: an visualisation tool for Enhanced Equivalence Projective Simulation
 
 The original README can be found here: [EEPS](https://github.com/Asieh-A-Mofrad/Enhanced-Equivalence-Projective-Simulation)
 
-Future Work:
+## Motivation
+
+## Installation
+
+## Interface Design
+
+### Parameter Toolbox
+
+### Network Visualisation
+
+### Heatmap Visualisation
+
+### Realtional Density Theory Visualisations
+
+### Stimuli Editor
+
+### Experiment Designer
+
+## Future Work
 
 - [ ] Drag and drop tabs
 - [ ] Heatmap interaction
