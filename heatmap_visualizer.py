@@ -11,9 +11,22 @@ import pandas as pd
 from sklearn import preprocessing
 import mplcursors
 
+"""
+heatmap_visualizer.py
+
+Controls the heatmap visualisation, (currently) via
+the seaborn package
+"""
+
 
 class HeatmapVisualizer(QtWidgets.QWidget):
 
+    """
+    Heatmap of normalised edge weights
+    """
+
+    # TODO: Potentially add toggle for normalised edge weights/probability values
+    
     def __init__(self, parent, simulator):
         QtWidgets.QWidget.__init__(self)
 
@@ -38,13 +51,11 @@ class HeatmapVisualizer(QtWidgets.QWidget):
     
     def createClassButtons(self, num_classes):
 
-        # self.button_group_box = QGroupBox()
         self.class_layout = QHBoxLayout()
 
         def addToLayout(button, layout):
             self.class_layout.addWidget(button)
             self.class_layout.setSpacing(10)
-            # self.button_group_box.setLayout(layout)
 
         self.class_dict = {}
 
@@ -63,6 +74,10 @@ class HeatmapVisualizer(QtWidgets.QWidget):
         self.class_id = int(self.sender().objectName()[6]) - 1
 
     def visualize_heatmaps(self, clip_space):
+
+        """
+        Visualises normalised edge weights via seaborns
+        """
 
         # TODO: mplcursor doesn't work with seaborn, might change to matplotlib heatmaps
 

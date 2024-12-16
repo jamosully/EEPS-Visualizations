@@ -94,7 +94,7 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'], fontsize = 20)
                 self.r_ax.set_ylabel('Correct match ratio', fontsize = 20)
-                self.figure.tight_layout()
+                #self.figure.tight_layout()
 
                 # This one below doesn't seem to have a corresponding function with the canvas
 
@@ -102,9 +102,9 @@ class ResultsDisplay(QtWidgets.QWidget):
             elif self.results[value]['type'] == 'heatmap':
                 sns.heatmap(self.results[value]['result'].round(3),xticklabels=True, yticklabels=True, annot = True,
                         annot_kws = {"size": 14}, linewidths =.15, fmt="g", cmap="Blues", ax=self.r_ax) # cmap="Greens"
-                self.r_ax.set_title(self.results[value]['name'], fontsize = 16)
+                self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.tick_params(labelsize = 16)
-                self.figure.tight_layout()
+                #self.figure.tight_layout()
             elif self.results[value]['type'] == 'line':
                 rdt_df = pd.DataFrame(self.results[value]['result']).T
                 rdt_df.columns = rdt_df.columns.get_level_values(0)
@@ -121,9 +121,9 @@ class ResultsDisplay(QtWidgets.QWidget):
                                                                 units='points'))
                 self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())  
                 self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50) 
-                self.r_ax.legend(fontsize = 20)
-                self.r_ax.tick_params(labelsize = 20)
-                self.r_ax.set_title(self.results[value]['name'], fontsize = 20)
+                # self.r_ax.legend(fontsize = 20)
+                # self.r_ax.tick_params(labelsize = 20)
+                self.r_ax.set_title(self.results[value]['name'])
             self.canvas.draw()
             self.figure_id = value
         

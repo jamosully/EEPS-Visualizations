@@ -6,6 +6,14 @@ import EEPS.initialization_detail
 import networkx as nx
 import numpy as np
 
+"""
+experiment_designer.py (WOP)
+
+Provides an interface for creating new experimental designs.
+Users should have the ability to use pre-exisiting designs
+as templates for new designs
+"""
+
 class ExperimentDesigner(QtWidgets.QWdget):
 
     def __init__(self):
