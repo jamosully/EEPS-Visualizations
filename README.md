@@ -4,11 +4,17 @@ The original README can be found here: [EEPS](https://github.com/Asieh-A-Mofrad/
 
 ## Motivation
 
+This project was created as part of a summer project on the foundation year of the Interactive Artificial Intelligence Centre for Doctoral Training at the University of Bristol
+
 ## Installation
+
+The current build of Affinity
 
 ## Interface Design
 
 ### Parameter Toolbox
+
+The Parameter toolbox allows modification of agent and environment parameters
 
 ### Network Visualisation
 
@@ -19,6 +25,8 @@ The original README can be found here: [EEPS](https://github.com/Asieh-A-Mofrad/
 ### Stimuli Editor
 
 ### Experiment Designer
+
+### Changes to EEPS
 
 ## Future Work
 
