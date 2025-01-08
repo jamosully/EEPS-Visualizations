@@ -51,11 +51,11 @@ class HeatmapVisualizer(QtWidgets.QWidget):
     
     def createClassButtons(self, num_classes):
 
-        self.class_layout = QHBoxLayout()
+        self.classLayout = QHBoxLayout()
 
         def addToLayout(button, layout):
-            self.class_layout.addWidget(button)
-            self.class_layout.setSpacing(10)
+            self.classLayout.addWidget(button)
+            self.classLayout.setSpacing(10)
 
         self.class_dict = {}
 
@@ -64,10 +64,10 @@ class HeatmapVisualizer(QtWidgets.QWidget):
             button = QPushButton(button_name)
             button.setObjectName(button_name)
             self.class_dict[button.objectName] = i
-            addToLayout(button, self.class_layout)
+            addToLayout(button, self.classLayout)
             button.clicked.connect(self.visualizeClass)
         
-        self.grid.addLayout(self.class_layout, 0, 0)
+        self.grid.addLayout(self.classLayout, 0, 0)
 
     def visualizeClass(self):
         

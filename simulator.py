@@ -68,7 +68,7 @@ class Simulator(QtCore.QObject):
                                                 self.mtx)
         
         # For the RDT visualizer
-        main_display.rdt_tab.createClassButtons(self.environment.num_classes)
+        main_display.rdtTab.createClassButtons(self.environment.num_classes)
             
     Slot()
     def run_sim(self):

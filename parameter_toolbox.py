@@ -55,29 +55,29 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         print(self.model_agent_params)
 
-        self.agent_label = QLabel(self)
-        self.agent_label.setText("Agent Parameters")
+        self.agentLabel = QLabel(self)
+        self.agentLabel.setText("Agent Parameters")
 
-        self.env_label = QLabel(self)
-        self.env_label.setText("Environment Parameters")
+        self.envLabel = QLabel(self)
+        self.envLabel.setText("Environment Parameters")
 
-        self.env_toolbox = ParamTable(self, self.json_env_params)
-        self.agent_toolbox = ParamTable(self, self.json_agent_params)
+        self.envToolbox = ParamTable(self, self.json_env_params)
+        self.agentToolbox = ParamTable(self, self.json_agent_params)
 
         self.createFilenameEntry()
 
         # TODO: Create a separate function for adding all components
 
         self.box_layout.addWidget(self.fileTable)
-        self.box_layout.addWidget(self.agent_label)
-        self.box_layout.addWidget(self.agent_toolbox.table)
-        self.box_layout.addWidget(self.agent_toolbox.descriptionField)
-        self.box_layout.addWidget(self.env_label)
-        self.box_layout.addWidget(self.env_toolbox.table)
-        self.box_layout.addWidget(self.env_toolbox.descriptionField)
+        self.box_layout.addWidget(self.agentLabel)
+        self.box_layout.addWidget(self.agentToolbox.table)
+        self.box_layout.addWidget(self.agentToolbox.descriptionField)
+        self.box_layout.addWidget(self.envLabel)
+        self.box_layout.addWidget(self.envToolbox.table)
+        self.box_layout.addWidget(self.envToolbox.descriptionField)
 
         self.createButtons()
-        self.box_layout.addLayout(self.button_layout)
+        self.box_layout.addLayout(self.buttonLayout)
 
         self.toolbox.setLayout(self.box_layout)
 
@@ -90,18 +90,18 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         # TODO: Get export parameters button working
 
-        self.button_layout = QHBoxLayout()
+        self.buttonLayout = QHBoxLayout()
 
         self.createSimButton = QPushButton("Create Simulation")
         self.createSimButton.setObjectName("Create Simulation")
-        self.button_layout.addWidget(self.createSimButton)
-        self.button_layout.setSpacing(10)
+        self.buttonLayout.addWidget(self.createSimButton)
+        self.buttonLayout.setSpacing(10)
         self.createSimButton.clicked.connect(lambda: self.main.createSystem())
 
         self.exportParamsButton = QPushButton("Set Default Parameters")
         self.exportParamsButton.setObjectName("Set Default Parameters")
-        self.button_layout.addWidget(self.exportParamsButton)
-        self.button_layout.setSpacing(10)
+        self.buttonLayout.addWidget(self.exportParamsButton)
+        self.buttonLayout.setSpacing(10)
         self.exportParamsButton.clicked.connect(self.export_params_to_json)
 
     def createFilenameEntry(self):
@@ -109,7 +109,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         """
         Users can pick files from previous simulations
 
-        Uses the open_file_dialog, change_filename,
+        Uses the openFileDialog, change_filename,
         reset_filename, and updateParamsFromFile functions
         """
 
@@ -133,7 +133,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.loadFileButton = QPushButton("Load File")
         self.fileTable.setCellWidget(1, 0, self.loadFileButton)
-        self.loadFileButton.clicked.connect(self.open_file_dialog)
+        self.loadFileButton.clicked.connect(self.openFileDialog)
 
         self.newFileButton = QPushButton("New File")
         self.fileTable.setCellWidget(1, 1, self.newFileButton)
@@ -144,7 +144,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         print("Filename: " + text)
         self.main.filename = text
 
-    def open_file_dialog(self):
+    def openFileDialog(self):
 
         self.filename, ok = QFileDialog.getOpenFileName(
             self,
@@ -172,15 +172,15 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         for i, (param_name, value) in enumerate(self.data['environment_parameter'].items()):
             self.model_env_params[param_name] = value
-            for j in range(self.env_toolbox.table.rowCount()):
-                if self.env_toolbox.table.cellWidget(j, 1).param_name == param_name:
-                    self.env_toolbox.table.cellWidget(j, 1).update_param_value(value[0])
+            for j in range(self.envToolbox.table.rowCount()):
+                if self.envToolbox.table.cellWidget(j, 1).param_name == param_name:
+                    self.envToolbox.table.cellWidget(j, 1).update_param_value(value[0])
 
         for i, (param_name, value) in enumerate(self.data['agent_parameter'].items()):
             self.model_agent_params[param_name] = value
-            for j in range(self.agent_toolbox.table.rowCount()):
-                if self.agent_toolbox.table.cellWidget(j, 1).param_name == param_name:
-                    self.agent_toolbox.table.cellWidget(j, 1).update_param_value(value[0]) 
+            for j in range(self.agentToolbox.table.rowCount()):
+                if self.agentToolbox.table.cellWidget(j, 1).param_name == param_name:
+                    self.agentToolbox.table.cellWidget(j, 1).update_param_value(value[0]) 
     
     
     def reset_filename(self):

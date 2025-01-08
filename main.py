@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.filename = None
 
-        self.grid.addWidget(self.parameter_menu.toolbox, 0, 0)
+        self.grid.addWidget(self.parameterMenu.toolbox, 0, 0)
         self.grid.addWidget(self.tabs, 0 , 1)
 
         self.grid.setColumnStretch(0, 1)
@@ -82,7 +82,7 @@ class MainWindow(QtWidgets.QWidget):
         and save parameters as default in intialization.py
         """
 
-        self.parameter_menu = ParameterToolbox(self)
+        self.parameterMenu = ParameterToolbox(self)
 
     def createStimuliEditor(self, main, simulator):
 
@@ -132,33 +132,33 @@ class MainWindow(QtWidgets.QWidget):
         # Separate agents exist on separate tabs
 
         self.tab = QGroupBox()
-        self.tab_layout = QGridLayout()
+        self.tabLayout = QGridLayout()
 
         self.models[self.model_num] = {}
-        self.models[self.model_num]['simulator'] = self.createSim(self.parameter_menu.model_agent_params, 
-                                                                     self.parameter_menu.model_env_params)
+        self.models[self.model_num]['simulator'] = self.createSim(self.parameterMenu.model_agent_params, 
+                                                                     self.parameterMenu.model_env_params)
         self.threads.append(self.models[self.model_num]['simulator']['thread'])
 
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator'],
-                                                                       self.parameter_menu.model_env_params)
+                                                                       self.parameterMenu.model_env_params)
         
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
         
-        self.models[self.model_num]['main_display'].assign_control_panel(self.models[self.model_num]['control_panel'])
+        self.models[self.model_num]['main_display'].assignControlPanel(self.models[self.model_num]['control_panel'])
 
         self.models[self.model_num]['stim_editor'] = self.createStimuliEditor(self.models[self.model_num]['main_display'],
                                                                               self.models[self.model_num]['simulator']['sim'])
         
-        self.models[self.model_num]['main_display'].assign_stim_editor(self.models[self.model_num]['stim_editor'])
+        self.models[self.model_num]['main_display'].assignStimEditor(self.models[self.model_num]['stim_editor'])
 
-        self.tab_layout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
-        self.tab_layout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
-        self.tab_layout.addWidget(self.models[self.model_num]['stim_editor'], 0, 2)
+        self.tabLayout.addWidget(self.models[self.model_num]['control_panel'], 0, 0)
+        self.tabLayout.addWidget(self.models[self.model_num]['main_display'], 0, 1)
+        self.tabLayout.addWidget(self.models[self.model_num]['stim_editor'], 0, 2)
 
-        self.tab_layout.setColumnStretch(1, 3)
+        self.tabLayout.setColumnStretch(1, 3)
 
-        self.tab.setLayout(self.tab_layout)
+        self.tab.setLayout(self.tabLayout)
 
         self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
 

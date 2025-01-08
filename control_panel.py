@@ -28,7 +28,7 @@ class ControlPanel(QtWidgets.QWidget):
 
     update_params = Signal()
     
-    def __init__(self,  main_display, simulator, simulator_thread, mutex):
+    def __init__(self,  mainDisplay, simulator, simulatorThread, mutex):
         QtWidgets.QWidget.__init__(self)
 
         # TODO: This initialization is a mess
@@ -36,17 +36,17 @@ class ControlPanel(QtWidgets.QWidget):
         
         self.verticalGroupBox = QGroupBox()
         self.simulator = simulator
-        self.main_display = main_display
-        self.simulator_thread = simulator_thread
+        self.mainDisplay = mainDisplay
+        self.simulatorThread = simulatorThread
 
         self.step_count = 1
 
-        self.panel_layout = QVBoxLayout()
+        self.panelLayout = QVBoxLayout()
 
         def addToLayout(widget):
-            self.panel_layout.addWidget(widget)
-            self.panel_layout.setSpacing(10)
-            self.verticalGroupBox.setLayout(self.panel_layout)
+            self.panelLayout.addWidget(widget)
+            self.panelLayout.setSpacing(10)
+            self.verticalGroupBox.setLayout(self.panelLayout)
 
         self.modifyParametersButton = QPushButton("Update Parameters", self)
         self.modifyParametersButton.setObjectName("Update Parameters")
@@ -64,8 +64,8 @@ class ControlPanel(QtWidgets.QWidget):
         self.stepButton.setObjectName("Proceed")
         addToLayout(self.stepButton)
 
-        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.main_display.main.parameter_menu.model_agent_params,
-                                                                                             self.main_display.main.parameter_menu.model_env_params))
+        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.mainDisplay.main.parameter_menu.model_agent_params,
+                                                                                             self.mainDisplay.main.parameter_menu.model_env_params))
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)
@@ -76,28 +76,28 @@ class ControlPanel(QtWidgets.QWidget):
         print("Button Panel Created")
 
         self.stepSlider = StepControl(self, self.step_count)
-        self.panel_layout.addWidget(self.stepSlider.stepslider, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
-        self.panel_layout.setSpacing(10)
-        self.verticalGroupBox.setLayout(self.panel_layout)
+        self.panelLayout.addWidget(self.stepSlider.stepslider, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.panelLayout.setSpacing(10)
+        self.verticalGroupBox.setLayout(self.panelLayout)
 
-        self.panel_layout.addWidget(self.stepSlider.stepCounter)#, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
-        self.panel_layout.setSpacing(10)
-        self.verticalGroupBox.setLayout(self.panel_layout)
-        self.setLayout(self.panel_layout)
+        self.panelLayout.addWidget(self.stepSlider.stepCounter)#, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.panelLayout.setSpacing(10)
+        self.verticalGroupBox.setLayout(self.panelLayout)
+        self.setLayout(self.panelLayout)
 
     Slot()
     def build_model(self):
         
         self.simulator.initialize_model(
             self.step_count,
-            self.main_display)
+            self.mainDisplay)
         self.runSimButton.setDisabled(False)
         print("Parameters Loaded")
     
     Slot()
     def start_model(self):
 
-        self.simulator_thread.start()
+        self.simulatorThread.start()
         self.stepButton.setDisabled(False)
         print("Model Running")
 
@@ -140,4 +140,4 @@ class StepControl(QtWidgets.QWidget):
         # TODO: This might need to be linked better
 
         self.control_panel.step_count = value
-        self.control_panel.main_display.step_changed = True
+        self.control_panel.mainDisplay.step_changed = True

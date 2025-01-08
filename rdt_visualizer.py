@@ -74,12 +74,12 @@ class RDTVisualizer(QtWidgets.QWidget):
     def createClassButtons(self, num_classes):
 
         # self.button_group_box = QGroupBox()
-        self.class_layout = QHBoxLayout()
+        self.classLayout = QHBoxLayout()
         self.num_classes = num_classes
 
         def addToLayout(button, layout):
-            self.class_layout.addWidget(button)
-            self.class_layout.setSpacing(10)
+            self.classLayout.addWidget(button)
+            self.classLayout.setSpacing(10)
             # self.button_group_box.setLayout(layout)
 
         self.class_dict = {}
@@ -89,10 +89,10 @@ class RDTVisualizer(QtWidgets.QWidget):
             button = QPushButton(button_name)
             button.setObjectName(button_name)
             self.class_dict[button.objectName] = i
-            addToLayout(button, self.class_layout)
+            addToLayout(button, self.classLayout)
             button.clicked.connect(self.visualizeClass)
         
-        self.grid.addLayout(self.class_layout, 1, 0)
+        self.grid.addLayout(self.classLayout, 1, 0)
 
     def visualizeClass(self):
 

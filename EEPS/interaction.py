@@ -77,11 +77,11 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
-            self.vis_display.rdt_tab.track_rdt_data(self.agent.clip_space)
+            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space)
             if num_steps % self.vis_step == 0:
-                self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
-                self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
-                self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
+                self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
+                self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+                self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
                 self.pause.lock()
                 if self.vis_display.edits_made:
                     self.agent.clip_space = self.vis_display.update_clip_space()

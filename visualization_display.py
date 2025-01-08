@@ -34,24 +34,24 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.main = parent
         self.visualizers = []
 
-        self.stim_editor = None
+        self.stimEditor = None
         self.edited_clip_space = None
         self.edits_made = False
         self.step_changed = False
 
-        self.results_tab = None
+        self.resultsTab = None
 
         self.tabs = QTabWidget()
-        self.network_tab = NetworkVisualizer(self.main, self, simulator)
-        self.visualizers.append(self.network_tab)
-        self.rdt_tab = RDTVisualizer(self, simulator, env_params)
-        self.visualizers.append(self.rdt_tab)
-        self.heatmap_tab = HeatmapVisualizer(self, simulator)
-        self.visualizers.append(self.heatmap_tab)
+        self.networkTab = NetworkVisualizer(self.main, self, simulator)
+        self.visualizers.append(self.networkTab)
+        self.rdtTab = RDTVisualizer(self, simulator, env_params)
+        self.visualizers.append(self.rdtTab)
+        self.heatmapTab = HeatmapVisualizer(self, simulator)
+        self.visualizers.append(self.heatmapTab)
 
-        self.tabs.addTab(self.network_tab, "Network")
-        self.tabs.addTab(self.heatmap_tab, "Heatmap")
-        self.tabs.addTab(self.rdt_tab, "RDT")
+        self.tabs.addTab(self.networkTab, "Network")
+        self.tabs.addTab(self.heatmapTab, "Heatmap")
+        self.tabs.addTab(self.rdtTab, "RDT")
 
         self.simulator.sim_complete.connect(self.add_results)
 
@@ -61,32 +61,32 @@ class VisualizationDisplay(QtWidgets.QWidget):
     def add_results(self):
 
         self.simulator_thread.quit()
-        self.results_tab = ResultsDisplay(self.main, self.simulator, self.rdt_tab.rdt_volume, self.rdt_tab.rdt_density)
-        self.tabs.addTab(self.results_tab, "Results")
+        self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density)
+        self.tabs.addTab(self.resultsTab, "Results")
         #self.main.setFixedSize(self.main.grid.sizeHint())
 
     def delete_results(self):
 
-        if self.results_tab is not None:
-            self.tabs.removeTab(self.results_tab)
-            self.results_tab.deleteLater()
-            self.results_tab = None
+        if self.resultsTab is not None:
+            self.tabs.removeTab(self.resultsTab)
+            self.resultsTab.deleteLater()
+            self.resultsTab = None
 
-    def assign_control_panel(self, control_panel):
+    def assignControlPanel(self, controlPanel):
 
-        self.control_panel = control_panel
+        self.controlPanel = controlPanel
 
-    def assign_stim_editor(self, stim_editor):
+    def assignStimEditor(self, stimEditor):
 
-        self.stim_editor = stim_editor
+        self.stimEditor = stimEditor
 
     def populateEditor(self, stimuli, clip_space):
 
-        self.stim_editor.populateEditor(stimuli, clip_space)
+        self.stimEditor.populateEditor(stimuli, clip_space)
 
     def updateEditor(self):
 
-        self.stim_editor.updateEditor()
+        self.stimEditor.updateEditor()
 
     def update_clip_space(self):
 
@@ -98,5 +98,5 @@ class VisualizationDisplay(QtWidgets.QWidget):
     def update_step_count(self):
 
         self.step_changed = False
-        return self.control_panel.step_count
+        return self.controlPanel.step_count
 

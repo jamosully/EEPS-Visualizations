@@ -33,10 +33,10 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
-        self.results_layout = QHBoxLayout()
-        self.main_display = main
+        self.resultsLayout = QHBoxLayout()
+        self.mainDisplay = main
     
-        self.visual_grid = QGridLayout()
+        self.visualGrid = QGridLayout()
 
         self.figure = Figure(tight_layout=False)
         self.canvas = FigureCanvas(self.figure)
@@ -46,16 +46,16 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.createButtons()
 
-        self.visual_grid.addWidget(self.toolbar, 0, 0)
-        self.visual_grid.addWidget(self.canvas, 1, 0)
+        self.visualGrid.addWidget(self.toolbar, 0, 0)
+        self.visualGrid.addWidget(self.canvas, 1, 0)
 
-        self.results_layout.addWidget(self.backButton)
-        self.results_layout.addLayout(self.visual_grid)
-        self.results_layout.addWidget(self.forwardButton)
+        self.resultsLayout.addWidget(self.backButton)
+        self.resultsLayout.addLayout(self.visualGrid)
+        self.resultsLayout.addWidget(self.forwardButton)
 
-        self.setLayout(self.results_layout)
+        self.setLayout(self.resultsLayout)
 
-        self.display_results(rdt_volume, rdt_density)
+        self.displayResults(rdt_volume, rdt_density)
 
     def createButtons(self):
 
@@ -66,14 +66,14 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.forwardButton = QPushButton(self)
         self.forwardButton.setText(">")
-        self.forwardButton.clicked.connect(lambda: self.switch_figure(self.figure_id + 1))
+        self.forwardButton.clicked.connect(lambda: self.switchFigure(self.figure_id + 1))
 
         self.backButton = QPushButton(self)
         self.backButton.setText("<")
-        self.backButton.clicked.connect(lambda: self.switch_figure(self.figure_id - 1))
+        self.backButton.clicked.connect(lambda: self.switchFigure(self.figure_id - 1))
 
 
-    def switch_figure(self, value):
+    def switchFigure(self, value):
 
         """
         Generates each graph visualisation
@@ -128,13 +128,13 @@ class ResultsDisplay(QtWidgets.QWidget):
             self.figure_id = value
         
 
-    def display_results(self, rdt_volume, rdt_density):
+    def displayResults(self, rdt_volume, rdt_density):
 
         self.filename = self.simulator.file_name
 
         self.obtain_and_organise_data(rdt_volume, rdt_density)
 
-        self.switch_figure(self.figure_id)
+        self.switchFigure(self.figure_id)
 
         self.canvas.draw()
 
