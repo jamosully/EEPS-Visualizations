@@ -111,9 +111,9 @@ class Interaction(object):
             self.agent = copy.deepcopy(agent)
             self.run_experiment()
 
-            self.vis_display.rdt_tab.visualize_rdt_data(self.agent.clip_space)
-            self.vis_display.network_tab.visualize_memory_network(self.agent.clip_space)
-            self.vis_display.heatmap_tab.visualize_heatmaps(self.agent.clip_space)
+            self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
+            self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+            self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
 
             if i_trial == 0:
                 avg_time_training = self.environment.num_iteration_training.copy()

@@ -10,6 +10,8 @@ This project was created as part of a summer project on the foundation year of t
 
 The current build of Affinity
 
+ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT
+
 ## Interface Design
 
 ### Parameter Toolbox
@@ -42,7 +44,7 @@ The Parameter toolbox allows modification of agent and environment parameters
 - [x] Fix RDT
   - [ ] Add option to alter metrics
 - [ ] Documentation
-- [ ] Code comments
-- [ ] Uniformise function names
-  - [ ] Snake case non-gui variables
-  - [ ] Camel case for functions and gui components
+- [x] Code comments
+- [x] Uniformise function names
+  - [x] Snake case non-gui variables
+  - [x] Camel case for functions and gui components

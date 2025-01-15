@@ -427,8 +427,29 @@ def environment_details():
                         },
         "plot_blocks_ID": {'relation_type':['Baseline', 'Equivalence']},
         "mastery_training": 0.9
+        },
+     15: { # Pilgrim and Galizio 1995
+         "num_classes": 4,
+         "training_order": {
+                            1:[('A1','C1',4),('A2','C2',4),
+                               ('B1','C1',4),('B2','C2',4)],
+                            2:[('A1','D1',4),('A2','D2',4),
+                               ('A1','C1',4),('A2','C2',4),
+                               ('B1','C1',4),('B2','C2',4)],
+                            3:[('A1','D1',4),('A2','D2',4),
+                               ('A1','C1',4),('A2','C2',4),
+                               ('B1','C1',4),('B2','C2',4)], # "token wells left empty? unbaited?"
+                            4:[]
+                            },
+          "plot_blocks": {'relation_type':{
+                                          'Baseline':['AC', 'BC', 'AD'],
+                                          'Symmetry':['CA', 'CB', 'DA'],
+                                          'Equivalence':['CD', 'DC']
+                                          }
+                         },
+        "plot_blocks_ID": {'relation_type':['Baseline', 'Symmetry', 'Equivalence']},
+        "mastery_training": 0.875
         }
-
         }
 
     return environment_parameters_detail

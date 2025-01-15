@@ -29,6 +29,12 @@
             "description": "PLACEHOLDER",
             "value": 3,
             "type": "int"
+        },
+        {
+            "name": "autogenerate_classes",
+            "description": "Controls whether EEPS generates unspecified stimuli using the num_classes variable in initialization_detail",
+            "value": false,
+            "type": "bool"
         }
     ],
     "agent_parameters": [

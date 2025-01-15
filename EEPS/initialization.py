@@ -24,10 +24,11 @@ def environment_parameters():
 
     environment_parameter = {
                              "experiment_ID": [00],
-                             "environment_ID": [4],
+                             "environment_ID": [1],
                              "max_trial": [10000],
                              "num_agents": [1],
-                             "size_action_set": [3]
+                             "size_action_set": [3],
+                             "autogenerate_classes": [False]
                              }
 
     return environment_parameter

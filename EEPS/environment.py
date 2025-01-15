@@ -46,6 +46,7 @@ class Environment(object):
 
         self.num_classes = num_classes
         self.size_action_set = parameter["size_action_set"][0]
+        self.autogenerate_classes = parameter["autogenerate_classes"][0]
         self.training_order = training_order
         self.mastery_training = mastery_training
         self.plot_blocks = plot_blocks
@@ -118,7 +119,7 @@ class Environment(object):
         self.num_trials = 0
         use_class_range =  False
 
-        if len(list(self.training_order.items())[0][1][1][0]) == 2:
+        if len(list(self.training_order.items())[0][1][1][0]) == 2 and not self.autogenerate_classes:
             self.class_ranges = self.obtain_class_ranges()
             use_class_range = True
 
@@ -136,11 +137,15 @@ class Environment(object):
             for rpt in range(repeat_no):
                 action_list = []
                 action_list.append(str(action))
-                if len(act_list) > 1:
-                    comparison_list = np.random.choice(act_list,
-                                            self.size_action_set-1, replace=False)
+                if not self.autogenerate_classes and use_class_range:
+                    if len(act_list) > 1:
+                        comparison_list = np.random.choice(act_list,
+                                                self.size_action_set-1, replace=False)
+                    else:
+                        comparison_list = [act_list[0]]
                 else:
-                    comparison_list = [act_list[0]]
+                    comparison_list = np.random.choice(act_list,
+                                         self.size_action_set-1, replace=False)
                 for k in comparison_list:
                     action_list.append(str(pair[1][0]+ str(k+1)))
                 self.Block_list.append({percept: random.sample(action_list,
