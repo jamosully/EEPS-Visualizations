@@ -6,6 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap
 
 import networkx as nx
 import numpy as np
@@ -64,6 +65,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.stim_editor.update_clip_space(clip_space)
             self.table.update_editor.emit()
 
+        colours = [(1,1,1), (0,0,0), (0.85,0,0)]
+        edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)
+
         subsets = dict()
         color_map = []
         for stimuli in clip_space.nodes:
@@ -71,7 +75,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
 
         for item in subsets.items():
-            color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1])])
+            color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
 
         self.figure.clf()
         
@@ -82,7 +86,11 @@ class NetworkVisualizer(QtWidgets.QWidget):
         weights = np.array([weight for weight in weight_labels.values()])
         normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
 
+        print(weights)
+        print(normalized_weights)
+
         memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
+        memory_plot.set_facecolor('1')
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
@@ -94,6 +102,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         nx.draw_networkx_nodes(ordered_clip_space, pos, node_color=color_map, ax=memory_plot, node_size=500)
         nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot, font_color='white')
         self.edge_artist = []
+        weight_counter = 0
         for key, weight in normalized_weights.items():
             nx.draw_networkx_edges(ordered_clip_space,
                                     pos,
@@ -101,9 +110,11 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     edgelist=[key],
                                     ax=memory_plot,
                                     arrows=True,
-                                    #arrowsize=weight,
-                                    alpha=weight,
-                                    width=5)
+                                    edge_color=edge_color_map(weight),
+                                    width= 5,
+                                    alpha=weight) #+ (weights[weight_counter] / 8),
+                                    #alpha=weight)
+            weight_counter += 1
             
         network_cursor = mplcursors.cursor(self.figure)
 
