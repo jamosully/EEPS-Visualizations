@@ -260,7 +260,7 @@ class ParameterToolbox(QtWidgets.QWidget):
             case 'bool':
                 widget = ParamCheckBox(key)
                 widget.setChecked(value)
-                widget.clicked.connect(lambda: self.adjust_params(key, widget.checkState()))
+                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()))
                 return widget
             case 'env_id':
                 widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))

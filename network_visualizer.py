@@ -6,6 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib.colors as mcolors
+import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap
 
 import networkx as nx
@@ -65,8 +66,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.stim_editor.update_clip_space(clip_space)
             self.table.update_editor.emit()
 
-        colours = [(1,1,1), (0,0,0), (0.85,0,0)]
-        edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)
+        # colours = [(1,1,1), (0,0,0), (0.85,0,0)]
+        # edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)
+        edge_color_map = mpl.colormaps['gist_heat_r']
 
         subsets = dict()
         color_map = []
@@ -90,7 +92,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         print(normalized_weights)
 
         memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
-        memory_plot.set_facecolor('1')
+        #memory_plot.set_facecolor('1') 
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
@@ -111,7 +113,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     ax=memory_plot,
                                     arrows=True,
                                     edge_color=edge_color_map(weight),
-                                    width= 5,
+                                    width=2 + (weight * 6),
                                     alpha=weight) #+ (weights[weight_counter] / 8),
                                     #alpha=weight)
             weight_counter += 1

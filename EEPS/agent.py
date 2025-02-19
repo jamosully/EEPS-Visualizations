@@ -179,10 +179,6 @@ class Agent(object):
     
 
     def network_enhancement_in_progress(self):
-
-        # TODO: This inclusion prevents the mastery criterion being reached to progress
-        #       to the next step of training.
-        #       Need to find a work around/alternative
         
         if self.trained_edges is None:
             self.trained_edges = self.clip_space.edges

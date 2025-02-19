@@ -8,7 +8,7 @@ This project was created as part of a summer project on the foundation year of t
 
 ## Installation
 
-The current build of Affinity 
+The current build of Affinity
 
 ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT
 
@@ -28,6 +28,8 @@ Affinity's interface consists of four parts:
 The Parameter toolbox allows modification of agent and environment parameters
 
 ### Network Visualisation
+
+The primary view of Affinity is a network graph view which allows 
 
 ### Heatmap Visualisation
 

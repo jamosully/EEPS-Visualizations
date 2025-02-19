@@ -36,7 +36,6 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.env_params = env_params
         
         self.plot_blocks = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[2]
-        print(self.plot_blocks)
 
         if not self.plot_blocks:
             self.relation_types_available = False # Have to rely on training order instead
@@ -45,12 +44,14 @@ class RDTVisualizer(QtWidgets.QWidget):
             self.relation_types_available = True
             self.relation_types = self.plot_blocks['relation_type']
 
-        print(self.relation_types)
-
         self.rdt_volume = []
         self.rdt_density = []
 
-        self.num_classes = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[0]      
+        self.num_classes = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[0]
+        self.rdt_vol_type = self.env_params["rdt_volume_type"][0]
+
+        print(self.rdt_vol_type)
+
         for i in range(self.num_classes):
             self.rdt_volume.append([])
             self.rdt_density.append([])
@@ -149,15 +150,21 @@ class RDTVisualizer(QtWidgets.QWidget):
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
-        distances = dict(nx.all_pairs_shortest_path_length(clip_space))
+        if self.rdt_vol_type:
+            distances = dict(nx.all_pairs_shortest_path_length(clip_space))
 
-        for stimulus in distances:
-            for action in distances[stimulus]:
-                relation_pair = stimulus[0] + action[0]
-                if relation_pair in self.relation_types['Baseline']:
-                    continue
-                elif stimulus[1] == action[1]:
-                    rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
+            for stimulus in distances:
+                for action in distances[stimulus]:
+                    relation_pair = stimulus[0] + action[0]
+                    if relation_pair in self.relation_types['Baseline']:
+                        continue
+                    elif stimulus[1] == action[1]:
+                        rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
+        else:
+            for node in clip_space.nodes:
+                rdt_volume_count[int(node[1]) - 1] += 1
+            print("printing here?")
+            print(rdt_volume_count)
 
         for i in range(len(rdt_h_vectors)):
             if not rdt_h_vectors[i]:

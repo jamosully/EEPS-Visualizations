@@ -9,7 +9,7 @@
         {
             "name": "environment_ID",
             "description": "PLACEHOLDER",
-            "value": 14,
+            "value": 15,
             "type": "env_id"
         },
         {
@@ -34,6 +34,12 @@
             "name": "autogenerate_classes",
             "description": "Controls whether EEPS generates unspecified stimuli using the num_classes variable in initialization_detail",
             "value": false,
+            "type": "bool"
+        },
+        {
+            "name": "rdt_volume_type",
+            "description": "Ticked for nodal distance, unticked for number of nodes",
+            "value": true,
             "type": "bool"
         }
     ],

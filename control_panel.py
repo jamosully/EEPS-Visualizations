@@ -64,8 +64,8 @@ class ControlPanel(QtWidgets.QWidget):
         self.stepButton.setObjectName("Proceed")
         addToLayout(self.stepButton)
 
-        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.mainDisplay.main.parameter_menu.model_agent_params,
-                                                                                             self.mainDisplay.main.parameter_menu.model_env_params))
+        self.modifyParametersButton.clicked.connect(lambda: self.simulator.update_parameters(self.mainDisplay.main.parameterMenu.model_agent_params,
+                                                                                             self.mainDisplay.main.parameterMenu.model_env_params))
         self.initSimButton.clicked.connect(lambda: self.build_model())
         self.runSimButton.clicked.connect(self.start_model)
         self.stepButton.clicked.connect(mutex.unlock)

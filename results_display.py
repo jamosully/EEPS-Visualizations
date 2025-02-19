@@ -113,16 +113,17 @@ class ResultsDisplay(QtWidgets.QWidget):
 
                 for i in range(len(self.results[value]['result'])):
                     self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
-                                   alpha=0.5, linewidth=4,
-                                   transform=mtrans.offset_copy(self.r_ax.transData, 
-                                                                fig=self.figure, 
-                                                                x=(3 * i), 
-                                                                y=(3 * i), 
-                                                                units='points'))
-                self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())  
-                self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50) 
-                # self.r_ax.legend(fontsize = 20)
-                # self.r_ax.tick_params(labelsize = 20)
+                                   alpha=0.5, linewidth=4)
+                                #    transform=mtrans.offset_copy(self.r_ax.transData, 
+                                #                                 fig=self.figure, 
+                                #                                 x=(3 * i), 
+                                #                                 y=(3 * i), 
+                                #                                 units='points'))
+                # self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())  
+                # self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50)
+                self.r_ax.autoscale_view(True, True, True) 
+                self.r_ax.legend(fontsize = 20)
+                self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'])
             self.canvas.draw()
             self.figure_id = value

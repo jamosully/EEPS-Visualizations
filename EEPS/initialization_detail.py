@@ -428,8 +428,8 @@ def environment_details():
         "plot_blocks_ID": {'relation_type':['Baseline', 'Equivalence']},
         "mastery_training": 0.9
         },
-     15: { # Pilgrim and Galizio 1995 # THIS NEEDS A RE LOOK
-         "num_classes": 5,
+     15: { # Pilgrim and Galizio 1995 # Might be missing counterconditioning section?
+         "num_classes": 2,
          "training_order": {
                             1:[('A1','C1',4),('A2','C2',4),
                                ('B1','C1',4),('B2','C2',4)],
@@ -442,7 +442,7 @@ def environment_details():
                             4:[('A1','D2',4),('A2','D1',4),
                                ('A1','C1',4),('A2','C2',4),
                                ('B1','C1',4),('B2','C2',4)],
-                            5:[('D1','E1',3),('D2','E2',3), # DE training
+                            5:[('D1','E1',3),('D2','E2',3),
                                ('A1','C1',3),('A2','C2',3),
                                ('B1','C2',3),('B2','C2',3),
                                ('A1','D1',3),('A2','D2',3)] 

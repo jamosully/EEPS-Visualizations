@@ -28,7 +28,8 @@ def environment_parameters():
                              "max_trial": [10000],
                              "num_agents": [1],
                              "size_action_set": [3],
-                             "autogenerate_classes": [False]
+                             "autogenerate_classes": [False],
+                             "rdt_volume_type": [True]
                              }
 
     return environment_parameter
