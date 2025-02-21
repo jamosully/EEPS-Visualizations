@@ -135,6 +135,10 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.obtain_and_organise_data(rdt_volume, rdt_density)
 
+        for i in range(len(rdt_volume)):
+            print(i)
+            print(np.corrcoef(rdt_volume[i], rdt_density[i]))
+
         self.switchFigure(self.figure_id)
 
         self.canvas.draw()

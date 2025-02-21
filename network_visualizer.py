@@ -63,8 +63,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         """
 
         if self.selected_stim is not None:
-            self.table.stim_editor.update_clip_space(clip_space)
-            self.table.update_editor.emit()
+            self.table.stimEditor.update_clip_space(clip_space)
+            self.table.updateEditor.emit()
 
         # colours = [(1,1,1), (0,0,0), (0.85,0,0)]
         # edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)
@@ -87,9 +87,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         weights = np.array([weight for weight in weight_labels.values()])
         normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
-
-        print(weights)
-        print(normalized_weights)
 
         memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
         #memory_plot.set_facecolor('1') 

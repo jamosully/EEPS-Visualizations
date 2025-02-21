@@ -163,8 +163,6 @@ class RDTVisualizer(QtWidgets.QWidget):
         else:
             for node in clip_space.nodes:
                 rdt_volume_count[int(node[1]) - 1] += 1
-            print("printing here?")
-            print(rdt_volume_count)
 
         for i in range(len(rdt_h_vectors)):
             if not rdt_h_vectors[i]:

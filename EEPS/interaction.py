@@ -20,6 +20,7 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import networkx as nx
 import seaborn as sns; sns.set()
 import pdb
 
@@ -141,6 +142,10 @@ class Interaction(object):
                 prob_testing_clip_marginalized += self.agent.marginalized_probability(prob_testing_clip)
                 prob_testing_clip_category += self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
+
+            self.vis_display.rdtTab.visualize_rdt_data(nx.DiGraph(prob_testing_clip))
+            self.vis_display.networkTab.visualize_memory_network(nx.DiGraph(prob_testing_clip))
+            self.vis_display.heatmapTab.visualize_heatmaps(nx.DiGraph(prob_testing_clip))
 
         for k, v in avg_time_training.items():
             avg_time_training[k] = v/ num_agents

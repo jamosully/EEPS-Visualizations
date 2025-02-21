@@ -208,7 +208,7 @@ class Agent(object):
             W_old = W_new.copy()
             self.NE_itr += 1
 
-        self.clip_space = nx.Graph(W_new)
+        self.clip_space = nx.DiGraph(W_new)
 
     def Tau_matrix(self, P, W): # Ok!
 
