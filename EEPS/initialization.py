@@ -29,7 +29,8 @@ def environment_parameters():
                              "num_agents": [1],
                              "size_action_set": [3],
                              "autogenerate_classes": [False],
-                             "rdt_volume_type": [True]
+                             "rdt_volume_type": ["Nodal distance"],
+                             "rdt_density_type": ["Mean softmax"]
                              }
 
     return environment_parameter

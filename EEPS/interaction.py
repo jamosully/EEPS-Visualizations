@@ -78,7 +78,7 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
-            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space)
+            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies)
             if num_steps % self.vis_step == 0:
                 self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)

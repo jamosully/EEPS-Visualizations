@@ -14,8 +14,8 @@ import itertools
 class RDTVisualizer(QtWidgets.QWidget):
 
     """
-    Records relational density theory data in real-time
-    (density, volume, mass)
+        Records relational density theory data in real-time
+        (density, volume, mass)
     """
 
     def __init__(self, parent, simulator, env_params):
@@ -49,6 +49,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.num_classes = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[0]
         self.rdt_vol_type = self.env_params["rdt_volume_type"][0]
+        self.rdt_den_type = self.env_params["rdt_density_type"][0]
 
         print(self.rdt_vol_type)
 
@@ -129,7 +130,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.canvas.draw()
 
-    def track_rdt_data(self, clip_space: nx.DiGraph):
+    def track_rdt_data(self, clip_space: nx.DiGraph, accuracy_rates):
         
         rdt_volume_count = []
         rdt_density_value = []
@@ -150,26 +151,40 @@ class RDTVisualizer(QtWidgets.QWidget):
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
-        if self.rdt_vol_type:
-            distances = dict(nx.all_pairs_shortest_path_length(clip_space))
+        match self.rdt_vol_type:
+            case "Nodal distance":
+                distances = dict(nx.all_pairs_shortest_path_length(clip_space))
 
-            for stimulus in distances:
-                for action in distances[stimulus]:
-                    relation_pair = stimulus[0] + action[0]
-                    if relation_pair in self.relation_types['Baseline']:
-                        continue
-                    elif stimulus[1] == action[1]:
-                        rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
-        else:
-            for node in clip_space.nodes:
-                rdt_volume_count[int(node[1]) - 1] += 1
+                for stimulus in distances:
+                    for action in distances[stimulus]:
+                        relation_pair = stimulus[0] + action[0]
+                        if relation_pair in self.relation_types['Baseline']:
+                            continue
+                        elif stimulus[1] == action[1]:
+                            rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
+            case "Class size":
+                for node in clip_space.nodes:
+                    rdt_volume_count[int(node[1]) - 1] += 1
+            case "Number of relations":
+                for edge in clip_space.edges:
+                   rdt_volume_count[int(edge[0][1]) - 1] += 1
 
-        for i in range(len(rdt_h_vectors)):
-            if not rdt_h_vectors[i]:
-                rdt_density_value[i] = 0
-            else:
-                rdt_density_value[i] = np.mean(self.simulator.agent.softmax(rdt_h_vectors[i],
-                                                                        self.simulator.agent.beta_h)) / rdt_edge_count[i]
+        match self.rdt_den_type:
+            case "Mean softmax":
+                for i in range(len(rdt_h_vectors)):
+                    if not rdt_h_vectors[i]:
+                        rdt_density_value[i] = 0
+                    else:
+                        rdt_density_value[i] = np.mean(self.simulator.agent.softmax(rdt_h_vectors[i],
+                                                                                self.simulator.agent.beta_h)) / rdt_edge_count[i]
+            case "Class success rate":
+                for i in range(self.num_classes):
+                    rdt_density_value[i] = accuracy_rates[i + 1]
+            case "Mean h-value":
+                for i in range(self.num_classes):
+                    rdt_density_value[i] = np.mean(rdt_h_vectors[i])
+
+
 
         for i in range(self.num_classes):
             self.rdt_volume[i].append(rdt_volume_count[i])

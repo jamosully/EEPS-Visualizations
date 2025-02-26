@@ -38,9 +38,25 @@
         },
         {
             "name": "rdt_volume_type",
-            "description": "Ticked for nodal distance, unticked for number of nodes",
-            "value": true,
-            "type": "bool"
+            "description": "Determine how relational volume is measured in the agent's memory",
+            "value": "Class size",
+            "type": "enum",
+            "options": [
+                "Nodal distance",
+                "Class size",
+                "Number of relations"
+            ]
+        },
+        {
+            "name": "rdt_density_type",
+            "description": "Determines how relational density is measured in the agent's memory",
+            "value": "Class success rate",
+            "type": "enum",
+            "options": [
+                "Mean softmax",
+                "Class success rate",
+                "Mean h-value"
+            ]
         }
     ],
     "agent_parameters": [

@@ -55,6 +55,9 @@ class Environment(object):
         self.step = 1
         self.trial_no = 0
         self.correct = 0
+        self.class_trial_count = dict()
+        self.class_reward_count = dict()
+        self.class_accuracies = dict()
         self.next_step = False
         self.new_block = True
         self.Block_list = []
@@ -68,6 +71,11 @@ class Environment(object):
         for i in range(len(self.training_order)):
             self.Training_over_time[i+1] = []
             self.num_iteration_training[i+1] = 0
+
+        for j in range(num_classes):
+            self.class_accuracies[j + 1] = 0
+            self.class_reward_count[j + 1] = 0
+            self.class_trial_count[j + 1] = 0 
 
 
     def _preprocess(self): # Ok!
@@ -133,7 +141,6 @@ class Environment(object):
             else:
                 act_list = list(range(self.num_classes))
             act_list.remove(int(action[1])-1)
-            print(act_list)
             for rpt in range(repeat_no):
                 action_list = []
                 action_list.append(str(action))
@@ -177,12 +184,22 @@ class Environment(object):
             This method returns the reward (1 or -1) based on the correct or
             incorrect match of percept and action.
         """
+        self.class_trial_count[int(percept[1])] += 1
 
         if percept[1] == action[1]:
             reward = 1
+            self.class_reward_count[int(percept[1])] += 1
             self.correct += 1
         else:
             reward = -1
+
+        for x in range(self.num_classes):
+            if self.class_trial_count[x + 1] != 0:
+                self.class_accuracies[x + 1] = (self.class_reward_count[x + 1] / self.class_trial_count[x + 1])
+            else:
+                self.class_accuracies[x + 1] = 0
+
+        print(self.class_accuracies)
         return reward
 
 

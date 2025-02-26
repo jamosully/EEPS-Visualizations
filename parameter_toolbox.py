@@ -226,7 +226,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                     param['value'] = value
 
 
-    def createParamWidget(self, key, value, type):
+    def createParamWidget(self, key, value, type, options=[]):
 
         """
         Based on the type provided in initialization.json,
@@ -272,6 +272,14 @@ class ParameterToolbox(QtWidgets.QWidget):
                                   "Create experiment")
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
                 return widget
+            case 'enum':
+                widget = ParamComboBox(key, len(options))
+                for i, type in enumerate(options):
+                    widget.insertItem(i, type)
+                    if value == type:
+                        widget.setCurrentIndex(i)
+                widget.currentIndexChanged.connect(lambda: self.adjust_params(key, widget.currentText()))
+                return widget
 
 class ParamTable(QtWidgets.QWidget):
 
@@ -296,7 +304,10 @@ class ParamTable(QtWidgets.QWidget):
             param_label = ParamLabel(params[i]['description'])
             param_label.setIndent(5)
             param_label.setText(params[i]['name'] + "  ")
-            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type']))
+            if params[i]['type'] == "enum":
+                self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type'], params[i]["options"]))
+            else:
+                self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type']))
             self.table.setCellWidget(i, 0, param_label)
 
         self.descriptionField = QPlainTextEdit()
@@ -333,18 +344,15 @@ class ParamDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
 class ParamComboBox(QtWidgets.QComboBox):
 
-    def __init__(self, param_name, num_experiments):
+    def __init__(self, param_name, option_length):
         super(ParamComboBox, self).__init__()
 
         self.param_name = param_name
-        self.num_experiments = num_experiments
+        self.option_length = option_length
 
     def update_param_value(self, value):
 
-        if value == self.num_experiments - 1:
-            print("Creating experiments")
-        else:
-            self.setCurrentIndex(value)
+        self.setCurrentIndex(value)
 
 class ParamSpinBox(QtWidgets.QSpinBox):
 
