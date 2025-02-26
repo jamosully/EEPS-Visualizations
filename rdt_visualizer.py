@@ -70,15 +70,17 @@ class RDTVisualizer(QtWidgets.QWidget):
             self.rdt_density[type] = []
             self.denComboBox.insertItem(i, type)
             for j in range(self.num_classes):
-                self.rdt_vol_types.append([])
+                self.rdt_density[type].append([])
 
-        self.volComboBox.currentIndexChanged.connect(lambda: self.change_volume_type(self.volComboBox.currentText))
-        self.denComboBox.currentIndexChanged.connect(lambda: self.change_density_type(self.denComboBox.currentText))
+        print(self.rdt_volume)
+
+        self.volComboBox.currentIndexChanged.connect(lambda: self.change_volume_type(self.volComboBox.currentText()))
+        self.denComboBox.currentIndexChanged.connect(lambda: self.change_density_type(self.denComboBox.currentText()))
 
         self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.volComboBox, 0, 1)
         self.grid.addWidget(self.denComboBox, 0, 2)
-        self.grid.addWidget(self.canvas, 2, 0)
+        self.grid.addWidget(self.canvas, 2, 0, 1, 2)
 
     def change_volume_type(self, volume_type):
 
@@ -124,7 +126,7 @@ class RDTVisualizer(QtWidgets.QWidget):
             addToLayout(button, self.classLayout)
             button.clicked.connect(self.visualizeClass)
         
-        self.grid.addLayout(self.classLayout, 1, 0)
+        self.grid.addLayout(self.classLayout, 1, 0, 1, 2)
 
     def visualizeClass(self):
 
@@ -152,7 +154,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         volume_plot.plot(self.rdt_volume[self.rdt_vol_type][self.class_id])
         density_plot.plot(self.rdt_density[self.rdt_den_type][self.class_id])
-        mass_plot.plot(np.multiply(self.rdt_volume[self.rdt_vol_type][self.class_id], self.rdt_density[self.class_id]))
+        mass_plot.plot(np.multiply(self.rdt_volume[self.rdt_vol_type][self.class_id], self.rdt_density[self.rdt_den_type][self.class_id]))
 
         volume_plot.set(ylabel="Relational Volume")
         density_plot.set(ylabel="Relational Density")
@@ -162,8 +164,6 @@ class RDTVisualizer(QtWidgets.QWidget):
 
     def track_rdt_data(self, clip_space: nx.DiGraph, accuracy_rates):
         
-        rdt_volume_count = []
-        rdt_density_value = []
         rdt_edge_count = []
         rdt_h_vectors = []
 
@@ -171,8 +171,6 @@ class RDTVisualizer(QtWidgets.QWidget):
         #                  that are not related by direct training
         
         for i in range(self.num_classes):
-            rdt_volume_count.append(0)
-            rdt_density_value.append(0)
             rdt_edge_count.append(0)
             rdt_h_vectors.append([])
 
@@ -181,7 +179,8 @@ class RDTVisualizer(QtWidgets.QWidget):
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
-        for key in self.rdt_volume.keys:
+        for key in self.rdt_volume.keys():
+            vol_measures = [0] * self.num_classes
             match key:
                 case "Nodal distance":
                     distances = dict(nx.all_pairs_shortest_path_length(clip_space))
@@ -192,33 +191,36 @@ class RDTVisualizer(QtWidgets.QWidget):
                             if relation_pair in self.relation_types['Baseline']:
                                 continue
                             elif stimulus[1] == action[1]:
-                                rdt_volume_count[int(stimulus[1]) - 1] += distances[stimulus][action]
+                                vol_measures[int(stimulus[1]) - 1] += distances[stimulus][action]
+
                 case "Class size":
                     for node in clip_space.nodes:
-                        rdt_volume_count[int(node[1]) - 1] += 1
+                        vol_measures[int(node[1]) - 1] += 1
                 case "Number of relations":
                     for edge in clip_space.edges:
-                        rdt_volume_count[int(edge[0][1]) - 1] += 1
+                        vol_measures[int(edge[0][1]) - 1] += 1
 
+            for i in range(len(vol_measures)):
+                self.rdt_volume[key][i].append(vol_measures[i])
 
-        for key in self.rdt_density.keys:
+        for key in self.rdt_density.keys():
+            den_measures = [0] * self.num_classes
             match key:
                 case "Mean softmax":
                     for i in range(len(rdt_h_vectors)):
                         if not rdt_h_vectors[i]:
-                            rdt_density_value[i] = 0
+                            den_measures[i] = 0
                         else:
-                            rdt_density_value[i] = np.mean(self.simulator.agent.softmax(rdt_h_vectors[i],
+                            den_measures[i] = np.mean(self.simulator.agent.softmax(rdt_h_vectors[i],
                                                                                     self.simulator.agent.beta_h)) / rdt_edge_count[i]
                 case "Class success rate":
                     for i in range(self.num_classes):
-                        rdt_density_value[i] = accuracy_rates[i + 1]
+                        den_measures[i] = accuracy_rates[i + 1]
                 case "Mean h-value":
                     for i in range(self.num_classes):
-                        rdt_density_value[i] = np.mean(rdt_h_vectors[i])
-
-        for i in range(self.num_classes):
-            self.rdt_volume[i].append(rdt_volume_count[i])
-            self.rdt_density[i].append(rdt_density_value[i])
+                        den_measures[i] = np.mean(rdt_h_vectors[i])
+            
+            for i in range(len(den_measures)):
+                self.rdt_density[key][i] = den_measures[i]
 
         
