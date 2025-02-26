@@ -35,28 +35,6 @@
             "description": "Controls whether EEPS generates unspecified stimuli using the num_classes variable in initialization_detail",
             "value": false,
             "type": "bool"
-        },
-        {
-            "name": "rdt_volume_type",
-            "description": "Determine how relational volume is measured in the agent's memory",
-            "value": "Class size",
-            "type": "enum",
-            "options": [
-                "Nodal distance",
-                "Class size",
-                "Number of relations"
-            ]
-        },
-        {
-            "name": "rdt_density_type",
-            "description": "Determines how relational density is measured in the agent's memory",
-            "value": "Class success rate",
-            "type": "enum",
-            "options": [
-                "Mean softmax",
-                "Class success rate",
-                "Mean h-value"
-            ]
         }
     ],
     "agent_parameters": [
@@ -102,5 +80,15 @@
             "value": false,
             "type": "bool"
         }
+    ],
+    "rdt_volume_types": [
+        "Nodal distance",
+        "Class size",
+        "Number of relations"
+    ],
+    "rdt_density_types": [
+        "Mean softmax",
+        "Class success rate",
+        "Mean h-value"
     ]
 }

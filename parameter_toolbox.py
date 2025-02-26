@@ -45,6 +45,9 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.load_json()
 
+        self.rdt_volume_types = []
+        self.rdt_density_types = []
+
         self.environment_detail = EEPS.initialization_detail.environment_details()
 
         self.json_env_params = self.json_params['environment_parameters']
@@ -271,14 +274,6 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.insertItem(len(EEPS.initialization_detail.environment_details().items()),
                                   "Create experiment")
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
-                return widget
-            case 'enum':
-                widget = ParamComboBox(key, len(options))
-                for i, type in enumerate(options):
-                    widget.insertItem(i, type)
-                    if value == type:
-                        widget.setCurrentIndex(i)
-                widget.currentIndexChanged.connect(lambda: self.adjust_params(key, widget.currentText()))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):

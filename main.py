@@ -94,7 +94,7 @@ class MainWindow(QtWidgets.QWidget):
 
         return StimuliEditor(self, main, simulator)
 
-    def createTable(self, simulator, env_params):
+    def createTable(self, simulator, env_params, rdt_volume_types, rdt_density_types):
 
         """
         The table display holds visualizations and results
@@ -104,7 +104,9 @@ class MainWindow(QtWidgets.QWidget):
                                     simulator['sim'], 
                                     simulator['thread'], 
                                     simulator['mutex'],
-                                    env_params)
+                                    env_params,
+                                    rdt_volume_types,
+                                    rdt_density_types)
 
     def createControlPanel(self, main, simulator):
 
@@ -140,7 +142,9 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(self.models[self.model_num]['simulator']['thread'])
 
         self.models[self.model_num]['main_display'] = self.createTable(self.models[self.model_num]['simulator'],
-                                                                       self.parameterMenu.model_env_params)
+                                                                       self.parameterMenu.model_env_params,
+                                                                       self.parameterMenu.rdt_volume_types,
+                                                                       self.parameterMenu.rdt_density_types)
         
         self.models[self.model_num]['control_panel'] = self.createControlPanel(self.models[self.model_num]['main_display'],
                                                                                self.models[self.model_num]['simulator'])
