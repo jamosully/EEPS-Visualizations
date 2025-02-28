@@ -135,9 +135,9 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.obtain_and_organise_data(rdt_volume, rdt_density)
 
-        for i in range(len(rdt_volume)):
-            print(i)
-            print(np.corrcoef(rdt_volume[i], rdt_density[i]))
+        # for i in range(len(rdt_volume)):
+        #     print(i)
+        #     print(np.corrcoef(rdt_volume[i], rdt_density[i]))
 
         self.switchFigure(self.figure_id)
 
@@ -163,26 +163,40 @@ class ResultsDisplay(QtWidgets.QWidget):
 
     def add_rdt_data(self, rdt_volume, rdt_density):
 
-        result = {}
-        result['result'] = rdt_volume
-        result['type'] = 'line'
-        result['name'] = "Relational volume over sim"
-        self.results.append(result)
+        for volume in rdt_volume.keys():
+            volume_result = {}
+            volume_result['result'] = rdt_volume[volume]
+            volume_result['type'] = 'line'
+            volume_result['name'] = "Relational volume (" + volume + ") during simulation"
+            self.results.append(volume_result)
+            
+        for density in rdt_density.keys():
+            density_result = {}
+            density_result['result'] = rdt_density[density]
+            density_result['type'] = 'line'
+            density_result['name'] = "Relational density (" + density + ") during simulation"
+            self.results.append(density_result)
         
-        result = {}
-        result['result'] = rdt_density
-        result['type'] = 'line'
-        result['name'] = "Relational density over sim"
-        self.results.append(result)
+        # result = {}
+        # result['result'] = rdt_volume
+        # result['type'] = 'line'
+        # result['name'] = "Relational volume over sim"
+        # self.results.append(result)
+        
+        # result = {}
+        # result['result'] = rdt_density
+        # result['type'] = 'line'
+        # result['name'] = "Relational density over sim"
+        # self.results.append(result)
 
-        result = {}
-        r_mass = []
-        for i in range(len(rdt_density)):
-            r_mass.append(np.multiply(rdt_density[i], rdt_volume[i]))
-        result['result'] = r_mass
-        result['type'] = 'line'
-        result['name'] = "Relational mass over sim"
-        self.results.append(result)
+        # result = {}
+        # r_mass = []
+        # for i in range(len(rdt_density)):
+        #     r_mass.append(np.multiply(rdt_density[i], rdt_volume[i]))
+        # result['result'] = r_mass
+        # result['type'] = 'line'
+        # result['name'] = "Relational mass over sim"
+        # self.results.append(result)
 
 
 
