@@ -80,7 +80,7 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.volComboBox, 0, 1)
         self.grid.addWidget(self.denComboBox, 0, 2)
-        self.grid.addWidget(self.canvas, 2, 0, 1, 2)
+        self.grid.addWidget(self.canvas, 2, 0, 1, 3)
 
     def change_volume_type(self, volume_type):
 
@@ -126,7 +126,7 @@ class RDTVisualizer(QtWidgets.QWidget):
             addToLayout(button, self.classLayout)
             button.clicked.connect(self.visualizeClass)
         
-        self.grid.addLayout(self.classLayout, 1, 0, 1, 2)
+        self.grid.addLayout(self.classLayout, 1, 0, 1, 3)
 
     def visualizeClass(self):
 
@@ -191,7 +191,10 @@ class RDTVisualizer(QtWidgets.QWidget):
                             if relation_pair in self.relation_types['Baseline']:
                                 continue
                             elif stimulus[1] == action[1]:
-                                vol_measures[int(stimulus[1]) - 1] += distances[stimulus][action]
+                                if distances[stimulus][action] > vol_measures[int(stimulus[1]) - 1] and vol_measures[int(stimulus[1]) - 1] != 0:
+                                    continue
+                                else:
+                                    vol_measures[int(stimulus[1]) - 1] += distances[stimulus][action]
 
                 case "Class size":
                     for node in clip_space.nodes:
@@ -219,8 +222,10 @@ class RDTVisualizer(QtWidgets.QWidget):
                 case "Mean h-value":
                     for i in range(self.num_classes):
                         den_measures[i] = np.mean(rdt_h_vectors[i])
+                        if np.isnan(den_measures[i]):
+                            den_measures[i] = 0
             
             for i in range(len(den_measures)):
-                self.rdt_density[key][i] = den_measures[i]
+                self.rdt_density[key][i].append(den_measures[i])
 
         

@@ -143,6 +143,7 @@ class Interaction(object):
                 prob_testing_clip_category += self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
 
+            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies)
             self.vis_display.rdtTab.visualize_rdt_data(nx.DiGraph(prob_testing_clip))
             self.vis_display.networkTab.visualize_memory_network(nx.DiGraph(prob_testing_clip))
             self.vis_display.heatmapTab.visualize_heatmaps(nx.DiGraph(prob_testing_clip))

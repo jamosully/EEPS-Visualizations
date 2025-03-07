@@ -125,6 +125,13 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'])
+            elif self.results[value]['type'] == 'boxplot':
+                print(list(self.results[value]['result'].values()))
+                self.r_ax.boxplot(list(self.results[value]['result'].values()), labels=list(self.results[value]['result'].keys()))
+                self.r_ax.set_title(self.results[value]['name'])
+                self.r_ax.set_ylabel("Pearson Correlation Coefficient Value")
+                self.r_ax.legend()
+                self.figure.autofmt_xdate(rotation=45)
             self.canvas.draw()
             self.figure_id = value
         
@@ -177,26 +184,42 @@ class ResultsDisplay(QtWidgets.QWidget):
             density_result['name'] = "Relational density (" + density + ") during simulation"
             self.results.append(density_result)
         
-        # result = {}
-        # result['result'] = rdt_volume
-        # result['type'] = 'line'
-        # result['name'] = "Relational volume over sim"
-        # self.results.append(result)
-        
-        # result = {}
-        # result['result'] = rdt_density
-        # result['type'] = 'line'
-        # result['name'] = "Relational density over sim"
-        # self.results.append(result)
+        p_coef = {}
+        for volume_mes in rdt_volume.keys():
+            for density_mes in rdt_density.keys():
 
-        # result = {}
-        # r_mass = []
-        # for i in range(len(rdt_density)):
-        #     r_mass.append(np.multiply(rdt_density[i], rdt_volume[i]))
-        # result['result'] = r_mass
-        # result['type'] = 'line'
-        # result['name'] = "Relational mass over sim"
-        # self.results.append(result)
+                # Calculate relational mass using the two measures of volumen and density
+
+                r_mass = []
+                result = {}
+                for i in range(len(rdt_volume[volume_mes])):
+                    r_mass.append(np.multiply(rdt_volume[volume_mes][i], rdt_density[density_mes][i]))
+                result['result'] = r_mass
+                result['type'] = 'line'
+                result['name'] = "Relational mass (volume = " + volume_mes + ", density = " + density_mes + ") during simulation"
+                self.results.append(result)
+
+                # Calculate Pearson's correlation coefficient
+
+                # coefs = {}
+                coefs = []
+                for j in range(len(rdt_volume[volume_mes])):
+                    coef = (np.corrcoef(rdt_volume[volume_mes][j], rdt_density[density_mes][j])[0,1])
+                    # print(volume_mes + ", " + density_mes)
+                    # print(np.corrcoef(rdt_volume[volume_mes][j], rdt_density[density_mes][j]))
+                    # coef_name = "Class" + str(j + 1)
+                    # coefs[coef_name] = coef
+                    coefs.append(coef)
+                coef_name = "Rv = " + volume_mes + ", Rp = " + density_mes
+                p_coef[coef_name] = coefs
+
+        result = {}
+        # result['result'] = pd.DataFrame.from_dict(p_coef).T
+        result['result'] = p_coef
+        result['type'] = 'boxplot'
+        result['y_label'] = 'Correlation Coefficient'
+        result['name'] = "Pearsons correlation coefficients for relational volume and density combinations"
+        self.results.append(result)
 
 
 

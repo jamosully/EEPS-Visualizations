@@ -51,6 +51,12 @@
             "type": "unit_interval"
         },
         {
+            "name": "rdt_beta_h",
+            "description": "testing value for softmax function",
+            "value": 0.07,
+            "type": "unit_interval"
+        },
+        {
             "name": "beta_t",
             "description": "float >=0, controls agent\u2019s function in a trial at test phase (derived relation)",
             "value": 8,

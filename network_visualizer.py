@@ -64,7 +64,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         if self.selected_stim is not None:
             self.table.stimEditor.update_clip_space(clip_space)
-            self.table.updateEditor.emit()
+            self.table.update_editor.emit()
 
         # colours = [(1,1,1), (0,0,0), (0.85,0,0)]
         # edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)

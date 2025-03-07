@@ -199,7 +199,6 @@ class Environment(object):
             else:
                 self.class_accuracies[x + 1] = 0
 
-        print(self.class_accuracies)
         return reward
 
 
