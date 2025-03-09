@@ -106,21 +106,25 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.tick_params(labelsize = 16)
                 #self.figure.tight_layout()
             elif self.results[value]['type'] == 'line':
-                rdt_df = pd.DataFrame(self.results[value]['result']).T
-                rdt_df.columns = rdt_df.columns.get_level_values(0)
+                if isinstance(self.results[value]['result'], dict):
+                   line_df = pd.DataFrame.from_dict(self.results[value]['result'])
+                   self.r_ax.plot(line_df)
+                else:
+                    line_df = pd.DataFrame(self.results[value]['result']).T
+                    line_df.columns = line_df.columns.get_level_values(0)
 
                 # TODO: Fix this, make better
 
-                for i in range(len(self.results[value]['result'])):
-                    self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
-                                   alpha=0.5, linewidth=4)
-                                #    transform=mtrans.offset_copy(self.r_ax.transData, 
-                                #                                 fig=self.figure, 
-                                #                                 x=(3 * i), 
-                                #                                 y=(3 * i), 
-                                #                                 units='points'))
-                # self.r_ax.set_ylim(rdt_df.min().min(), rdt_df.max().max())  
-                # self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50)
+                    for i in range(len(self.results[value]['result'])):
+                        self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
+                                    alpha=0.5, linewidth=4)
+                                    #    transform=mtrans.offset_copy(self.r_ax.transData, 
+                                    #                                 fig=self.figure, 
+                                    #                                 x=(3 * i), 
+                                    #                                 y=(3 * i), 
+                                    #                                 units='points'))
+                    # self.r_ax.set_ylim(line_df.min().min(), line_df.max().max())  
+                    # self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50)
                 self.r_ax.autoscale_view(True, True, True) 
                 self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
@@ -185,12 +189,14 @@ class ResultsDisplay(QtWidgets.QWidget):
             self.results.append(density_result)
         
         p_coef = {}
+        all_masses = {}
         for volume_mes in rdt_volume.keys():
             for density_mes in rdt_density.keys():
 
                 # Calculate relational mass using the two measures of volumen and density
 
                 r_mass = []
+                cum_mass = []
                 result = {}
                 for i in range(len(rdt_volume[volume_mes])):
                     r_mass.append(np.multiply(rdt_volume[volume_mes][i], rdt_density[density_mes][i]))
@@ -198,6 +204,8 @@ class ResultsDisplay(QtWidgets.QWidget):
                 result['type'] = 'line'
                 result['name'] = "Relational mass (volume = " + volume_mes + ", density = " + density_mes + ") during simulation"
                 self.results.append(result)
+                all_masses[("Rv = " + volume_mes + ", Rp = " + density_mes)] = (np.mean(r_mass, axis=0))
+                
 
                 # Calculate Pearson's correlation coefficient
 
@@ -213,6 +221,12 @@ class ResultsDisplay(QtWidgets.QWidget):
                 coef_name = "Rv = " + volume_mes + ", Rp = " + density_mes
                 p_coef[coef_name] = coefs
 
+        result = {}
+        result['result'] = all_masses
+        result['type'] = 'line'
+        result['name'] = "Relational mass during simulation"
+        self.results.append(result)
+        
         result = {}
         # result['result'] = pd.DataFrame.from_dict(p_coef).T
         result['result'] = p_coef
