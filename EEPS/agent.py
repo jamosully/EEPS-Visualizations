@@ -45,11 +45,14 @@ class Agent(object):
         self.trained_edges = None
         self.rdt_class = 0
 
-    def trial_preprocess(self, percept, action): # Ok!
+    def trial_preprocess(self, percept, action, new_trial): # Ok!
 
             """
             Takes a percept and an action set, updates clip_space if required.
             """
+
+            if new_trial and self.training_NE:
+                self.network_enhancement_in_progress()
 
             for act in  action:
                 if (percept, act) not in self.clip_space.edges():
@@ -98,10 +101,7 @@ class Agent(object):
             d['weight']= (1- self.gamma_damping) *d['weight']
 
         self.clip_space[percept][action]['weight'] += reward
-        self.clip_space[action][percept]['weight'] += (self.K * reward)
-
-        if new_trial and self.training_NE:
-            self.network_enhancement_in_progress()
+        self.clip_space[action][percept]['weight'] += (self.K * reward)    
 
 
     def softmax(self, h_vec, beta): # Ok!

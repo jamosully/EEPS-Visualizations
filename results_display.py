@@ -108,25 +108,21 @@ class ResultsDisplay(QtWidgets.QWidget):
             elif self.results[value]['type'] == 'line':
                 if isinstance(self.results[value]['result'], dict):
                    line_df = pd.DataFrame.from_dict(self.results[value]['result'])
-                   self.r_ax.plot(line_df)
+                   self.r_ax.plot(line_df, label=line_df.columns)
+                   self.r_ax.legend(fontsize = 5)
                 else:
                     line_df = pd.DataFrame(self.results[value]['result']).T
                     line_df.columns = line_df.columns.get_level_values(0)
-
-                # TODO: Fix this, make better
-
                     for i in range(len(self.results[value]['result'])):
                         self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
-                                    alpha=0.5, linewidth=4)
-                                    #    transform=mtrans.offset_copy(self.r_ax.transData, 
-                                    #                                 fig=self.figure, 
-                                    #                                 x=(3 * i), 
-                                    #                                 y=(3 * i), 
-                                    #                                 units='points'))
-                    # self.r_ax.set_ylim(line_df.min().min(), line_df.max().max())  
-                    # self.r_ax.set_xlim(0, len(self.results[value]['result'][i]) + 50)
-                self.r_ax.autoscale_view(True, True, True) 
-                self.r_ax.legend(fontsize = 20)
+                                    alpha=0.5, linewidth=4, transform=mtrans.offset_copy(self.r_ax.transData,
+                                                                                          fig=self.figure,
+                                                                                          y=3 * i,
+                                                                                          # x=3 * i,
+                                                                                          units='points'))
+                    self.r_ax.relim()
+                    self.r_ax.set_xlim(-10, len(self.results[value]['result'][i]) + 50)
+                    self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'])
             elif self.results[value]['type'] == 'boxplot':

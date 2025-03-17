@@ -57,6 +57,7 @@ class Interaction(object):
         self.file_name = "results/{}.p".format(file_name)#
         self.vis_display = vis_display
         self.pause = wait_signal
+        self.num_steps = 0
 
 
     def run_experiment(self): # Ok!
@@ -65,21 +66,21 @@ class Interaction(object):
 
         # TODO: Need a way to jump out of the for loop to update the model's parameters
 
-        num_steps = 0
-        for num_steps in range(self.max_trial):
+        self.num_steps = 0
+        for self.num_steps in range(self.max_trial):
 
             percept, action_set_t, new_trial = self.environment.next_trial()
 
             if self.environment.Training is not True:
                 break
 
-            self.agent.trial_preprocess(percept, action_set_t)
+            self.agent.trial_preprocess(percept, action_set_t, new_trial)
             action = self.agent.action_selection(percept, action_set_t)
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
             self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies)
-            if num_steps % self.vis_step == 0:
+            if self.num_steps % self.vis_step == 0:
                 self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
@@ -89,7 +90,7 @@ class Interaction(object):
                 if self.vis_display.step_changed:
                     self.vis_step = self.vis_display.update_step_count()
 
-        if num_steps == self.max_trial:
+        if self.num_steps == self.max_trial:
             sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
                                                             self.max_trial))
 
@@ -143,7 +144,7 @@ class Interaction(object):
                 prob_testing_clip_category += self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
 
-            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies)
+            self.vis_display.rdtTab.track_rdt_data(nx.DiGraph(prob_testing_clip), self.environment.class_accuracies)
             self.vis_display.rdtTab.visualize_rdt_data(nx.DiGraph(prob_testing_clip))
             self.vis_display.networkTab.visualize_memory_network(nx.DiGraph(prob_testing_clip))
             self.vis_display.heatmapTab.visualize_heatmaps(nx.DiGraph(prob_testing_clip))

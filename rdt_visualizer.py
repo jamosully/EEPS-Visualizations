@@ -183,25 +183,21 @@ class RDTVisualizer(QtWidgets.QWidget):
             vol_measures = [0] * self.num_classes
             match key:
                 case "Nodal distance":
-                    distances = dict(nx.all_pairs_shortest_path_length(clip_space))
+                    distances = dict(nx.all_pairs_shortest_path(clip_space))
 
                     for stimulus in distances:
                         for action in distances[stimulus]:
-                            relation_pair = stimulus[0] + action[0]
-                            if relation_pair in self.relation_types['Baseline']:
-                                continue
-                            elif stimulus[1] == action[1]:
-                                if distances[stimulus][action] > vol_measures[int(stimulus[1]) - 1] and vol_measures[int(stimulus[1]) - 1] != 0:
-                                    continue
-                                else:
-                                    vol_measures[int(stimulus[1]) - 1] += distances[stimulus][action]
-
+                            if action[1] is stimulus[1]:
+                                for clip in distances[stimulus][action]:
+                                    if clip is not stimulus and clip is not action:
+                                        vol_measures[int(stimulus[1]) - 1] += 1
                 case "Class size":
                     for node in clip_space.nodes:
                         vol_measures[int(node[1]) - 1] += 1
                 case "Number of relations":
                     for edge in clip_space.edges:
-                        vol_measures[int(edge[0][1]) - 1] += 1
+                        if edge[0][1] == edge[1][1]:
+                            vol_measures[int(edge[0][1]) - 1] += 1
 
             for i in range(len(vol_measures)):
                 self.rdt_volume[key][i].append(vol_measures[i])
