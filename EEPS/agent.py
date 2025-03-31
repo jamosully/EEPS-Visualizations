@@ -180,6 +180,9 @@ class Agent(object):
 
     def network_enhancement_in_progress(self):
         
+        # TODO: This function might need adjustment, especially in regard to relations that have already been trained
+        #       Maybe do some further testing?
+        
         if self.trained_edges is None:
             self.trained_edges = self.clip_space.edges
 

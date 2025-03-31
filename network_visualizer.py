@@ -7,7 +7,6 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 import matplotlib.colors as mcolors
 import matplotlib as mpl
-from matplotlib.colors import LinearSegmentedColormap
 
 import networkx as nx
 import numpy as np

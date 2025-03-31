@@ -59,7 +59,7 @@ To achieve the aims of this project, several changes were made to the original E
 - [x] Run NE during training
 - [ ] Find a third approach?
 - [x] Fix RDT
-  - [ ] Add option to alter metrics
+  - [x] Add option to alter metrics
 - [ ] Documentation
 - [x] Code comments
 - [x] Uniformise function names

@@ -403,7 +403,7 @@ def environment_details():
         "mastery_training": 0.9
         },
 
-     14: { # Cotter and Stewart 2023
+     14: { # Cotter and Stewart 2023 NOTE should I include the counterconditioning?
          "num_classes": 4,
          "training_order": {
                             1:[('A1','B1',12),('A2','B2',12),
@@ -418,6 +418,8 @@ def environment_details():
                                ('B3','C3',6),('B4','C4',6),
                                ('C1','D1',6),('C2','D2',6),
                                ('D1','E1',6),('D2','E2',6)],
+                            6:[('A1','B2',12),('A2','B3',12),
+                               ('A3','B4',12),('A4','B1',12)]
                             },
         "plot_blocks": {'relation_type':{
                                         'Baseline':['AB','BC','CD','DE'],

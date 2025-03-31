@@ -6,6 +6,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 
 import seaborn as sns
+import matplotlib as mpl
 import networkx as nx
 import pandas as pd
 from sklearn import preprocessing
@@ -82,6 +83,7 @@ class HeatmapVisualizer(QtWidgets.QWidget):
         # TODO: mplcursor doesn't work with seaborn, might change to matplotlib heatmaps
 
         self.figure.clf()
+        color_map = mpl.colormaps['gist_heat_r']
 
         scaler = preprocessing.MinMaxScaler()
         heat_df = nx.to_pandas_adjacency(clip_space)
@@ -89,7 +91,7 @@ class HeatmapVisualizer(QtWidgets.QWidget):
         norm_heat_df = norm_heat_df.reindex(sorted(norm_heat_df.columns), axis=1).sort_index()
 
         heatmap_plot = self.figure.add_subplot(111, picker=1)
-        map = sns.heatmap(norm_heat_df, ax=heatmap_plot)
+        map = sns.heatmap(norm_heat_df, ax=heatmap_plot, cmap=color_map)
         heatmap_plot.set(xlabel="Percept Stimuli", ylabel="Action Stimuli")
 
         heatmap_cursor = mplcursors.cursor(map)
