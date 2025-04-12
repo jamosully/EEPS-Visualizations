@@ -108,7 +108,8 @@ class Interaction(object):
         environment = copy.deepcopy(self.environment)
 
         for i_trial in range(num_agents):
-            print(i_trial)
+            if i_trial > 0:
+                self.vis_display.rdtTab.prepare_for_next_agent()
             self.environment = copy.deepcopy(environment)
             self.agent = copy.deepcopy(agent)
             self.run_experiment()
@@ -144,10 +145,13 @@ class Interaction(object):
                 prob_testing_clip_category += self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
 
-            self.vis_display.rdtTab.track_rdt_data(nx.DiGraph(prob_testing_clip), self.environment.class_accuracies)
-            self.vis_display.rdtTab.visualize_rdt_data(nx.DiGraph(prob_testing_clip))
-            self.vis_display.networkTab.visualize_memory_network(nx.DiGraph(prob_testing_clip))
-            self.vis_display.heatmapTab.visualize_heatmaps(nx.DiGraph(prob_testing_clip))
+            final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(prob_testing_clip, self.agent.beta_h))
+            
+            self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies)
+            self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
+            self.vis_display.networkTab.visualize_memory_network(final_clip_space)
+            self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
+
 
         for k, v in avg_time_training.items():
             avg_time_training[k] = v/ num_agents

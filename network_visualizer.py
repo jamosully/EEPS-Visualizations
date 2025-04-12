@@ -110,7 +110,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                     arrows=True,
                                     edge_color=edge_color_map(weight),
                                     width=2 + (weight * 6),
-                                    alpha=weight) #+ (weights[weight_counter] / 8),
+                                    alpha=max(0.33, weight)) #+ (weights[weight_counter] / 8),
                                     #alpha=weight)
             weight_counter += 1
             

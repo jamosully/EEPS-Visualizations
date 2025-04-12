@@ -21,7 +21,7 @@
         {
             "name": "num_agents",
             "description": "PLACEHOLDER",
-            "value": 1,
+            "value": 2,
             "type": "int"
         },
         {
@@ -33,7 +33,7 @@
         {
             "name": "autogenerate_classes",
             "description": "Controls whether EEPS generates unspecified stimuli using the num_classes variable in initialization_detail",
-            "value": false,
+            "value": true,
             "type": "bool"
         }
     ],
@@ -47,7 +47,7 @@
         {
             "name": "beta_h",
             "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
-            "value": 0.10000000000000003,
+            "value": 1.0,
             "type": "unit_interval"
         },
         {

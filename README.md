@@ -25,11 +25,11 @@ Affinity's interface consists of four parts:
 
 ### Parameter Toolbox
 
-The Parameter toolbox allows modification of agent and environment parameters
+The Parameter toolbox allows modification of agent and environment parameters, as well as loading prior setups from previous experiments. Affinity has 
 
 ### Network Visualisation
 
-The primary view of Affinity is a network graph view which allows 
+The network tab on the main display contains visualisations of the agents clip space as a graph network 
 
 ### Heatmap Visualisation
 

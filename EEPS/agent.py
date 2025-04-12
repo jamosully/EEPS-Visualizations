@@ -125,6 +125,15 @@ class Agent(object):
         h_vec = h - np.min(h) + 1
 
         return h_vec
+    
+    def reverse_ne_for_graph(self, w, beta):
+
+        graph_matrix = w
+
+        for column in graph_matrix:
+            graph_matrix[column] = self.softmax_revers(graph_matrix[column], self.beta_h)
+
+        return graph_matrix
 
 
     def category_list(self, Tr_martix):# Ok!
@@ -191,7 +200,6 @@ class Agent(object):
         for i in W_in.index:
             W_in.at[i, i] = W_in.max(axis = 1)[i]
 
-        print(W_in)
         original_W = W_in
 
         P = self.softmax_matrix(W_in)
@@ -211,7 +219,7 @@ class Agent(object):
             W_old = W_new.copy()
             self.NE_itr += 1
 
-        self.clip_space = nx.DiGraph(W_new)
+        self.clip_space = nx.DiGraph(self.reverse_ne_for_graph(W_new, self.beta_h))
 
     def Tau_matrix(self, P, W): # Ok!
 

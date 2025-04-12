@@ -84,6 +84,9 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.figure.clf()
         self.r_ax = self.figure.add_subplot(111)
+        self.r_ax = self.figure.axes[0]
+        self.r_ax.axis("auto")
+        self.r_ax.set_autoscale_on(True)
 
         if value >= 0 and value < len(self.results):
             if self.results[value]['type'] == 'bar':
@@ -94,30 +97,32 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.set_title(self.results[value]['name'], fontsize = 20)
                 self.r_ax.set_ylabel('Correct match ratio', fontsize = 20)
-                #self.figure.tight_layout()
 
                 # This one below doesn't seem to have a corresponding function with the canvas
 
                 #self.r_ax( rotation=45, fontsize = 18, horizontalalignment = 'right')
             elif self.results[value]['type'] == 'heatmap':
                 sns.heatmap(self.results[value]['result'].round(3),xticklabels=True, yticklabels=True, annot = True,
-                        annot_kws = {"size": 14}, linewidths =.15, fmt="g", cmap="Blues", ax=self.r_ax) # cmap="Greens"
+                        annot_kws = {"size": 7}, linewidths =.15, fmt="g", cmap="Blues", ax=self.r_ax) # cmap="Greens"
                 self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.tick_params(labelsize = 16)
-                #self.figure.tight_layout()
             elif self.results[value]['type'] == 'line':
                 if isinstance(self.results[value]['result'], dict):
                    line_df = pd.DataFrame.from_dict(self.results[value]['result'])
-                   self.r_ax.plot(line_df, label=line_df.columns)
+                   self.r_ax.plot(line_df, label=line_df.columns, linewidth=3)
                    self.r_ax.legend(fontsize = 5)
                 else:
                     line_df = pd.DataFrame(self.results[value]['result']).T
                     line_df.columns = line_df.columns.get_level_values(0)
                     for i in range(len(self.results[value]['result'])):
+                        offset = mtrans.offset_copy(self.r_ax.transData, fig=self.figure, y=(4 * i), units="points")
                         self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
-                                    alpha=1/(i + 1), linewidth=4)
+                                    alpha=0.8, linewidth=4, transform=offset)
+                    self.r_ax.set_ylim(line_df.min().min() - (np.mean(line_df) / 2), line_df.max().max() + (np.mean(line_df) / 2))  
+                    self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50) 
                     self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
+                self.r_ax.autoscale_view()
                 self.r_ax.set_title(self.results[value]['name'])
             elif self.results[value]['type'] == 'boxplot':
                 print(list(self.results[value]['result'].values()))
@@ -136,13 +141,7 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.obtain_and_organise_data(rdt_volume, rdt_density)
 
-        # for i in range(len(rdt_volume)):
-        #     print(i)
-        #     print(np.corrcoef(rdt_volume[i], rdt_density[i]))
-
         self.switchFigure(self.figure_id)
-
-        self.canvas.draw()
 
     def obtain_and_organise_data(self, rdt_volume, rdt_density):
 
@@ -164,16 +163,19 @@ class ResultsDisplay(QtWidgets.QWidget):
 
     def add_rdt_data(self, rdt_volume, rdt_density):
 
+        # Each array will need padding with an array
+
         for volume in rdt_volume.keys():
             volume_result = {}
-            volume_result['result'] = rdt_volume[volume]
+            volume_result['result'] = np.mean(self.pad_rdt_data(rdt_volume[volume]), axis=0)
+            print(len(volume_result['result']))
             volume_result['type'] = 'line'
             volume_result['name'] = "Relational volume (" + volume + ") during simulation"
             self.results.append(volume_result)
             
         for density in rdt_density.keys():
             density_result = {}
-            density_result['result'] = rdt_density[density]
+            density_result['result'] = np.mean(self.pad_rdt_data(rdt_density[density]), axis=0)
             density_result['type'] = 'line'
             density_result['name'] = "Relational density (" + density + ") during simulation"
             self.results.append(density_result)
@@ -185,11 +187,13 @@ class ResultsDisplay(QtWidgets.QWidget):
 
                 # Calculate relational mass using the two measures of volumen and density
 
-                r_mass = []
                 cum_mass = []
+                r_mass = []
                 result = {}
-                for i in range(len(rdt_volume[volume_mes])):
-                    r_mass.append(np.multiply(rdt_volume[volume_mes][i], rdt_density[density_mes][i]))
+                mean_vol = np.mean(self.pad_rdt_data(rdt_volume[volume_mes]), axis=0)
+                mean_dens = np.mean(self.pad_rdt_data(rdt_density[density_mes]), axis=0)
+                for i in range(len(mean_vol)):
+                    r_mass.append(np.multiply(mean_vol[i], mean_dens[i]))
                 result['result'] = r_mass
                 result['type'] = 'line'
                 result['name'] = "Relational mass (volume = " + volume_mes + ", density = " + density_mes + ") during simulation"
@@ -199,14 +203,9 @@ class ResultsDisplay(QtWidgets.QWidget):
 
                 # Calculate Pearson's correlation coefficient
 
-                # coefs = {}
                 coefs = []
-                for j in range(len(rdt_volume[volume_mes])):
-                    coef = (np.corrcoef(rdt_volume[volume_mes][j], rdt_density[density_mes][j])[0,1])
-                    # print(volume_mes + ", " + density_mes)
-                    # print(np.corrcoef(rdt_volume[volume_mes][j], rdt_density[density_mes][j]))
-                    # coef_name = "Class" + str(j + 1)
-                    # coefs[coef_name] = coef
+                for j in range(len(mean_vol)):
+                    coef = (np.corrcoef(mean_vol[j], mean_dens[j])[0,1])
                     coefs.append(coef)
                 coef_name = "Rv = " + volume_mes + ", Rp = " + density_mes
                 p_coef[coef_name] = coefs
@@ -218,15 +217,25 @@ class ResultsDisplay(QtWidgets.QWidget):
         self.results.append(result)
         
         result = {}
-        # result['result'] = pd.DataFrame.from_dict(p_coef).T
         result['result'] = p_coef
         result['type'] = 'boxplot'
         result['y_label'] = 'Correlation Coefficient'
         result['name'] = "Pearsons correlation coefficients for relational volume and density combinations"
         self.results.append(result)
 
+    def pad_rdt_data(self, rdt_data):
 
+        padding_length = 0
+        for x in range(len(rdt_data)):
+            if len(max(rdt_data[x], key=len)) > padding_length:
+                padding_length = len(max(rdt_data[x], key=len))
 
+        for i in range(len(rdt_data)):
+            for j in range(len(rdt_data[i])):
+                if len(rdt_data[i][j]) < padding_length:
+                    rdt_data[i][j] = np.pad(rdt_data[i][j], (0, padding_length - len(rdt_data[i][j])), 'edge')
+
+        return rdt_data
 
 
         
