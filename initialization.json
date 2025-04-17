@@ -3,13 +3,13 @@
         {
             "name": "experiment_ID",
             "description": "PLACEHOLDER",
-            "value": 45,
+            "value": 51,
             "type": "int"
         },
         {
             "name": "environment_ID",
             "description": "PLACEHOLDER",
-            "value": 14,
+            "value": 15,
             "type": "env_id"
         },
         {
@@ -21,7 +21,7 @@
         {
             "name": "num_agents",
             "description": "PLACEHOLDER",
-            "value": 2,
+            "value": 1,
             "type": "int"
         },
         {
@@ -47,13 +47,13 @@
         {
             "name": "beta_h",
             "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
-            "value": 1.0,
+            "value": 0.1,
             "type": "unit_interval"
         },
         {
             "name": "rdt_beta_h",
             "description": "testing value for softmax function",
-            "value": 0.07,
+            "value": 0.1,
             "type": "unit_interval"
         },
         {
@@ -83,12 +83,13 @@
         {
             "name": "NE_during_training",
             "description": "If true, network enhancement will occur when an agent progresses to a new block during training",
-            "value": false,
+            "value": true,
             "type": "bool"
         }
     ],
     "rdt_volume_types": [
-        "Nodal distance",
+        "True nodal distance",
+        "Empirical nodal distance",
         "Class size",
         "Number of relations"
     ],

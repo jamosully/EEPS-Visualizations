@@ -9,6 +9,7 @@ import EEPS.initialization
 import EEPS.initialization_detail
 import numpy as np
 import networkx as nx
+import string
 import itertools
 import json
 
@@ -48,6 +49,7 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.rdt_volume = dict()
         self.rdt_density = dict()
+        self.obtain_real_relations()
 
         self.num_classes = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[0]
 
@@ -96,10 +98,22 @@ class RDTVisualizer(QtWidgets.QWidget):
         training_order = EEPS.initialization_detail.environment_parameters_details(self.env_params['environment_ID'][0])[1]
         self.relation_types = {"Baseline": []}
 
-        for key in training_order:
+        for key in training_order.keys():
             for step in training_order[key]:
                 relation = step[0] + step[1]
                 self.relation_types["Baseline"].append(relation)
+
+    def obtain_real_relations(self):
+
+        self.real_relations = []
+        training_order = EEPS.initialization_detail.environment_parameters_details(self.env_params['environment_ID'][0])[1]
+
+        for key in training_order.keys():
+            for step in training_order[key]:
+                if step[0] not in self.real_relations:
+                    self.real_relations.append(step[0])
+                if step[1] not in self.real_relations:
+                    self.real_relations.append(step[1])
 
     def createClassButtons(self, num_classes):
 
@@ -184,25 +198,35 @@ class RDTVisualizer(QtWidgets.QWidget):
             rdt_h_vectors.append([])
 
         for edge in clip_space.edges(data=True):
-            if edge[0][1] == edge[1][1]:
+            if edge[0][1] == edge[1][1] and edge[0] in self.real_relations and edge[1] in self.real_relations:
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
         for key in self.rdt_volume.keys():
             vol_measures = [0] * self.num_classes
             match key:
-                case "Nodal distance":
+                case "True nodal distance":
                     distances = dict(nx.all_pairs_shortest_path(clip_space))
 
                     for stimulus in distances:
+                        # if (len(self.identify_trained_relations(stimulus, clip_space))) >= 2:
                         for action in distances[stimulus]:
                             if action[1] is stimulus[1]:
                                 for clip in distances[stimulus][action]:
                                     if (clip is not stimulus and clip is not action) and ((action[0] + stimulus[0]) not in self.relation_types['Baseline']):
                                         vol_measures[int(stimulus[1]) - 1] += 1
+                case "Empirical nodal distance":
+                    # Doing this based on letter distances
+                    node_pairs = list(itertools.permutations(clip_space.nodes, 2))
+                    for pair in node_pairs:
+                        if nx.has_path(clip_space, pair[0], pair[1]):
+                            if pair[0][1] == pair[1][1] and len(self.identify_trained_relations(pair[0], clip_space)) >= 2 and ((pair[0][0] + pair[1][0]) not in self.relation_types['Baseline']):
+                                vol_measures[int(pair[0][1]) - 1] += np.absolute((string.ascii_uppercase.index(edge[1][0]) - string.ascii_uppercase.index(edge[0][0])) - 1)
+                    #print(vol_measures)
                 case "Class size":
                     for node in clip_space.nodes:
-                        vol_measures[int(node[1]) - 1] += 1
+                        if node in self.real_relations:
+                            vol_measures[int(node[1]) - 1] += 1
                 case "Number of relations":
                     for edge in clip_space.edges:
                         if edge[0][1] == edge[1][1]:
@@ -232,5 +256,24 @@ class RDTVisualizer(QtWidgets.QWidget):
             
             for i in range(len(den_measures)):
                 self.rdt_density[key][self.agent][i].append(den_measures[i])
+
+
+    def identify_trained_relations(self, node, clip_space: nx.DiGraph):
+
+        # Checks if the relation should be considered a node
+        # Based on Fields et al. (1984)
+
+        trained_relations = []
+        for edge in clip_space.in_edges(node):
+            if edge[0][1] == edge[1][1]:
+                if edge[0] not in trained_relations:
+                    trained_relations.append(edge[0])
+        
+        for edge in clip_space.out_edges(node):
+            if edge[0][1] == edge[1][1]:
+                if edge[1] not in trained_relations:
+                    trained_relations.append(edge[1])
+
+        return trained_relations
 
         

@@ -111,6 +111,7 @@ class ResultsDisplay(QtWidgets.QWidget):
                    line_df = pd.DataFrame.from_dict(self.results[value]['result'])
                    self.r_ax.plot(line_df, label=line_df.columns, linewidth=3)
                    self.r_ax.legend(fontsize = 5)
+                   self.r_ax.set_yscale('log')
                 else:
                     line_df = pd.DataFrame(self.results[value]['result']).T
                     line_df.columns = line_df.columns.get_level_values(0)
@@ -125,11 +126,9 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.autoscale_view()
                 self.r_ax.set_title(self.results[value]['name'])
             elif self.results[value]['type'] == 'boxplot':
-                print(list(self.results[value]['result'].values()))
                 self.r_ax.boxplot(list(self.results[value]['result'].values()), labels=list(self.results[value]['result'].keys()))
                 self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.set_ylabel("Pearson Correlation Coefficient Value")
-                self.r_ax.legend()
                 self.figure.autofmt_xdate(rotation=45)
             self.canvas.draw()
             self.figure_id = value
@@ -209,6 +208,9 @@ class ResultsDisplay(QtWidgets.QWidget):
                     coefs.append(coef)
                 coef_name = "Rv = " + volume_mes + ", Rp = " + density_mes
                 p_coef[coef_name] = coefs
+
+        for mass in p_coef.keys():
+            print(mass + ":" + str(np.mean(p_coef[mass])))
 
         result = {}
         result['result'] = all_masses
