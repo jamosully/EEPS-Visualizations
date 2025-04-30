@@ -61,7 +61,10 @@ class VisualizationDisplay(QtWidgets.QWidget):
     def add_results(self):
 
         self.simulator_thread.quit()
-        self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density)
+        if self.simulator.prev_file:
+            self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, self.simulator.file_name)
+        else:
+            self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
         self.tabs.addTab(self.resultsTab, "Results")
         #self.main.setFixedSize(self.main.grid.sizeHint())
 

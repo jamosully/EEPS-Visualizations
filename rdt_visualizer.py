@@ -274,6 +274,4 @@ class RDTVisualizer(QtWidgets.QWidget):
                 if edge[1] not in trained_relations:
                     trained_relations.append(edge[1])
 
-        return trained_relations
-
-        
+        return trained_relations        

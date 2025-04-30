@@ -3,7 +3,7 @@
         {
             "name": "experiment_ID",
             "description": "PLACEHOLDER",
-            "value": 51,
+            "value": 101,
             "type": "int"
         },
         {
@@ -21,7 +21,7 @@
         {
             "name": "num_agents",
             "description": "PLACEHOLDER",
-            "value": 1,
+            "value": 15,
             "type": "int"
         },
         {
@@ -83,7 +83,7 @@
         {
             "name": "NE_during_training",
             "description": "If true, network enhancement will occur when an agent progresses to a new block during training",
-            "value": true,
+            "value": false,
             "type": "bool"
         }
     ],

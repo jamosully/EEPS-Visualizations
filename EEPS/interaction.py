@@ -285,6 +285,9 @@ class Interaction(object):
         show = []
         result = {}
 
+        show.append(('training_df', 'table'))
+        result['training_df'] = training_df
+
         show.append(('W_in' , 'heatmap'))
         result['W_in'] = W_in
 

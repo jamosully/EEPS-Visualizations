@@ -35,6 +35,8 @@ class Simulator(QtCore.QObject):
         self.file_name = filename
         self.environment_parameter = env_params
 
+        self.prev_file = False
+
     def update_parameters(self, agent_params, env_params):
 
         self.agent_parameter = agent_params
@@ -47,9 +49,11 @@ class Simulator(QtCore.QObject):
         # Load parameters from a file, if there is one
 
         if self.file_name is not None:
-            self.open_file()
-            self.agent_parameter = self.data['agent_parameter']
-            self.environment_parameter = self.data['environment_parameter']
+            # self.agent_parameter = self.data['agent_parameter']
+            # self.environment_parameter = self.data['environment_parameter']
+            self.prev_file = True
+            self.sim_complete.emit()
+            return
 
         self.agent = agn.Agent(self.agent_parameter)
         self.environment = env.Environment(self.environment_parameter)

@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtrans
+from scipy.stats import binomtest, ttest_ind, ttest_rel
 import pandas as pd
 import seaborn as sns
 import pickle
@@ -29,7 +30,7 @@ class ResultsDisplay(QtWidgets.QWidget):
     Tab for displaying results at the end of an experiment
     """
 
-    def __init__(self, main, simulator, rdt_volume, rdt_density):
+    def __init__(self, main, simulator, rdt_volume, rdt_density, filename):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
@@ -44,6 +45,8 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.figure_id = 0
 
+        self.filename = filename
+
         self.createButtons()
 
         self.visualGrid.addWidget(self.toolbar, 0, 0)
@@ -55,7 +58,7 @@ class ResultsDisplay(QtWidgets.QWidget):
 
         self.setLayout(self.resultsLayout)
 
-        self.displayResults(rdt_volume, rdt_density)
+        self.displayResults(rdt_volume, rdt_density, self.filename)
 
     def createButtons(self):
 
@@ -107,46 +110,60 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.tick_params(labelsize = 16)
             elif self.results[value]['type'] == 'line':
-                if isinstance(self.results[value]['result'], dict):
-                   line_df = pd.DataFrame.from_dict(self.results[value]['result'])
-                   self.r_ax.plot(line_df, label=line_df.columns, linewidth=3)
-                   self.r_ax.legend(fontsize = 5)
-                   self.r_ax.set_yscale('log')
-                else:
-                    line_df = pd.DataFrame(self.results[value]['result']).T
-                    line_df.columns = line_df.columns.get_level_values(0)
-                    for i in range(len(self.results[value]['result'])):
-                        offset = mtrans.offset_copy(self.r_ax.transData, fig=self.figure, y=(4 * i), units="points")
-                        self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
-                                    alpha=0.8, linewidth=4, transform=offset)
-                    self.r_ax.set_ylim(line_df.min().min() - (np.mean(line_df) / 2), line_df.max().max() + (np.mean(line_df) / 2))  
-                    self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50) 
-                    self.r_ax.legend(fontsize = 20)
+                line_df = pd.DataFrame.from_dict(self.results[value]['result'])
+                self.r_ax.plot(line_df, label=line_df.columns, linewidth=3)
+                self.r_ax.legend(fontsize = 5)
+                self.r_ax.set_yscale('log')
+            elif self.results[value]['type'] == 'rdt_line':
+                line_df = pd.DataFrame(self.results[value]['result']).T
+                line_df.columns = line_df.columns.get_level_values(0)
+                for i in range(len(self.results[value]['result'])):
+                    offset = mtrans.offset_copy(self.r_ax.transData, fig=self.figure, y=(4 * i), units="points")
+                    self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
+                                alpha=0.8, linewidth=4, transform=offset)
+                self.r_ax.set_ylim(line_df.min().min() - (np.mean(line_df) / 2), line_df.max().max() + (np.mean(line_df) / 2))  
+                self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50) 
+                self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.autoscale_view()
                 self.r_ax.set_title(self.results[value]['name'])
+                #self.figure.savefig("figures for paper/" + self.results[value]['name'] + ".png")
             elif self.results[value]['type'] == 'boxplot':
+                #print(self.results[value]['result'])
+                for key in self.results[value]['result'].keys():
+                    print(key + " = " + str(np.mean(self.results[value]['result'][key])))
                 self.r_ax.boxplot(list(self.results[value]['result'].values()), labels=list(self.results[value]['result'].keys()))
                 self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.set_ylabel("Pearson Correlation Coefficient Value")
                 self.figure.autofmt_xdate(rotation=45)
+            elif self.results[value]['type'] == 'table':
+                print(self.results[value]['result'])
             self.canvas.draw()
             self.figure_id = value
         
 
-    def displayResults(self, rdt_volume, rdt_density):
+    def displayResults(self, rdt_volume, rdt_density, filename=None):
 
-        self.filename = self.simulator.file_name
+        if filename is None:
+            self.filename = self.simulator.file_name
+            add_rdt_data = True
+        else:
+            self.filename = filename
+            add_rdt_data = False
 
-        self.obtain_and_organise_data(rdt_volume, rdt_density)
+        print(add_rdt_data)
+
+        self.obtain_and_organise_data(rdt_volume, rdt_density, add_rdt_data)
 
         self.switchFigure(self.figure_id)
 
-    def obtain_and_organise_data(self, rdt_volume, rdt_density):
+    def obtain_and_organise_data(self, rdt_volume, rdt_density, add_rdt_data):
 
         resultFile = open(self.filename, 'rb')
         self.data = pickle.load(resultFile)
         resultFile.close()
+
+        print(self.data['result']["training_df"])
 
         self.results = []
 
@@ -158,7 +175,9 @@ class ResultsDisplay(QtWidgets.QWidget):
             result['name'] = self.data['show'][i][0] + '_' + result['type']
             self.results.append(result)
 
-        self.add_rdt_data(rdt_volume, rdt_density)
+        if (add_rdt_data):
+            print("adding data")
+            self.add_rdt_data(rdt_volume, rdt_density)
 
     def add_rdt_data(self, rdt_volume, rdt_density):
 
@@ -168,16 +187,19 @@ class ResultsDisplay(QtWidgets.QWidget):
             volume_result = {}
             volume_result['result'] = np.mean(self.pad_rdt_data(rdt_volume[volume]), axis=0)
             print(len(volume_result['result']))
-            volume_result['type'] = 'line'
+            volume_result['type'] = 'rdt_line'
             volume_result['name'] = "Relational volume (" + volume + ") during simulation"
             self.results.append(volume_result)
+            self.add_to_data(volume_result)
+
             
         for density in rdt_density.keys():
             density_result = {}
             density_result['result'] = np.mean(self.pad_rdt_data(rdt_density[density]), axis=0)
-            density_result['type'] = 'line'
+            density_result['type'] = 'rdt_line'
             density_result['name'] = "Relational density (" + density + ") during simulation"
             self.results.append(density_result)
+            self.add_to_data(density_result)
         
         p_coef = {}
         all_masses = {}
@@ -194,9 +216,10 @@ class ResultsDisplay(QtWidgets.QWidget):
                 for i in range(len(mean_vol)):
                     r_mass.append(np.multiply(mean_vol[i], mean_dens[i]))
                 result['result'] = r_mass
-                result['type'] = 'line'
+                result['type'] = 'rdt_line'
                 result['name'] = "Relational mass (volume = " + volume_mes + ", density = " + density_mes + ") during simulation"
                 self.results.append(result)
+                self.add_to_data(result)
                 all_masses[("Rv = " + volume_mes + ", Rp = " + density_mes)] = (np.mean(r_mass, axis=0))
                 
 
@@ -217,6 +240,7 @@ class ResultsDisplay(QtWidgets.QWidget):
         result['type'] = 'line'
         result['name'] = "Relational mass during simulation"
         self.results.append(result)
+        self.add_to_data(result)
         
         result = {}
         result['result'] = p_coef
@@ -224,8 +248,22 @@ class ResultsDisplay(QtWidgets.QWidget):
         result['y_label'] = 'Correlation Coefficient'
         result['name'] = "Pearsons correlation coefficients for relational volume and density combinations"
         self.results.append(result)
+        self.add_to_data(result)
+
+        result_save = open(self.filename , "wb" )
+        pickle.dump(self.data, result_save)
+        result_save.close()
+
+    def add_to_data(self, result):
+
+        self.data['result'][result['name']] = result['result']
+        self.data['show'].append([result['name'], result['type']])
 
     def pad_rdt_data(self, rdt_data):
+
+        """
+        Necessary for training with two or more agents
+        """
 
         padding_length = 0
         for x in range(len(rdt_data)):
@@ -238,6 +276,15 @@ class ResultsDisplay(QtWidgets.QWidget):
                     rdt_data[i][j] = np.pad(rdt_data[i][j], (0, padding_length - len(rdt_data[i][j])), 'edge')
 
         return rdt_data
+    
+    def demo_test(self, rdt_data):
+
+        """
+        This function is used for the paper demo to check the predictions
+        """
+
+
+        return
 
 
         
