@@ -1,5 +1,5 @@
 # UI Modules
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QPushButton, QSlider, QSpinBox, QLabel
 from PySide6.QtCore import Slot, Signal
 
@@ -40,6 +40,7 @@ class ControlPanel(QtWidgets.QWidget):
         self.simulatorThread = simulatorThread
 
         self.step_count = 1
+        self.current_step = 0
 
         self.panelLayout = QVBoxLayout()
 
@@ -47,6 +48,13 @@ class ControlPanel(QtWidgets.QWidget):
             self.panelLayout.addWidget(widget)
             self.panelLayout.setSpacing(10)
             self.verticalGroupBox.setLayout(self.panelLayout)
+
+        self.stepCounter = QLabel("Step Counter", self)
+        self.stepCounter.setObjectName("Step Counter")
+        self.stepCounter.setText(str(self.current_step))
+        self.stepCounter.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.stepCounter.setFont(QtGui.QFont('Arial', 15)) 
+        addToLayout(self.stepCounter)
 
         self.modifyParametersButton = QPushButton("Update Parameters", self)
         self.modifyParametersButton.setObjectName("Update Parameters")
@@ -100,6 +108,11 @@ class ControlPanel(QtWidgets.QWidget):
         self.simulatorThread.start()
         self.stepButton.setDisabled(False)
         print("Model Running")
+
+    def change_step_counter(self, current_step):
+
+        self.current_step = current_step
+        self.stepCounter.setText(str(self.current_step))
 
 class StepControl(QtWidgets.QWidget):
 

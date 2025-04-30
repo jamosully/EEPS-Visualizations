@@ -84,6 +84,7 @@ class Interaction(object):
                 self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
+                self.vis_display.change_step_counter(self.num_steps)
                 self.pause.lock()
                 if self.vis_display.edits_made:
                     self.agent.clip_space = self.vis_display.update_clip_space()
@@ -151,6 +152,7 @@ class Interaction(object):
             self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
             self.vis_display.networkTab.visualize_memory_network(final_clip_space)
             self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
+            self.vis_display.change_step_counter(self.num_steps)
 
 
         for k, v in avg_time_training.items():

@@ -49,8 +49,6 @@ class Simulator(QtCore.QObject):
         # Load parameters from a file, if there is one
 
         if self.file_name is not None:
-            # self.agent_parameter = self.data['agent_parameter']
-            # self.environment_parameter = self.data['environment_parameter']
             self.prev_file = True
             self.sim_complete.emit()
             return

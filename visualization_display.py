@@ -102,4 +102,8 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
         self.step_changed = False
         return self.controlPanel.step_count
+    
+    def change_step_counter(self, current_step):
+
+        self.controlPanel.change_step_counter(current_step)
 
