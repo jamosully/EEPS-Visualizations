@@ -137,10 +137,10 @@ class Environment(object):
             self.num_trials += repeat_no
             percept = pair[0]
             action = pair[1]
-            if percept[1] is not action[1]:
-                self.counter_conditioning = True
-            else:
-                self.counter_conditioning = False
+            # if percept[1] is not action[1]:
+            #     self.counter_conditioning = True
+            # else:
+            #     self.counter_conditioning = False
             if use_class_range:
                 act_list = list(range(self.class_ranges[action[0]]))
             else:
@@ -191,20 +191,20 @@ class Environment(object):
         """
         self.class_trial_count[int(percept[1])] += 1
 
-        if self.counter_conditioning is True:
-            if self.check_for_counter_conditioning(percept, action):
-                reward = 1
-                self.class_reward_count[int(percept[1])] += 1
-                self.correct += 1
-            else:
-                reward = -1
-        elif self.counter_conditioning is False:
-            if percept[1] == action[1]:
-                reward = 1
-                self.class_reward_count[int(percept[1])] += 1
-                self.correct += 1
-            else:
-                reward = -1
+        # if self.counter_conditioning is True:
+        #     if self.check_for_counter_conditioning(percept, action):
+        #         reward = 1
+        #         self.class_reward_count[int(percept[1])] += 1
+        #         self.correct += 1
+        #     else:
+        #         reward = -1
+        # elif self.counter_conditioning is False:
+        if percept[1] == action[1]:
+            reward = 1
+            self.class_reward_count[int(percept[1])] += 1
+            self.correct += 1
+        else:
+            reward = -1
 
         for x in range(self.num_classes):
             if self.class_trial_count[x + 1] != 0:
@@ -214,13 +214,13 @@ class Environment(object):
 
         return reward
     
-    def check_for_counter_conditioning(self, percept, action):
+    # def check_for_counter_conditioning(self, percept, action):
 
-        for pair in self.training_order[self.step]:
-            if pair[0] == percept and pair[1] == action:
-                return True
+    #     for pair in self.training_order[self.step]:
+    #         if pair[0] == percept and pair[1] == action:
+    #             return True
             
-        return False
+    #     return False
 
     def reset_block(self): # Ok!
 
