@@ -1,9 +1,8 @@
 matplotlib==3.8.3
 mplcursors==0.5.3
 networkx==3.2.1
-numpy==2.2.1
+numpy==1.24.4
 pandas==2.2.3
-PySide6==6.7.2
 PySide6==6.8.1.1
 PySide6_Addons==6.7.2
 PySide6_Essentials==6.7.2
