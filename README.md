@@ -20,7 +20,7 @@ The objectives previously achieved in this project are:
 
 The current build of Affinity
 
-ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT
+ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT (THIS! GOT SOME WEIRD PACKAGES ON THIS PROJECT)
 
 Once all prerequisite packages have been installed, Affinity can be launched by running the `main.py` script
 
