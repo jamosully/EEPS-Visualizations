@@ -30,7 +30,7 @@ class ResultsDisplay(QtWidgets.QWidget):
     Tab for displaying results at the end of an experiment
     """
 
-    def __init__(self, main, simulator, rdt_volume, rdt_density, filename):
+    def __init__(self, main, simulator, rdt_volume, rdt_density,  filename):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
@@ -125,7 +125,9 @@ class ResultsDisplay(QtWidgets.QWidget):
                     self.r_ax.plot(self.results[value]['result'][i], label=("Class " + str(i + 1)), 
                                 alpha=0.8, linewidth=4, transform=offset)
                 self.r_ax.set_ylim(line_df.min().min() - (np.mean(line_df) / 2), line_df.max().max() + (np.mean(line_df) / 2))  
-                self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50) 
+                self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50)
+                for trial in self.transition_trials:
+                    self.r_ax.axvline(x=trial, linestyle='--', color='grey', alpha='0.7')
                 self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.autoscale_view()
@@ -171,12 +173,15 @@ class ResultsDisplay(QtWidgets.QWidget):
         resultFile.close()
 
         self.results = []
+        self.transition_trials = []
 
         for i in range(len(self.data['show'])):
-
+            
             result = {}
             result['result'] = self.data['result'][self.data['show'][i][0]]
             result['type'] = self.data['show'][i][1]
+            if result['type'] == 'table':
+                self.transition_trials = result['result']['Trials Required']
             result['name'] = self.data['show'][i][0] + '_' + result['type']
             self.results.append(result)
 

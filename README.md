@@ -24,18 +24,26 @@ ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT (THIS! GOT SOME WEIRD PACKAGE
 
 Once all prerequisite packages have been installed, Affinity can be launched by running the `main.py` script
 
+## Walkthrough
+
+
+
 ## Structure of Affinity
 
 ![affinity_structure](Images/software_structure_diagram.png)
 
 ## Interface Design
 
-Affinity's interface consists of four parts:
+![main_interface](Images/affinity_gui.png)
+
+Affinity's interface is made up of four components:
 
 1. Parameter Toolbox
 2. Visualisation Display
 3. Control Panel
 4. Relation Editor
+
+These components act as the frontend of the software. `main.py` acts as a intermediary between the GUI of Affinity and the backend, which is handled by `simulator.py`. `visualization_display.py` is a container for Affinity's visualisations and results.
 
 ### Parameter Toolbox
 

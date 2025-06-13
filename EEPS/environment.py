@@ -58,6 +58,7 @@ class Environment(object):
         self.class_trial_count = dict()
         self.class_reward_count = dict()
         self.class_accuracies = dict()
+        self.transition_trial = False
         self.next_step = False
         self.new_block = True
         self.counter_conditioning = False
@@ -106,6 +107,7 @@ class Environment(object):
             self.reset_block()
         else:
             self.next_step = False
+            self.transition_trial = False
         for k, v in self.Block_list[self.trial_no].items():
             percept = k
             action_set = v
@@ -233,8 +235,7 @@ class Environment(object):
             self.num_iteration_training[self.step] += 1
             if (self.correct/self.trial_no) >= self.mastery_training:
                 self.Block_results_training[self.step] = self.correct/self.trial_no
-                self.Block_training_order[self.step] = [s[0]+s[1]
-                for s in self.training_order[self.step]]
+                self.Block_training_order[self.step] = [s[0]+s[1] for s in self.training_order[self.step]]
                 self.step += 1
                 self.next_step = True
                 if self.step == len(self.training_order)+1:

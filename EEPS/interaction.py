@@ -79,7 +79,7 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
-            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies)
+            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
             if self.num_steps % self.vis_step == 0:
                 self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
                 self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
@@ -148,7 +148,7 @@ class Interaction(object):
 
             final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(prob_testing_clip, self.agent.beta_h))
             
-            self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies)
+            self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
             self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
             self.vis_display.networkTab.visualize_memory_network(final_clip_space)
             self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
@@ -190,6 +190,7 @@ class Interaction(object):
         """
 
         train_list = []
+        trial_list = np.mean(self.vis_display.rdtTab.transition_trials, axis=0)
         size_list = []
         time_list = []
         mastery_list = []
@@ -206,6 +207,7 @@ class Interaction(object):
         df = pd.DataFrame({'Training': train_list,
                            'Block Size': size_list,
                             'Time': time_list,
+                            "Trials Required": trial_list,
                             'Mastery': mastery_list})
         return df
 

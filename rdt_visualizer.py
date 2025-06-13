@@ -51,6 +51,8 @@ class RDTVisualizer(QtWidgets.QWidget):
         self.rdt_density = dict()
         self.obtain_real_relations()
 
+        self.transition_trials = [[]]
+
         self.num_classes = EEPS.initialization_detail.environment_parameters_details(self.env_params["environment_ID"][0])[0]
 
         with open("initialization.json", 'r', encoding='utf8') as init_params:
@@ -165,6 +167,11 @@ class RDTVisualizer(QtWidgets.QWidget):
         density_plot.plot(self.rdt_density[self.rdt_den_type][self.agent][self.class_id])
         mass_plot.plot(np.multiply(self.rdt_volume[self.rdt_vol_type][self.agent][self.class_id], self.rdt_density[self.rdt_den_type][self.agent][self.class_id]))
 
+        for trial in self.transition_trials[self.agent]:
+            volume_plot.axvline(x=trial, linestyle='--', color='grey')
+            density_plot.axvline(x=trial, linestyle='--', color='grey')
+            mass_plot.axvline(x=trial, linestyle='--', color='grey')
+
         volume_plot.set(ylabel="Relational Volume")
         density_plot.set(ylabel="Relational Density")
         mass_plot.set(ylabel="Relational Mass")
@@ -174,6 +181,7 @@ class RDTVisualizer(QtWidgets.QWidget):
     def prepare_for_next_agent(self):
 
         self.agent += 1
+        self.transition_trials.append([])
         
         for i, type in enumerate(self.rdt_vol_types):
             self.rdt_volume[type].append([])
@@ -185,7 +193,7 @@ class RDTVisualizer(QtWidgets.QWidget):
             for j in range(self.num_classes):
                 self.rdt_density[type][self.agent].append([])
 
-    def track_rdt_data(self, clip_space: nx.DiGraph, accuracy_rates):
+    def track_rdt_data(self, clip_space: nx.DiGraph, accuracy_rates, transition_trial):
         
         rdt_edge_count = []
         rdt_h_vectors = []
@@ -234,7 +242,10 @@ class RDTVisualizer(QtWidgets.QWidget):
 
             for i in range(len(vol_measures)):
                 self.rdt_volume[key][self.agent][i].append(vol_measures[i])
+                current_trial = len(self.rdt_volume[key][self.agent][i])
 
+        # Calculate densities
+        
         for key in self.rdt_density.keys():
             den_measures = [0] * self.num_classes
             match key:
@@ -256,6 +267,11 @@ class RDTVisualizer(QtWidgets.QWidget):
             
             for i in range(len(den_measures)):
                 self.rdt_density[key][self.agent][i].append(den_measures[i])
+
+        # Update transition_trials
+        if transition_trial:
+            print("adding trial")
+            self.transition_trials[self.agent].append(current_trial)
 
 
     def identify_trained_relations(self, node, clip_space: nx.DiGraph):
