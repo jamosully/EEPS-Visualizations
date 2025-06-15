@@ -49,17 +49,40 @@ These components act as the frontend of the software. `main.py` acts as a interm
 
 ![parameter_toolbox](Images/parameter_toolbox.png)
 
-The Parameter toolbox allows modification of agent and environment parameters, as well as loading prior setups from previous experiments. Affinity has 
+The Parameter toolbox is where user can modify agent and environment parameters and load results from previous experiments. Definitions are provided for each parameter, and Affinity utilises a JSON file for saving a deafult set of parameters that are shown each time the software is launched.
 
-### Network Visualisation
+### Visualisation Display
+
+The visulisation display is the main components of Affinity, which is comprised of a tab-based interface containing each of the three visualisations, and the results upon the completion of an experiment.
+
+#### Network Visualisation
 
 ![network_visualisation](Images/network_visualization.png)
 
-The network tab on the main display contains visualisations of the agents clip space as a graph network 
+The **Network** tab on the main display contains visualisations of the agents clip space as a graph network. These visualisations are inspired by figures provided in the original EEPS paper, and provide a dynamic 
 
-### Heatmap Visualisation
+#### Heatmap Visualisation
 
-### Realtional Density Theory Visualisations
+![heatmap_visualisation](Images/heatmap_visualization.png)
+
+In the **Heatmap** tab, an alternative view of the agent's clip space is provided. This interface is cleaner and less cluttered than the graph network visualisation.
+
+#### Realtional Density Theory Visualisations
+
+![rdt_visualisation](Images/rdt_visualization.png)
+
+Under the **RDT** tab, Affinity provides novel visualisations of metrics provided as part of Belisle and Dixon's Relational Density Theory.
+
+On the top right of the display are two dropdown menus which allow the user to switch between various measures of relational volume and relational mass. Switching between the different measures updates the relational mass figure at the bottom.
+
+##### Relational Volume
+
+|Measure                 |Description|Rationale|
+|:-----------------------|:----------|:--------|
+|True Nodal Distance     |Total nodal distance between stimuli in a class, where each distance is obtained via the shortest nodal distance between stimuli (including symmetry, transitivity, and equivalence relations)||
+|Empirical Nodal Distance|Based on Fields [[2]](2)
+|Class Size              |
+|Number of Relations     |
 
 ### Stimuli Editor
 
@@ -80,3 +103,9 @@ To achieve the aims of this project, several changes were made to the original E
 - [ ] An interface for creating new experiments
 - [ ] A system for integrating other EEPS/EPS/PS variants within the visualisation framework of Affinity
 - [ ] Various keyboard shortcuts
+  
+## References
+
+<a id="2">[2]</a>
+Cotter, Eoin, and Ian Stewart. "The role of volume in relational density theory: Isolating the effects of class size and nodal distance on density and resistance in equivalence classes." The Psychological Record 73.3 (2023): 375-393.
+
