@@ -9,7 +9,7 @@ This project was created as part of a summer project on the foundation year of t
 With this in mind, the key objectives of this prototype are:
 
 1. To create a tool for visualising the the behavior of agent behavior during the training and testing stages of EEPS, both as a means of exploring simulations of RDT in EEPS and visualising projective simulation.
-2. Provide a platform for the realtime manipulation of 
+2. Provide a platform for the realtime manipulation of
 
 The objectives previously achieved in this project are:
 
@@ -18,15 +18,15 @@ The objectives previously achieved in this project are:
 
 ## Installation
 
-The current build of Affinity
+To run Affinity, it is reccomended that you utilise a custom environment via conda. Once done, install the required packages via
 
-ADD INSTRUCTIONS ON HOW TO SETUP CONDA ENVIRONMENT (THIS! GOT SOME WEIRD PACKAGES ON THIS PROJECT)
+```lang-bash
+pip install -r requirements.txt
+```
 
-Once all prerequisite packages have been installed, Affinity can be launched by running the `main.py` script
+### Common Issues
 
 ## Walkthrough
-
-
 
 ## Structure of Affinity
 
@@ -80,9 +80,17 @@ On the top right of the display are two dropdown menus which allow the user to s
 |Measure                 |Description|Rationale|
 |:-----------------------|:----------|:--------|
 |True Nodal Distance     |Total nodal distance between stimuli in a class, where each distance is obtained via the shortest nodal distance between stimuli (including symmetry, transitivity, and equivalence relations)||
-|Empirical Nodal Distance|Based on Fields [[2]](2)
-|Class Size              |
-|Number of Relations     |
+|Empirical Nodal Distance|Based on Fields [[2]](#2), total nodal distance in a class, where a stimuli is counted as part of the class if it has two trained relations||
+|Class Size              |Total number of stimuli in each class||
+|Number of Relations     |Total number of relations between stimuli in a class (including symmetry, transitivity, and equivalence relations)||
+
+##### Relational Density
+
+|Measure                            |Description|Rationale|
+|:----------------------------------|:----------|:--------|
+|Mean softmax transition probability|||
+|Class Accuracy                     |||
+|Mean edge weight/h-value           |||
 
 ### Stimuli Editor
 

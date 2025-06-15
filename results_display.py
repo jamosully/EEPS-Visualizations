@@ -127,7 +127,7 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.set_ylim(line_df.min().min() - (np.mean(line_df) / 2), line_df.max().max() + (np.mean(line_df) / 2))  
                 self.r_ax.set_xlim(-25, len(self.results[value]['result'][i]) + 50)
                 for trial in self.transition_trials:
-                    self.r_ax.axvline(x=trial, linestyle='--', color='grey', alpha='0.7')
+                    self.r_ax.axvline(x=trial, linestyle='--', color='grey', alpha=0.7)
                 self.r_ax.legend(fontsize = 20)
                 self.r_ax.tick_params(labelsize = 20)
                 self.r_ax.autoscale_view()

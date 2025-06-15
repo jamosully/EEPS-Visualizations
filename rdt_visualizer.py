@@ -237,7 +237,7 @@ class RDTVisualizer(QtWidgets.QWidget):
                             vol_measures[int(node[1]) - 1] += 1
                 case "Number of relations":
                     for edge in clip_space.edges:
-                        if edge[0][1] == edge[1][1]:
+                        if edge[0][1] == edge[1][1] and edge[0] in self.real_relations and edge[1] in self.real_relations:
                             vol_measures[int(edge[0][1]) - 1] += 1
 
             for i in range(len(vol_measures)):
