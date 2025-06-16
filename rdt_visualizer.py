@@ -221,15 +221,17 @@ class RDTVisualizer(QtWidgets.QWidget):
                         for action in distances[stimulus]:
                             if action[1] is stimulus[1]:
                                 for clip in distances[stimulus][action]:
-                                    if (clip is not stimulus and clip is not action) and ((action[0] + stimulus[0]) not in self.relation_types['Baseline']):
-                                        vol_measures[int(stimulus[1]) - 1] += 1
+                                    if action in self.real_relations and stimulus in self.real_relations:
+                                        if (clip is not stimulus and clip is not action) and ((action[0] + stimulus[0]) not in self.relation_types['Baseline']):
+                                            vol_measures[int(stimulus[1]) - 1] += 1
                 case "Empirical nodal distance":
                     # Doing this based on letter distances
                     node_pairs = list(itertools.permutations(clip_space.nodes, 2))
                     for pair in node_pairs:
-                        if nx.has_path(clip_space, pair[0], pair[1]):
-                            if pair[0][1] == pair[1][1] and len(self.identify_trained_relations(pair[0], clip_space)) >= 2 and ((pair[0][0] + pair[1][0]) not in self.relation_types['Baseline']):
-                                vol_measures[int(pair[0][1]) - 1] += np.absolute((string.ascii_uppercase.index(edge[1][0]) - string.ascii_uppercase.index(edge[0][0])) - 1)
+                        if pair[0] in self.real_relations and pair[1] in self.real_relations:
+                            if nx.has_path(clip_space, pair[0], pair[1]):
+                                if pair[0][1] == pair[1][1] and len(self.identify_trained_relations(pair[0], clip_space)) >= 2 and ((pair[0][0] + pair[1][0]) not in self.relation_types['Baseline']):
+                                    vol_measures[int(pair[0][1]) - 1] += np.absolute((string.ascii_uppercase.index(edge[1][0]) - string.ascii_uppercase.index(edge[0][0])) - 1)
                     #print(vol_measures)
                 case "Class size":
                     for node in clip_space.nodes:
