@@ -32,12 +32,18 @@ This section will provide the step-by-step process for recreating the experiment
 
 1. Install Affinity
 2. Launch Affinity by running the `main.py` script
-3. For the agent parameters, set each one to the following:
+3. Set these agent parameters to the following:
    - $\beta_h$ / `beta_h` = 0.1
    - $\beta_t$ / `beta_t` = 4.0
    - $K$ = 1.0
    - $\gamma$ / `gamma_damping` = 0.001
    - $\alpha$ / `alpha` = 0.7
+4. Set these environment parameters to the following:
+   - `environment_ID` = 15
+   - `max_trial` = 10000
+   - `num_agents` = 15
+   - `size_action_set` = 4
+   - `autogenerate_classes` = [x]
 
 ## Structure of Affinity
 
