@@ -45,6 +45,11 @@ This section will provide the step-by-step process for recreating the experiment
    - `num_agents` = 15
    - `size_action_set` = 4
    - `autogenerate_classes` = :white_check_mark:
+5. Click `Create Simulation`
+6. Click `Initialize Parameters`
+7. Click `Run Simulation`
+
+Once running, the pace of the experiment can be controlled with the step slider and proceed button. Good luck!
 
 ## Structure of Affinity
 
