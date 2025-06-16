@@ -38,12 +38,13 @@ This section will provide the step-by-step process for recreating the experiment
    - $K$ = 1.0
    - $\gamma$ / `gamma_damping` = 0.001
    - $\alpha$ / `alpha` = 0.7
+   - `NE_during_training` = :white_square_button: or :white_check_mark:
 4. Set these environment parameters to the following:
    - `environment_ID` = 15
    - `max_trial` = 10000
    - `num_agents` = 15
    - `size_action_set` = 4
-   - `autogenerate_classes` = [x]
+   - `autogenerate_classes` = :white_check_mark:
 
 ## Structure of Affinity
 
