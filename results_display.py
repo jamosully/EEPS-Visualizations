@@ -141,6 +141,7 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.r_ax.boxplot(list(self.results[value]['result'].values()), labels=list(self.results[value]['result'].keys()))
                 self.r_ax.set_title(self.results[value]['name'])
                 self.r_ax.set_ylabel("Pearson Correlation Coefficient Value")
+                self.r_ax.set_xlabel("Relational Mass Measures")
                 self.figure.autofmt_xdate(rotation=45)
 
             elif self.results[value]['type'] == 'table':

@@ -2,6 +2,8 @@
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QHBoxLayout
+import pandas as pd
+import numpy as np
 
 from network_visualizer import NetworkVisualizer
 from rdt_visualizer import RDTVisualizer
@@ -68,6 +70,13 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.tabs.addTab(self.resultsTab, "Results")
         #self.main.setFixedSize(self.main.grid.sizeHint())
 
+        # for key in self.rdtTab.baseline_edge_weights.keys():
+        #     self.rdtTab.baseline_edge_weights[key] = np.mean(self.resultsTab.pad_rdt_data([self.rdtTab.baseline_edge_weights[key]]), axis=0)[0]
+        
+        # print(self.rdtTab.baseline_edge_weights)
+        # ab_test = pd.DataFrame.from_dict(self.rdtTab.baseline_edge_weights)
+        # ab_test.to_csv("ne_baseline_1_agent.csv", index=False)
+
     def delete_results(self):
 
         if self.resultsTab is not None:
@@ -85,10 +94,14 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     def populateEditor(self, stimuli, clip_space):
 
-        self.stimEditor.populateEditor(stimuli, clip_space)
+        if self.edited_clip_space is not None:
+            print("edited!")
+            self.stimEditor.populateEditor(stimuli, self.edited_clip_space)
+        else:
+            self.stimEditor.populateEditor(stimuli, clip_space)
 
     def updateEditor(self):
-
+     
         self.stimEditor.updateEditor()
 
     def update_clip_space(self):

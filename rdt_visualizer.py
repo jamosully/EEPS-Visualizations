@@ -49,7 +49,9 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.rdt_volume = dict()
         self.rdt_density = dict()
+        self.baseline_edge_weights = {}
         self.obtain_real_relations()
+        print(self.real_stimuli)
 
         self.transition_trials = [[]]
 
@@ -107,15 +109,16 @@ class RDTVisualizer(QtWidgets.QWidget):
 
     def obtain_real_relations(self):
 
-        self.real_relations = []
+        self.real_stimuli = []
         training_order = EEPS.initialization_detail.environment_parameters_details(self.env_params['environment_ID'][0])[1]
 
         for key in training_order.keys():
             for step in training_order[key]:
-                if step[0] not in self.real_relations:
-                    self.real_relations.append(step[0])
-                if step[1] not in self.real_relations:
-                    self.real_relations.append(step[1])
+                self.baseline_edge_weights[step[0] + step[1]] = [[]]
+                if step[0] not in self.real_stimuli:
+                    self.real_stimuli.append(step[0])
+                if step[1] not in self.real_stimuli:
+                    self.real_stimuli.append(step[1])
 
     def createClassButtons(self, num_classes):
 
@@ -175,6 +178,7 @@ class RDTVisualizer(QtWidgets.QWidget):
         volume_plot.set(ylabel="Relational Volume")
         density_plot.set(ylabel="Relational Density")
         mass_plot.set(ylabel="Relational Mass")
+        mass_plot.set(xlabel="Trials")
 
         self.canvas.draw()
 
@@ -182,6 +186,9 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         self.agent += 1
         self.transition_trials.append([])
+
+        for key in self.baseline_edge_weights.keys():
+            self.baseline_edge_weights[key].append([])
         
         for i, type in enumerate(self.rdt_vol_types):
             self.rdt_volume[type].append([])
@@ -204,9 +211,16 @@ class RDTVisualizer(QtWidgets.QWidget):
         for i in range(self.num_classes):
             rdt_edge_count.append(0)
             rdt_h_vectors.append([])
+        
+        for key in self.baseline_edge_weights.keys():
+            self.baseline_edge_weights[key][self.agent].append(0)
+
+        #h_vector = [edge['weight'] for clip in clip_space.nodes]
 
         for edge in clip_space.edges(data=True):
-            if edge[0][1] == edge[1][1] and edge[0] in self.real_relations and edge[1] in self.real_relations:
+            if edge[0] + edge[1] in self.baseline_edge_weights.keys():
+                self.baseline_edge_weights[edge[0] + edge[1]][self.agent][-1] = edge[2]['weight']
+            if edge[0][1] == edge[1][1] and edge[0] in self.real_stimuli and edge[1] in self.real_stimuli:
                 rdt_h_vectors[(int(edge[0][1]) - 1)].append(edge[2]['weight'])
                 rdt_edge_count[(int(edge[0][1]) - 1)] += 1
 
@@ -221,25 +235,25 @@ class RDTVisualizer(QtWidgets.QWidget):
                         for action in distances[stimulus]:
                             if action[1] is stimulus[1]:
                                 for clip in distances[stimulus][action]:
-                                    if action in self.real_relations and stimulus in self.real_relations:
+                                    if action in self.real_stimuli and stimulus in self.real_stimuli:
                                         if (clip is not stimulus and clip is not action) and ((action[0] + stimulus[0]) not in self.relation_types['Baseline']):
                                             vol_measures[int(stimulus[1]) - 1] += 1
                 case "Empirical nodal distance":
                     # Doing this based on letter distances
                     node_pairs = list(itertools.permutations(clip_space.nodes, 2))
                     for pair in node_pairs:
-                        if pair[0] in self.real_relations and pair[1] in self.real_relations:
+                        if pair[0] in self.real_stimuli and pair[1] in self.real_stimuli:
                             if nx.has_path(clip_space, pair[0], pair[1]):
                                 if pair[0][1] == pair[1][1] and len(self.identify_trained_relations(pair[0], clip_space)) >= 2 and ((pair[0][0] + pair[1][0]) not in self.relation_types['Baseline']):
                                     vol_measures[int(pair[0][1]) - 1] += np.absolute((string.ascii_uppercase.index(edge[1][0]) - string.ascii_uppercase.index(edge[0][0])) - 1)
                     #print(vol_measures)
                 case "Class size":
                     for node in clip_space.nodes:
-                        if node in self.real_relations:
+                        if node in self.real_stimuli:
                             vol_measures[int(node[1]) - 1] += 1
                 case "Number of relations":
                     for edge in clip_space.edges:
-                        if edge[0][1] == edge[1][1] and edge[0] in self.real_relations and edge[1] in self.real_relations:
+                        if edge[0][1] == edge[1][1] and edge[0] in self.real_stimuli and edge[1] in self.real_stimuli:
                             vol_measures[int(edge[0][1]) - 1] += 1
 
             for i in range(len(vol_measures)):
@@ -272,7 +286,6 @@ class RDTVisualizer(QtWidgets.QWidget):
 
         # Update transition_trials
         if transition_trial:
-            print("adding trial")
             self.transition_trials[self.agent].append(current_trial)
 
 

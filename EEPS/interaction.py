@@ -127,6 +127,7 @@ class Interaction(object):
                 prob_testing_clip_marginalized = self.agent.marginalized_probability(prob_testing_clip)
                 prob_testing_clip_category = self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
+                final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(prob_testing_clip, self.agent.beta_h))
 
             else:
                 for k, v in self.environment.num_iteration_training.items():
@@ -145,9 +146,8 @@ class Interaction(object):
                 prob_testing_clip_marginalized += self.agent.marginalized_probability(prob_testing_clip)
                 prob_testing_clip_category += self.agent.probability_categorization(prob_testing_clip_marginalized)
                 avg_NE_itr += self.agent.NE_itr
-
-            final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(prob_testing_clip, self.agent.beta_h))
-            
+                final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(W_new_, self.agent.beta_h))
+   
             self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
             self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
             self.vis_display.networkTab.visualize_memory_network(final_clip_space)

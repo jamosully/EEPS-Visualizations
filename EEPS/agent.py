@@ -42,7 +42,7 @@ class Agent(object):
         self.training_NE = parameter["NE_during_training"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
-        self.trained_edges = None
+        self.trained_edges = {}
         self.rdt_class = 0
 
     def trial_preprocess(self, percept, action, new_trial): # Ok!
@@ -58,6 +58,7 @@ class Agent(object):
                 if (percept, act) not in self.clip_space.edges():
                     self.clip_space.add_edge(percept, act, weight=1)
                     self.clip_space.add_edge(act, percept, weight=1)
+                    self.trained_edges[percept] = []
 
 
     def action_selection(self, percept, action_set_t, clip = None): # Ok!
@@ -101,7 +102,12 @@ class Agent(object):
             d['weight']= (1- self.gamma_damping) *d['weight']
 
         self.clip_space[percept][action]['weight'] += reward
-        self.clip_space[action][percept]['weight'] += (self.K * reward)    
+        self.clip_space[action][percept]['weight'] += (self.K * reward)
+
+        if reward == 1:
+            if action not in self.trained_edges[percept]:
+                self.trained_edges[percept].append(action)
+
 
 
     def softmax(self, h_vec, beta): # Ok!
@@ -191,9 +197,6 @@ class Agent(object):
         
         # TODO: This function might need adjustment, especially in regard to relations that have already been trained
         #       Maybe do some further testing?
-        
-        if self.trained_edges is None:
-            self.trained_edges = self.clip_space.edges
 
         W_in = nx.to_pandas_adjacency(self.clip_space, 
                                       nodelist=sorted(self.clip_space.nodes()))
@@ -218,6 +221,10 @@ class Agent(object):
             Error = W_error.sub(W_old).abs().sum().sum()
             W_old = W_new.copy()
             self.NE_itr += 1
+
+        for percept in self.trained_edges.keys():
+            for action in self.trained_edges[percept]:
+                W_new.loc[percept, action] = original_W[percept][action]
 
         self.clip_space = nx.DiGraph(self.reverse_ne_for_graph(W_new, self.beta_h))
 

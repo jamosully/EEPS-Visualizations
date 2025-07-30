@@ -4,17 +4,12 @@ The original README can be found here: [EEPS](https://github.com/Asieh-A-Mofrad/
 
 ## Motivation and Project Objectives
 
-This project was created as part of a summer project on the foundation year of the Interactive Artificial Intelligence Centre for Doctoral Training at the University of Bristol
+This project was created as part of a summer project on the foundation year of the Interactive Artificial Intelligence CDT at the University of Bristol. Originally intended as an early foray into computational modelling in Contextual Behavioural Science, the project grew to focus on incorporating Relational Density Theory (RDT) into a pre-exisiting model of Stimulus Equivalence. With this in mind, the key objectives of this prototype are:
 
-With this in mind, the key objectives of this prototype are:
-
-1. To create a tool for visualising the the behavior of agent behavior during the training and testing stages of EEPS, both as a means of exploring simulations of RDT in EEPS and visualising projective simulation.
-2. Provide a platform for the realtime manipulation of
-
-The objectives previously achieved in this project are:
-
-1. Gain a deeper understanding of projective simulation and EEPS
-2. Explore the simulation of RDT
+1. Create a tool for visualising the the behavior of agent behavior during the training and testing stages of EEPS
+2. Explore the inclusion of RDT in EEPS
+3. Investigate the effects of Network Enhancement on the agent's clip space
+4. Provide the potential foundations of visualising future PS models
 
 ## Installation
 
@@ -25,6 +20,8 @@ pip install -r requirements.txt
 ```
 
 ### Common Issues
+
+TODO: Add common issues
 
 ## Walkthrough
 

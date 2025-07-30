@@ -92,7 +92,7 @@ class StimuliEditor(QtWidgets.QWidget):
 
     # TODO: This function is useful, maybe update the parameter toolbox to include something similar
 
-    def formatTable(self, table: QTableWidget, edge_list, edgeIndex):
+    def formatTable(self, table: QTableWidget, edge_list, edgeIndex, edited_clip_space = None):
 
         """
         The relation table contains three columns:
@@ -104,14 +104,13 @@ class StimuliEditor(QtWidgets.QWidget):
         Column 3: Strength of the relation
         """
 
-        # Add/remove rows using edge list length
+        # Rremove rows using edge list length
 
-        if table.rowCount() < len(edge_list):
-            for x in range(len(edge_list) - table.rowCount()):
-                table.insertRow(table.rowCount())
-        elif table.rowCount() > len(edge_list):
-            for x in range(table.rowCount() - len(edge_list)):
-                table.removeRow(table.rowCount())
+        for x in range(table.rowCount()):
+            table.removeRow(table.rowCount())
+
+        for x in range(len(edge_list)):
+            table.insertRow(table.rowCount())
 
         # TODO: Maybe normalise relation weights
 
