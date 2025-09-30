@@ -79,7 +79,7 @@ The visulisation display is the main components of Affinity, which is comprised 
 
 ![network_visualisation](Images/network_visualization.png)
 
-The **Network** tab on the main display contains visualisations of the agents clip space as a graph network. These visualisations are inspired by figures provided in the original EEPS paper, and provide a dynamic 
+The **Network** tab on the main display contains visualisations of the agents clip space as a graph network. These visualisations are inspired by figures provided in the original EEPS paper, and provide a dynamic
 
 #### Heatmap Visualisation
 
@@ -99,10 +99,10 @@ On the top right of the display are two dropdown menus which allow the user to s
 
 |Measure                 |Description|Rationale|
 |:-----------------------|:----------|:--------|
-|True Nodal Distance     |Total nodal distance between stimuli in a class, where each distance is obtained via the shortest nodal distance between stimuli (including symmetry, transitivity, and equivalence relations)||
-|Empirical Nodal Distance|Based on Fields [[2]](#2), total nodal distance in a class, where a stimuli is counted as part of the class if it has two trained relations||
-|Class Size              |Total number of stimuli in each class||
-|Number of Relations     |Total number of relations between stimuli in a class (including symmetry, transitivity, and equivalence relations)||
+|True Nodal Distance     |Total nodal distance between stimuli in a class, where each distance is obtained via the shortest nodal distance between stimuli (including symmetry, transitivity, and equivalence relations)|The transparent memory of agents in EEPS affords this form of nodal distance, which is more susceptible to fluctuations from differences in training structure and Network Enhancement|
+|Empirical Nodal Distance|Based on Fields [^fields1984], total nodal distance in a class, where a stimuli is counted as part of the class if it has two trained relations|Utilised by Cotter and Stewart in their study of RDT [^cotter2023], implemented here to allow for comparrisons between the study/further experiments and the simulation|
+|Class Size              |Total number of stimuli in each class|Defined as a measure of relational volume in Belisle and Dixon's first paper on RDT [^belisle2020]|
+|Number of Relations     |Total number of relations between stimuli in a class (including symmetry, transitivity, and equivalence relations)|Defined as a measure of relational volume in Belisle and Dixon's first paper on RDT [^belisle2020]|
 
 ##### Relational Density
 
@@ -128,12 +128,15 @@ To achieve the aims of this project, several changes were made to the original E
 
 - [ ] Drag and drop tabs
 - [ ] Modifying connections via the heatmap visualisation
+- [ ] Integrating the netgraph multi-graph layout
 - [ ] An interface for creating new experiments
 - [ ] A system for integrating other EEPS/EPS/PS variants within the visualisation framework of Affinity
 - [ ] Various keyboard shortcuts
   
 ## References
 
-<a id="2">[2]</a>
-Cotter, Eoin, and Ian Stewart. "The role of volume in relational density theory: Isolating the effects of class size and nodal distance on density and resistance in equivalence classes." The Psychological Record 73.3 (2023): 375-393.
+[^fields1984]: Fields, L., Verhave, T. and Fath, S., 1984. Stimulus equivalence and transitive associations: A methodological analysis. Journal of the Experimental Analysis of behavior, 42(1), pp.143-157.
 
+[^cotter2023]: Cotter, Eoin, and Ian Stewart. "The role of volume in relational density theory: Isolating the effects of class size and nodal distance on density and resistance in equivalence classes." The Psychological Record 73.3 (2023): 375-393.
+
+[^belisle2020]: Belisle, J. and Dixon, M.R., 2020. Relational density theory: Nonlinearity of equivalence relating examined through higher-order volumetric-mass-density. Perspectives on Behavior Science, 43(2), pp.259-283.
