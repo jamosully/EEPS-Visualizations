@@ -95,7 +95,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
-        pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
+        #pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
+        pos = self.gravity_multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
         nx.draw_networkx_nodes(ordered_clip_space, pos, node_color=color_map, ax=memory_plot, node_size=500)
         nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot, font_color='white')
@@ -123,3 +124,59 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
+
+    def gravity_multipartite_layout(self, G, subset_key="subset", align="vertical", scale=1, center=None, store_pos_as=None):
+
+        if align not in ("vertical", "horizontal"):
+            msg = "align must be either vertical or horizontal."
+            raise ValueError(msg)
+
+        G, center = nx._process_params(G, center=center, dim=2)
+        if len(G) == 0:
+            return {}
+
+        try:
+            # check if subset_key is dict-like
+            if len(G) != sum(len(nodes) for nodes in subset_key.values()):
+                raise nx.NetworkXError(
+                    "all nodes must be in one subset of `subset_key` dict"
+                )
+        except AttributeError:
+            # subset_key is not a dict, hence a string
+            node_to_subset = nx.get_node_attributes(G, subset_key)
+            if len(node_to_subset) != len(G):
+                raise nx.NetworkXError(
+                    f"all nodes need a subset_key attribute: {subset_key}"
+                )
+            subset_key = nx.utils.groups(node_to_subset)
+
+        # Sort by layer, if possible
+        try:
+            layers = dict(sorted(subset_key.items()))
+        except TypeError:
+            layers = subset_key
+
+        pos = None
+        nodes = []
+        width = len(layers)
+        for i, layer in enumerate(layers.values()):
+            height = len(layer)
+            print(height)
+            xs = np.repeat(i, height)
+            ys = np.arange(0, height, dtype=float)
+            offset = ((width - 1) / 2, (height - 1) / 2)
+            layer_pos = np.column_stack([xs, ys]) - offset
+            if pos is None:
+                pos = layer_pos
+            else:
+                pos = np.concatenate([pos, layer_pos])
+            nodes.extend(layer)
+        pos = nx.rescale_layout(pos, scale=scale) + center
+        if align == "horizontal":
+            pos = pos[:, ::-1]  # swap x and y coords
+        pos = dict(zip(nodes, pos))
+
+        if store_pos_as is not None:
+            nx.set_node_attributes(G, pos, store_pos_as)
+
+        return pos
