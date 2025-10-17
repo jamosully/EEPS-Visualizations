@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox,
                                QHeaderView, QPushButton, QHBoxLayout, 
                                QCheckBox, QDoubleSpinBox, QSpinBox,
                                QTextEdit, QSpacerItem, QFileDialog,
-                               QPlainTextEdit)
+                               QPlainTextEdit, QTabWidget)
 
 import EEPS.initialization
 import EEPS.initialization_detail
@@ -34,29 +34,44 @@ class ParameterToolbox(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self) 
 
-        self.toolbox = QGroupBox(self)
         self.main = parent
 
         self.box_layout = QVBoxLayout(self)
+
+        self.tabs = QTabWidget()
+        self.eepsSettingsTab = QGroupBox(self)
+        self.affinitySettingsTab = QGroupBox(self)
+
+        self.load_json()
+        self.createModelSettingsTab()
+        self.createGUISettingsTab()
         
         # The parameters are now loaded in from a single 
         # json file, which contains names, values, descriptions,
         # and the type
 
-        self.load_json()
-
         self.rdt_volume_types = []
         self.rdt_density_types = []
+        
+        self.createButtons()
+        self.box_layout.addLayout(self.buttonLayout)
+
+        self.tabs.addTab(self.eepsSettingsTab, "Model Settings")
+
+    def createModelSettingsTab(self):
+
+        """
+        Creates a tab that contains settings for modifying the function
+        of the underlying EEPS model
+        """
 
         self.environment_detail = EEPS.initialization_detail.environment_details()
-
         self.json_env_params = self.json_params['environment_parameters']
         self.json_agent_params = self.json_params['agent_parameters']
 
         self.model_env_params = self.create_param_dict(self.json_env_params)
         self.model_agent_params = self.create_param_dict(self.json_agent_params)
-
-        print(self.model_agent_params)
+        self.gui_params = self.create_param_dict(self.json_gui_params)
 
         self.agentLabel = QLabel(self)
         self.agentLabel.setText("Agent Parameters")
@@ -69,8 +84,6 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.createFilenameEntry()
 
-        # TODO: Create a separate function for adding all components
-
         self.box_layout.addWidget(self.fileTable)
         self.box_layout.addWidget(self.agentLabel)
         self.box_layout.addWidget(self.agentToolbox.table)
@@ -79,10 +92,19 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.box_layout.addWidget(self.envToolbox.table)
         self.box_layout.addWidget(self.envToolbox.descriptionField)
 
-        self.createButtons()
-        self.box_layout.addLayout(self.buttonLayout)
+        self.eepsSettingsTab.setLayout(self.box_layout)
 
-        self.toolbox.setLayout(self.box_layout)
+
+    def createGUISettingsTab(self):
+
+        """
+        Creates a tab dedicated to settings that change 
+        the interface of Affinity
+        """
+
+        self.json_gui_params = self.json_params['affinity_parameters']
+
+
 
     def createButtons(self):
 
@@ -222,9 +244,13 @@ class ParameterToolbox(QtWidgets.QWidget):
             for param in self.json_params['agent_parameters']:
                 if param['name'] == key:
                     param['value'] = value
-        else:
+        elif key in self.model_env_params:
             self.model_env_params[key] = [value]
             for param in self.json_params['environment_parameters']:
+                if param['name'] == key:
+                    param['value'] = value
+        else:
+            for param in self.json_params['affinity_parameters']:
                 if param['name'] == key:
                     param['value'] = value
 
@@ -275,6 +301,13 @@ class ParameterToolbox(QtWidgets.QWidget):
                                   "Create experiment")
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
                 return widget
+            case 'drop_down':
+                widget = ParamComboBox(key, options)
+                for x, option in enumerate(options):
+                    widget.insertItem(x, option)
+                    if value == option:
+                        widget.setCurrentIndex(x)
+                #widget.currentIndexChanged.connect(lambda)
 
 class ParamTable(QtWidgets.QWidget):
 

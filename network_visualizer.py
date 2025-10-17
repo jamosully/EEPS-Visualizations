@@ -7,8 +7,10 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 import matplotlib.colors as mcolors
 import matplotlib as mpl
+import matplotlib.animation
 
 import networkx as nx
+import netgraph
 import numpy as np
 import mplcursors
 
@@ -70,13 +72,13 @@ class NetworkVisualizer(QtWidgets.QWidget):
         edge_color_map = mpl.colormaps['gist_heat_r']
 
         subsets = dict()
-        color_map = []
+        community_dict = {}
+        color_map = {}
         for stimuli in clip_space.nodes:
-            subsets[stimuli] = stimuli[0]
+            community_dict[stimuli] = int(stimuli[1]) - 1
+            color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
-
-        for item in subsets.items():
-            color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
+                
 
         self.figure.clf()
         
@@ -95,88 +97,129 @@ class NetworkVisualizer(QtWidgets.QWidget):
         ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
-        #pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
-        pos = self.gravity_multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
+        # pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
+        # pos = nx.spring_layout(clip_space)#
+        # pos = self.community_layout(clip_space, community_dict)
 
-        nx.draw_networkx_nodes(ordered_clip_space, pos, node_color=color_map, ax=memory_plot, node_size=500)
-        nx.draw_networkx_labels(ordered_clip_space, pos, ax=memory_plot, font_color='white')
-        self.edge_artist = []
-        weight_counter = 0
-        for key, weight in normalized_weights.items():
-            nx.draw_networkx_edges(ordered_clip_space,
-                                    pos,
-                                    connectionstyle='arc3,rad=0.1',
-                                    edgelist=[key],
-                                    ax=memory_plot,
-                                    arrows=True,
-                                    edge_color=edge_color_map(weight),
-                                    width=2 + (weight * 6),
-                                    alpha=max(0.33, weight)) #+ (weights[weight_counter] / 8),
-                                    #alpha=weight)
-            weight_counter += 1
+        # nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500)
+        # nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        # self.edge_artist = []
+        # weight_counter = 0
+        # for key, weight in normalized_weights.items():
+        #     nx.draw_networkx_edges(clip_space,
+        #                             pos,
+        #                             connectionstyle='arc3,rad=0.1',
+        #                             edgelist=[key],
+        #                             ax=memory_plot,
+        #                             arrows=True,
+        #                             edge_color=edge_color_map(weight),
+        #                             width=2 + (weight * 6),
+        #                             alpha=max(0.33, weight)) #+ (weights[weight_counter] / 8),
+        #                             #alpha=weight)
+        #     weight_counter += 1
             
-        network_cursor = mplcursors.cursor(self.figure)
+        # network_cursor = mplcursors.cursor(self.figure)
 
-        @network_cursor.connect("add")
-        def on_add(sel):
-            self.table.populateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
-            self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
+        # @network_cursor.connect("add")
+        # def on_add(sel):
+        #     self.table.populateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
+        #     self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
+
+        netgraph.Graph(clip_space,
+                       node_color=color_map, node_edge_width=0, edge_alpha=normalized_weights,
+                       node_layout="community", node_layout_kwargs=dict(node_to_community=community_dict),
+                       edge_layout="bundled", edge_layout_kwargs=dict(k=2000),
+                       ax=memory_plot, arrows=True, node_labels=True)
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
 
-    def gravity_multipartite_layout(self, G, subset_key="subset", align="vertical", scale=1, center=None, store_pos_as=None):
+    def community_layout(self, g, partition):
+        """
+        Compute the layout for a modular graph.
 
-        if align not in ("vertical", "horizontal"):
-            msg = "align must be either vertical or horizontal."
-            raise ValueError(msg)
 
-        G, center = nx._process_params(G, center=center, dim=2)
-        if len(G) == 0:
-            return {}
+        Arguments:
+        ----------
+        g -- networkx.Graph or networkx.DiGraph instance
+            graph to plot
 
-        try:
-            # check if subset_key is dict-like
-            if len(G) != sum(len(nodes) for nodes in subset_key.values()):
-                raise nx.NetworkXError(
-                    "all nodes must be in one subset of `subset_key` dict"
-                )
-        except AttributeError:
-            # subset_key is not a dict, hence a string
-            node_to_subset = nx.get_node_attributes(G, subset_key)
-            if len(node_to_subset) != len(G):
-                raise nx.NetworkXError(
-                    f"all nodes need a subset_key attribute: {subset_key}"
-                )
-            subset_key = nx.utils.groups(node_to_subset)
+        partition -- dict mapping int node -> int community
+            graph partitions
 
-        # Sort by layer, if possible
-        try:
-            layers = dict(sorted(subset_key.items()))
-        except TypeError:
-            layers = subset_key
 
-        pos = None
-        nodes = []
-        width = len(layers)
-        for i, layer in enumerate(layers.values()):
-            height = len(layer)
-            print(height)
-            xs = np.repeat(i, height)
-            ys = np.arange(0, height, dtype=float)
-            offset = ((width - 1) / 2, (height - 1) / 2)
-            layer_pos = np.column_stack([xs, ys]) - offset
-            if pos is None:
-                pos = layer_pos
-            else:
-                pos = np.concatenate([pos, layer_pos])
-            nodes.extend(layer)
-        pos = nx.rescale_layout(pos, scale=scale) + center
-        if align == "horizontal":
-            pos = pos[:, ::-1]  # swap x and y coords
-        pos = dict(zip(nodes, pos))
+        Returns:
+        --------
+        pos -- dict mapping int node -> (float x, float y)
+            node positions
 
-        if store_pos_as is not None:
-            nx.set_node_attributes(G, pos, store_pos_as)
+        """
+
+        pos_communities = self._position_communities(g, partition, scale=3.)
+
+        pos_nodes = self._position_nodes(g, partition, scale=1.)
+
+        # combine positions
+        pos = dict()
+        for node in g.nodes():
+            pos[node] = pos_communities[node] + pos_nodes[node]
+
+        return pos
+
+    def _position_communities(self, g, partition, **kwargs):
+
+        # create a weighted graph, in which each node corresponds to a community,
+        # and each edge weight to the number of edges between communities
+        between_community_edges = self._find_between_community_edges(g, partition)
+
+        communities = set(partition.values())
+        hypergraph = nx.DiGraph()
+        hypergraph.add_nodes_from(communities)
+        for (ci, cj), edges in between_community_edges.items():
+            hypergraph.add_edge(ci, cj, weight=len(edges))
+
+        # find layout for communities
+        pos_communities = nx.spring_layout(hypergraph, **kwargs)
+
+        # set node positions to position of community
+        pos = dict()
+        for node, community in partition.items():
+            pos[node] = pos_communities[community]
+
+        return pos
+
+    def _find_between_community_edges(self, g, partition):
+
+        edges = dict()
+
+        for (ni, nj) in g.edges():
+            ci = partition[ni]
+            cj = partition[nj]
+
+            if ci != cj:
+                try:
+                    edges[(ci, cj)] += [(ni, nj)]
+                except KeyError:
+                    edges[(ci, cj)] = [(ni, nj)]
+
+        return edges
+
+    def _position_nodes(self, g, partition, **kwargs):
+        """
+        Positions nodes within communities.
+        """
+
+        communities = dict()
+        for node, community in partition.items():
+            try:
+                communities[community] += [node]
+            except KeyError:
+                communities[community] = [node]
+
+        pos = dict()
+        for ci, nodes in communities.items():
+            subgraph = g.subgraph(nodes)
+            pos_subgraph = nx.spring_layout(subgraph, **kwargs)
+            pos.update(pos_subgraph)
 
         return pos

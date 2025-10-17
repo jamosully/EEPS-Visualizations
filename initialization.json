@@ -87,6 +87,15 @@
             "type": "bool"
         }
     ],
+    "affinity_parameters": [
+        {
+            "name": "Graph Style",
+            "description": "Controls the appearance of the graph visualisation display. \n The options are: \n 1. Mutlipartite: based on Mofrad et al.'s (2020) design, arranges stimuli in columns of classes and rows of forms. \n 2. Community: displays",
+            "value": "community",
+            "type": "drop_down",
+            "options": ["multipartite", "community"]
+        }
+    ],
     "rdt_volume_types": [
         "True nodal distance",
         "Empirical nodal distance",
