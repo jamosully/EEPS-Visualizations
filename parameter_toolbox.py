@@ -68,6 +68,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.environment_detail = EEPS.initialization_detail.environment_details()
         self.json_env_params = self.json_params['environment_parameters']
         self.json_agent_params = self.json_params['agent_parameters']
+        self.json_gui_params = self.json_params["affinity_parameters"]
 
         self.model_env_params = self.create_param_dict(self.json_env_params)
         self.model_agent_params = self.create_param_dict(self.json_agent_params)

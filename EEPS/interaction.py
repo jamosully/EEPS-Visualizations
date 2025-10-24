@@ -21,6 +21,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import networkx as nx
+import netgraph
+import matplotlib.colors as mcolors
+import matplotlib.animation
 import seaborn as sns; sns.set()
 import pdb
 
@@ -58,7 +61,8 @@ class Interaction(object):
         self.vis_display = vis_display
         self.pause = wait_signal
         self.num_steps = 0
-
+        self.artists = []
+        self.figure = plt.figure(figsize=(8,8))
 
     def run_experiment(self): # Ok!
 
@@ -79,17 +83,20 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
-            self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
-            if self.num_steps % self.vis_step == 0:
-                self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
-                self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
-                self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
-                self.vis_display.change_step_counter(self.num_steps)
-                self.pause.lock()
-                if self.vis_display.edits_made:
-                    self.agent.clip_space = self.vis_display.update_clip_space()
-                if self.vis_display.step_changed:
-                    self.vis_step = self.vis_display.update_step_count()
+            self.artists.append(self.plot_and_save_graph())
+            #print(self.artists)
+            if self.vis_display is not None:
+                self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
+                if self.num_steps % self.vis_step == 0:
+                    self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
+                    self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+                    self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
+                    self.vis_display.change_step_counter(self.num_steps)
+                    self.pause.lock()
+                    if self.vis_display.edits_made:
+                        self.agent.clip_space = self.vis_display.update_clip_space()
+                    if self.vis_display.step_changed:
+                        self.vis_step = self.vis_display.update_step_count()
 
         if self.num_steps == self.max_trial:
             sys.exit("UNABLE TO FINISH TRAINING WITHIN {} STEPS".format(
@@ -115,9 +122,17 @@ class Interaction(object):
             self.agent = copy.deepcopy(agent)
             self.run_experiment()
 
-            self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
-            self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
-            self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
+            if self.vis_display is not None:
+                self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
+                self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+                self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
+
+            self.artists.append(self.plot_and_save_graph())
+            print("num of artists: " + str(len(self.artists)))
+            #self.figure.clear()
+            ani = matplotlib.animation.ArtistAnimation(fig=self.figure, artists=self.artists, interval=200, blit=True)
+            #plt.show()
+            ani.save(filename="test.mp4", writer="ffmpeg")
 
             if i_trial == 0:
                 avg_time_training = self.environment.num_iteration_training.copy()
@@ -148,11 +163,12 @@ class Interaction(object):
                 avg_NE_itr += self.agent.NE_itr
                 final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(W_new_, self.agent.beta_h))
    
-            self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
-            self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
-            self.vis_display.networkTab.visualize_memory_network(final_clip_space)
-            self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
-            self.vis_display.change_step_counter(self.num_steps)
+            if self.vis_display is not None:
+                self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
+                self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
+                self.vis_display.networkTab.visualize_memory_network(final_clip_space)
+                self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
+                self.vis_display.change_step_counter(self.num_steps)
 
 
         for k, v in avg_time_training.items():
@@ -190,7 +206,8 @@ class Interaction(object):
         """
 
         train_list = []
-        trial_list = np.mean(self.vis_display.rdtTab.transition_trials, axis=0)
+        if self.vis_display is not None:
+            trial_list = np.mean(self.vis_display.rdtTab.transition_trials, axis=0)
         size_list = []
         time_list = []
         mastery_list = []
@@ -204,11 +221,17 @@ class Interaction(object):
             size_list.append(size)
             time_list.append(avg_time_training[k])
             mastery_list.append(avg_prob_training[k])
-        df = pd.DataFrame({'Training': train_list,
-                           'Block Size': size_list,
-                            'Time': time_list,
-                            "Trials Required": trial_list,
-                            'Mastery': mastery_list})
+        if self.vis_display is not None:
+            df = pd.DataFrame({'Training': train_list,
+                            'Block Size': size_list,
+                                'Time': time_list,
+                                "Trials Required": trial_list,
+                                'Mastery': mastery_list})
+        else:
+            df = pd.DataFrame({'Training': train_list,
+                            'Block Size': size_list,
+                                'Time': time_list,
+                                'Mastery': mastery_list})
         return df
 
 
@@ -336,6 +359,150 @@ class Interaction(object):
 
         return show, result
     
+    def plot_and_save_graph(self):
+
+        """Used for creating animation"""
+
+        #self.ax.clear()
+
+        subsets = dict()
+        community_dict = {}
+        color_map = {}
+        for stimuli in self.agent.clip_space.nodes:
+            community_dict[stimuli] = int(stimuli[1]) - 1
+            color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
+        subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
+        
+        nx.set_node_attributes(self.agent.clip_space, subsets, name="layers")
+
+        weight_labels = nx.get_edge_attributes(self.agent.clip_space, 'weight')
+
+        weights = np.array([weight for weight in weight_labels.values()])
+        normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
+        
+        ordered_clip_space = nx.DiGraph()
+        ordered_clip_space.to_directed()
+        ordered_clip_space.add_nodes_from(sorted(self.agent.clip_space.nodes(data=True)))
+        ordered_clip_space.add_weighted_edges_from(self.agent.clip_space.edges(data=True))
+
+        pos = self.community_layout(self.agent.clip_space, community_dict)
+
+        #edges = []
+
+        nodes = nx.draw_networkx_nodes(self.agent.clip_space, pos, node_size=500)
+        labels = nx.draw_networkx_labels(self.agent.clip_space, pos, font_color='white')
+
+        self.edge_artist = []
+        weight_counter = 0
+        edges = nx.draw_networkx_edges(self.agent.clip_space,
+                                       pos,
+                                       arrows=True,
+                                       )
+        # for key, weight in normalized_weights.items():
+        #     edges.append(nx.draw_networkx_edges(self.agent.clip_space,
+        #                             pos,
+        #                             connectionstyle='arc3,rad=0.1',
+        #                             edgelist=[key],
+        #                             arrows=True,
+        #                             #edge_color=edge_color_map(weight),
+        #                             width= 2 + (weight * 6),
+        #                             alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+        #                             #alpha=weight)
+        #     weight_counter += 1
+
+        #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+        #print(self.ax.containers)
+        return ([nodes, edges] + list(labels.values()))
+    
+    def community_layout(self, g, partition):
+        """
+        Compute the layout for a modular graph.
+
+
+        Arguments:
+        ----------
+        g -- networkx.Graph or networkx.DiGraph instance
+            graph to plot
+
+        partition -- dict mapping int node -> int community
+            graph partitions
+
+
+        Returns:
+        --------
+        pos -- dict mapping int node -> (float x, float y)
+            node positions
+
+        """
+
+        pos_communities = self._position_communities(g, partition, scale=3.)
+
+        pos_nodes = self._position_nodes(g, partition, scale=1.)
+
+        # combine positions
+        pos = dict()
+        for node in g.nodes():
+            pos[node] = pos_communities[node] + pos_nodes[node]
+
+        return pos
+
+    def _position_communities(self, g, partition, **kwargs):
+
+        # create a weighted graph, in which each node corresponds to a community,
+        # and each edge weight to the number of edges between communities
+        between_community_edges = self._find_between_community_edges(g, partition)
+
+        communities = set(partition.values())
+        hypergraph = nx.DiGraph()
+        hypergraph.add_nodes_from(communities)
+        for (ci, cj), edges in between_community_edges.items():
+            hypergraph.add_edge(ci, cj, weight=len(edges))
+
+        # find layout for communities
+        pos_communities = nx.spring_layout(hypergraph, **kwargs)
+
+        # set node positions to position of community
+        pos = dict()
+        for node, community in partition.items():
+            pos[node] = pos_communities[community]
+
+        return pos
+
+    def _find_between_community_edges(self, g, partition):
+
+        edges = dict()
+
+        for (ni, nj) in g.edges():
+            ci = partition[ni]
+            cj = partition[nj]
+
+            if ci != cj:
+                try:
+                    edges[(ci, cj)] += [(ni, nj)]
+                except KeyError:
+                    edges[(ci, cj)] = [(ni, nj)]
+
+        return edges
+
+    def _position_nodes(self, g, partition, **kwargs):
+        """
+        Positions nodes within communities.
+        """
+
+        communities = dict()
+        for node, community in partition.items():
+            try:
+                communities[community] += [node]
+            except KeyError:
+                communities[community] = [node]
+
+        pos = dict()
+        for ci, nodes in communities.items():
+            subgraph = g.subgraph(nodes)
+            pos_subgraph = nx.spring_layout(subgraph, **kwargs)
+            pos.update(pos_subgraph)
+
+        return pos
 
 #    def save_latex(self, results):
 #
