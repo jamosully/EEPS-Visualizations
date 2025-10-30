@@ -134,7 +134,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
 
-    def community_layout(self, g, partition):
+    def community_layout(self, g, partition, weights):
         """
         Compute the layout for a modular graph.
 
@@ -147,6 +147,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         partition -- dict mapping int node -> int community
             graph partitions
 
+        weights -- array containing edge weights
 
         Returns:
         --------
@@ -155,9 +156,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         """
 
-        pos_communities = self._position_communities(g, partition, scale=3.)
+        pos_communities = self._position_communities(g, partition, scale=3., weights=weights)
 
-        pos_nodes = self._position_nodes(g, partition, scale=1.)
+        pos_nodes = self._position_nodes(g, partition, scale=1., weights=weights)
 
         # combine positions
         pos = dict()

@@ -24,7 +24,7 @@ def environment_parameters():
 
     environment_parameter = {
                              "experiment_ID": [00],
-                             "environment_ID": [1],
+                             "environment_ID": [15],
                              "max_trial": [10000],
                              "num_agents": [1],
                              "size_action_set": [3],

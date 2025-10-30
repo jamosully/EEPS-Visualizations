@@ -61,8 +61,8 @@ class Interaction(object):
         self.vis_display = vis_display
         self.pause = wait_signal
         self.num_steps = 0
-        self.artists = []
-        self.figure = plt.figure(figsize=(8,8))
+        self.artists = {}
+        self.figure, self.ax = plt.subplots()
 
     def run_experiment(self): # Ok!
 
@@ -83,7 +83,9 @@ class Interaction(object):
             reward = self.environment.feedback(percept, action)
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
-            self.artists.append(self.plot_and_save_graph())
+            #print(self.agent.clip_space.nodes)
+            self.artists[self.num_steps] = nx.Graph.copy(self.agent.clip_space)
+            print(self.artists[self.num_steps].nodes)
             #print(self.artists)
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
@@ -127,13 +129,9 @@ class Interaction(object):
                 self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
 
-            self.artists.append(self.plot_and_save_graph())
-            print("num of artists: " + str(len(self.artists)))
+            self.artists[self.num_steps] = self.agent.clip_space
             #self.figure.clear()
-            ani = matplotlib.animation.ArtistAnimation(fig=self.figure, artists=self.artists, interval=200, blit=True)
-            #plt.show()
-            ani.save(filename="test.mp4", writer="ffmpeg")
-
+            
             if i_trial == 0:
                 avg_time_training = self.environment.num_iteration_training.copy()
                 avg_prob_training = self.environment.Block_results_training.copy()
@@ -169,6 +167,35 @@ class Interaction(object):
                 self.vis_display.networkTab.visualize_memory_network(final_clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
                 self.vis_display.change_step_counter(self.num_steps)
+
+        community_dict = {}
+
+        for stimuli in self.artists[self.num_steps]:
+            community_dict[stimuli] = int(stimuli[1]) - 1
+        
+        self.key_positions = []
+        self.fixed_positions = {}
+        self.pos_ready = False
+        
+        final_pos = self.community_layout(self.artists[self.num_steps], community_dict)
+
+        self.key_positions = ["A1", "A2", "A3", "A4"]
+        self.fixed_positions = {k: final_pos[k] for k in self.key_positions}
+        self.pos_ready = True
+
+        xy = np.array(list(final_pos.values()))
+        self.x_min, self.y_min = np.min(xy, axis=0)
+        self.x_max, self.y_max = np.max(xy, axis=0)
+        self.pad_by = 0.05 # may need adjusting 
+        self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
+
+        plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+        
+        ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=20)
+            #plt.show()
+        #ani.save(filename="test.mp4", writer="ffmpeg")
+        ani.save(filename="test.gif", writer="PillowWriter")
 
 
         for k, v in avg_time_training.items():
@@ -359,60 +386,69 @@ class Interaction(object):
 
         return show, result
     
-    def plot_and_save_graph(self):
+    def plot_and_save_graph(self, n):
 
         """Used for creating animation"""
 
-        #self.ax.clear()
+        self.figure.clf()
+        clip_space = self.artists[n]
 
         subsets = dict()
         community_dict = {}
         color_map = {}
-        for stimuli in self.agent.clip_space.nodes:
+        alt_color_map = []
+        for stimuli in clip_space:
             community_dict[stimuli] = int(stimuli[1]) - 1
             color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
+            subsets[stimuli] = stimuli[0]
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
-        
-        nx.set_node_attributes(self.agent.clip_space, subsets, name="layers")
 
-        weight_labels = nx.get_edge_attributes(self.agent.clip_space, 'weight')
+        for item in subsets.items():
+            alt_color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
+        
+        nx.set_node_attributes(clip_space, subsets, name="layers")
+
+        weight_labels = nx.get_edge_attributes(clip_space, 'weight')
 
         weights = np.array([weight for weight in weight_labels.values()])
         normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
-        ordered_clip_space.add_nodes_from(sorted(self.agent.clip_space.nodes(data=True)))
-        ordered_clip_space.add_weighted_edges_from(self.agent.clip_space.edges(data=True))
+        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
+        ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
-        pos = self.community_layout(self.agent.clip_space, community_dict)
+        pos = self.community_layout(clip_space, community_dict)
 
-        #edges = []
+        edges = []
 
-        nodes = nx.draw_networkx_nodes(self.agent.clip_space, pos, node_size=500)
-        labels = nx.draw_networkx_labels(self.agent.clip_space, pos, font_color='white')
+        nodes = nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=alt_color_map)
+        labels = nx.draw_networkx_labels(clip_space, pos, font_color='white')
 
         self.edge_artist = []
         weight_counter = 0
-        edges = nx.draw_networkx_edges(self.agent.clip_space,
-                                       pos,
-                                       arrows=True,
-                                       )
-        # for key, weight in normalized_weights.items():
-        #     edges.append(nx.draw_networkx_edges(self.agent.clip_space,
-        #                             pos,
-        #                             connectionstyle='arc3,rad=0.1',
-        #                             edgelist=[key],
-        #                             arrows=True,
-        #                             #edge_color=edge_color_map(weight),
-        #                             width= 2 + (weight * 6),
-        #                             alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
-        #                             #alpha=weight)
-        #     weight_counter += 1
+        for key, weight in normalized_weights.items():
+            edges.append(nx.draw_networkx_edges(clip_space,
+                                    pos,
+                                    connectionstyle='arc3,rad=0.1',
+                                    edgelist=[key],
+                                    arrows=True,
+                                    #edge_color=edge_color_map(weight),
+                                    width= 2 + (weight * 6),
+                                    alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+                                    #alpha=weight)
+            weight_counter += 1
+
+        self.ax.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        self.ax.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+        self.ax.set_aspect("equal")
+
+        # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         #print(self.ax.containers)
-        return ([nodes, edges] + list(labels.values()))
+        return nodes, edges, labels
     
     def community_layout(self, g, partition):
         """
@@ -459,7 +495,7 @@ class Interaction(object):
             hypergraph.add_edge(ci, cj, weight=len(edges))
 
         # find layout for communities
-        pos_communities = nx.spring_layout(hypergraph, **kwargs)
+        pos_communities = nx.spring_layout(hypergraph, **kwargs, center=[0,0], seed=1)
 
         # set node positions to position of community
         pos = dict()
@@ -499,7 +535,7 @@ class Interaction(object):
         pos = dict()
         for ci, nodes in communities.items():
             subgraph = g.subgraph(nodes)
-            pos_subgraph = nx.spring_layout(subgraph, **kwargs)
+            pos_subgraph = nx.spring_layout(subgraph, **kwargs, seed=1)
             pos.update(pos_subgraph)
 
         return pos
