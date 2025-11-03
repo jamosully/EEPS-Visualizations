@@ -61,7 +61,7 @@ class Environment(object):
         self.transition_trial = False
         self.next_step = False
         self.new_block = True
-        self.counter_conditioning = False
+        self.counter_conditioning = True
         self.Block_list = []
         self.Block_results_training = {}
         self.Block_training_order = {}
@@ -193,20 +193,20 @@ class Environment(object):
         """
         self.class_trial_count[int(percept[1])] += 1
 
-        # if self.counter_conditioning is True:
-        #     if self.check_for_counter_conditioning(percept, action):
-        #         reward = 1
-        #         self.class_reward_count[int(percept[1])] += 1
-        #         self.correct += 1
-        #     else:
-        #         reward = -1
-        # elif self.counter_conditioning is False:
-        if percept[1] == action[1]:
-            reward = 1
-            self.class_reward_count[int(percept[1])] += 1
-            self.correct += 1
-        else:
-            reward = -1
+        if self.counter_conditioning is True:
+            if self.check_for_counter_conditioning(percept, action):
+                reward = 1
+                self.class_reward_count[int(percept[1])] += 1
+                self.correct += 1
+            else:
+                reward = -1
+        elif self.counter_conditioning is False:
+            if percept[1] == action[1]:
+                reward = 1
+                self.class_reward_count[int(percept[1])] += 1
+                self.correct += 1
+            else:
+                reward = -1
 
         for x in range(self.num_classes):
             if self.class_trial_count[x + 1] != 0:
@@ -216,13 +216,13 @@ class Environment(object):
 
         return reward
     
-    # def check_for_counter_conditioning(self, percept, action):
+    def check_for_counter_conditioning(self, percept, action):
 
-    #     for pair in self.training_order[self.step]:
-    #         if pair[0] == percept and pair[1] == action:
-    #             return True
+        for pair in self.training_order[self.step]:
+            if pair[0] == percept and pair[1] == action:
+                return True
             
-    #     return False
+        return False
 
     def reset_block(self): # Ok!
 

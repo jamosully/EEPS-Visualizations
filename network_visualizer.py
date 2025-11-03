@@ -40,6 +40,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.main_display = parent
         self.table = table
 
+        self.vis_types = {
+            "Sequential Layout": True,
+            "Community Layout": False,
+            "Multigraph Layout": False
+        }
+
         self.selected_stim = None
 
         self.name = "Memory Network Visualizer"
@@ -51,7 +57,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.canvas, 1, 0)
 
-    def visualize_memory_network(self, clip_space):
+    def visualize_network(self, clip_space):
+        
+        """
+        Routes the clip_space to the currently-selected visualizer
+        """
+
+        
+
+    def visualize_network_networkx(self, clip_space, as_community):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -74,11 +88,16 @@ class NetworkVisualizer(QtWidgets.QWidget):
         subsets = dict()
         community_dict = {}
         color_map = {}
+        color_map_array = []
         for stimuli in clip_space.nodes:
             community_dict[stimuli] = int(stimuli[1]) - 1
             color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
+            subsets[stimuli] = stimuli[0]
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
                 
+        for item in subsets.items():
+            color_map_array.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
+
 
         self.figure.clf()
         
@@ -134,7 +153,14 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
 
-    def community_layout(self, g, partition, weights):
+    def visualize_community_network(self, clip_space):
+
+        """
+        Visualizes the agent's memory network via clusters
+        of nodes that 
+        """
+
+    def community_layout(self, g, partition):
         """
         Compute the layout for a modular graph.
 
@@ -156,9 +182,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         """
 
-        pos_communities = self._position_communities(g, partition, scale=3., weights=weights)
+        pos_communities = self._position_communities(g, partition, scale=3., seed=1)
 
-        pos_nodes = self._position_nodes(g, partition, scale=1., weights=weights)
+        pos_nodes = self._position_nodes(g, partition, scale=1., seed=1)
 
         # combine positions
         pos = dict()
