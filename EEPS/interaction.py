@@ -62,6 +62,7 @@ class Interaction(object):
         self.pause = wait_signal
         self.num_steps = 0
         self.artists = {}
+        self.current_phase = []
         self.figure, self.ax = plt.subplots()
 
     def run_experiment(self): # Ok!
@@ -85,7 +86,8 @@ class Interaction(object):
                                                action, reward, new_trial)
             #print(self.agent.clip_space.nodes)
             self.artists[self.num_steps] = nx.Graph.copy(self.agent.clip_space)
-            print(self.artists[self.num_steps].nodes)
+            self.current_phase.append("Phase " + str(self.environment.step))
+            print(self.environment.step)
             #print(self.artists)
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
@@ -161,6 +163,9 @@ class Interaction(object):
                 avg_NE_itr += self.agent.NE_itr
                 final_clip_space = nx.DiGraph(self.agent.reverse_ne_for_graph(W_new_, self.agent.beta_h))
    
+            for i in range(20):
+                self.artists[self.num_steps + (i + 1)] = final_clip_space
+                self.current_phase.append("Network Enhancement")
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
                 self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
@@ -192,7 +197,7 @@ class Interaction(object):
         plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
         plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
         
-        ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=20)
+        ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=30)
             #plt.show()
         #ani.save(filename="test.mp4", writer="ffmpeg")
         ani.save(filename="test.gif", writer="PillowWriter")
@@ -391,7 +396,10 @@ class Interaction(object):
         """Used for creating animation"""
 
         self.figure.clf()
+        self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
+
         clip_space = self.artists[n]
+        phase = self.current_phase[n]      
 
         subsets = dict()
         community_dict = {}
@@ -443,6 +451,14 @@ class Interaction(object):
         self.ax.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
         self.ax.set_aspect("equal")
 
+        self.figure.text(0.1,
+                         0.1,
+                         phase,
+                         fontsize=12)
+
+        # self.ax.annotate("Test", xy=(1, 0), xycoords='axes fraction', fontsize=16,
+        #         horizontalalignment='right', verticalalignment='bottom')
+
         # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
         # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
 
@@ -450,6 +466,31 @@ class Interaction(object):
         #print(self.ax.containers)
         return nodes, edges, labels
     
+    def obtain_communities(self, clip_space: nx.DiGraph):
+
+        """
+        Uses greedy modularity function
+        """
+
+        undirected_clip_space = clip_space.to_undirected()
+
+        for stimuli in clip_space:
+            for linked_stim in nx.neighbors(clip_space, stimuli):
+                if stimuli in nx.neighbors(clip_space, linked_stim):
+                    undirected_clip_space.edges[stimuli, linked_stim]["weight"] = (
+                        clip_space.edges[stimuli, linked_stim]['weight'] + clip_space.edges[linked_stim, stimuli]['weight']
+                    )
+
+        undirected_communities = nx.community.greedy_modularity_communities(
+            undirected_clip_space, "weight", 1.0, 1, self.environment.num_classes
+        )
+
+        community_dict = {}
+        for community in  undirected_communities:
+            """"
+            Do something
+            """
+
     def community_layout(self, g, partition):
         """
         Compute the layout for a modular graph.
