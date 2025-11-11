@@ -199,8 +199,8 @@ class Interaction(object):
         
         ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=30)
             #plt.show()
-        #ani.save(filename="test.mp4", writer="ffmpeg")
-        ani.save(filename="test.gif", writer="PillowWriter")
+        ani.save(filename="test.mp4", writer="ffmpeg")
+        #ani.save(filename="test.gif", writer="PillowWriter")
 
 
         for k, v in avg_time_training.items():
@@ -399,7 +399,12 @@ class Interaction(object):
         self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
 
         clip_space = self.artists[n]
-        phase = self.current_phase[n]      
+        phase = self.current_phase[n]
+
+        if phase == "Phase 6":
+            counterconditioning = True
+        else:
+            counterconditioning = False 
 
         subsets = dict()
         community_dict = {}
@@ -410,6 +415,8 @@ class Interaction(object):
             color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
             subsets[stimuli] = stimuli[0]
         subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
+
+        community_dict = self.obtain_communities(clip_space)
 
         for item in subsets.items():
             alt_color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
@@ -436,15 +443,18 @@ class Interaction(object):
         self.edge_artist = []
         weight_counter = 0
         for key, weight in normalized_weights.items():
-            edges.append(nx.draw_networkx_edges(clip_space,
-                                    pos,
-                                    connectionstyle='arc3,rad=0.1',
-                                    edgelist=[key],
-                                    arrows=True,
-                                    #edge_color=edge_color_map(weight),
-                                    width= 2 + (weight * 6),
-                                    alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
-                                    #alpha=weight)
+            if counterconditioning:
+                print("heheheh")
+            else:
+                edges.append(nx.draw_networkx_edges(clip_space,
+                                        pos,
+                                        connectionstyle='arc3,rad=0.1',
+                                        edgelist=[key],
+                                        arrows=True,
+                                        #edge_color=edge_color_map(weight),
+                                        width= 2 + (weight * 6),
+                                        alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+                                        #alpha=weight)
             weight_counter += 1
 
         self.ax.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
@@ -482,14 +492,18 @@ class Interaction(object):
                     )
 
         undirected_communities = nx.community.greedy_modularity_communities(
-            undirected_clip_space, "weight", 1.0, 1, self.environment.num_classes
+            undirected_clip_space, "weight", 1, 1, self.environment.num_classes
         )
 
+        #print(undirected_communities)
+
         community_dict = {}
-        for community in  undirected_communities:
-            """"
-            Do something
-            """
+        for i, community in enumerate(undirected_communities):
+            for stimuli in list(community):
+                community_dict[stimuli] = i
+
+        return community_dict
+            
 
     def community_layout(self, g, partition):
         """
