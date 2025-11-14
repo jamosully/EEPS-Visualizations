@@ -197,9 +197,12 @@ class Interaction(object):
         plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
         plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
         
-        ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=30)
+        try:
+            ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=40)
             #plt.show()
-        ani.save(filename="test.mp4", writer="ffmpeg")
+            ani.save(filename="test.mp4", writer="ffmpeg")
+        except IndexError:
+            print("Hahah")
         #ani.save(filename="test.gif", writer="PillowWriter")
 
 
@@ -400,6 +403,10 @@ class Interaction(object):
 
         clip_space = self.artists[n]
         phase = self.current_phase[n]
+        print("Creating Frame " + str(n))
+
+        counter_condition_relations = [('A1','B2'),('A2','B3'),
+                                       ('A3','B4'),('A4','B1')]
 
         if phase == "Phase 6":
             counterconditioning = True
@@ -443,8 +450,16 @@ class Interaction(object):
         self.edge_artist = []
         weight_counter = 0
         for key, weight in normalized_weights.items():
-            if counterconditioning:
-                print("heheheh")
+            if counterconditioning and key in counter_condition_relations:
+                    edges.append(nx.draw_networkx_edges(clip_space,
+                                        pos,
+                                        connectionstyle='arc3,rad=0.1',
+                                        edgelist=[key],
+                                        arrows=True,
+                                        edge_color="tab:red",
+                                        width= 2 + (weight * 6),
+                                        alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+                                        #alpha=weight)
             else:
                 edges.append(nx.draw_networkx_edges(clip_space,
                                         pos,
@@ -453,7 +468,7 @@ class Interaction(object):
                                         arrows=True,
                                         #edge_color=edge_color_map(weight),
                                         width= 2 + (weight * 6),
-                                        alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+                                        alpha=max(0.1, weight))) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
             weight_counter += 1
 
@@ -494,6 +509,10 @@ class Interaction(object):
         undirected_communities = nx.community.greedy_modularity_communities(
             undirected_clip_space, "weight", 1, 1, self.environment.num_classes
         )
+
+        # undirected_communities = nx.community.asyn_lpa_communities(
+        #     undirected_clip_space, "weight", 1
+        # )
 
         #print(undirected_communities)
 

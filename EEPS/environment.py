@@ -46,7 +46,8 @@ class Environment(object):
 
         self.num_classes = num_classes
         self.size_action_set = parameter["size_action_set"][0]
-        self.autogenerate_classes = parameter["autogenerate_classes"][0]
+        #self.autogenerate_classes = parameter["autogenerate_classes"][0]
+        self.autogenerate_classes = True
         self.training_order = training_order
         self.mastery_training = mastery_training
         self.plot_blocks = plot_blocks
@@ -139,10 +140,10 @@ class Environment(object):
             self.num_trials += repeat_no
             percept = pair[0]
             action = pair[1]
-            # if percept[1] is not action[1]:
-            #     self.counter_conditioning = True
-            # else:
-            #     self.counter_conditioning = False
+            if percept[1] is not action[1]:
+                self.counter_conditioning = True
+            else:
+                self.counter_conditioning = False
             if use_class_range:
                 act_list = list(range(self.class_ranges[action[0]]))
             else:
