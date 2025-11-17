@@ -46,6 +46,19 @@ class NetworkVisualizer(QtWidgets.QWidget):
             "Multigraph Layout": False
         }
 
+        self.vis_functions = {
+            "Sequential Layout": self.visualize_sequential,
+            "Community Layout": self.visualize_community
+        }
+
+        self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
+
+        self.vis_settings = {
+            "normalise_weights": True,
+            "color_edges": True,
+            "min_egde_visibility": 0.25
+        }
+
         self.selected_stim = None
 
         self.name = "Memory Network Visualizer"
@@ -57,15 +70,114 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.grid.addWidget(self.toolbar, 0, 0)
         self.grid.addWidget(self.canvas, 1, 0)
 
+    def update_visualization_type(self, vis_type):
+
+        self.vis_types = dict.fromkeys(self.vis_types, False)
+        
+        if vis_type in self.vis_types.keys:
+            self.vis_types[vis_type] = True
+
+    def update_settings(self, new_settings):
+
+        self.vis_settings = new_settings
+
     def visualize_network(self, clip_space):
         
         """
         Routes the clip_space to the currently-selected visualizer
         """
 
-        
+        if self.selected_stim is not None:
+            self.table.stimEditor.update_clip_space(clip_space)
+            self.table.update_editor.emit()
 
-    def visualize_network_networkx(self, clip_space, as_community):
+        self.figure.clf()
+
+        for vis_type in self.vis_types.keys:
+            if self.vis_types[vis_type]:
+                self.vis_functions[vis_type](clip_space)
+
+    def generate_groupings(self, clip_space, as_community, as_subsets, use_modularity=True):
+
+        """
+        Creates either:
+
+        - Subsets for the multipartite layout
+        - Communities for the community layout (with greedy modularity if use_modularity = True,
+                                                if false, just group based on class number)
+        """
+
+        if as_community:
+            if use_modularity:
+                return self.community_detection(clip_space)
+            else:
+                community_dict = {}
+                for stimuli in clip_space.nodes:
+                    community_dict[stimuli] = int(stimuli[1]) - 1
+                return community_dict
+        elif as_subsets:
+            subsets = {}
+            for stimuli in clip_space.nodes:
+                subsets[stimuli] = stimuli[0]
+            return {k: subsets[k] for k in list(sorted(subsets.keys()))}
+            
+    def generate_node_color_maps(self, clip_space, subsets=None):
+
+        """
+        Creates a dictionary/array which defines the colours of each node
+        in the visualization
+        """
+
+        if subsets is None:
+            color_map  = {}
+            for stimuli in clip_space.nodes:
+                color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
+        else:
+            color_map = []
+            for item in subsets.items():
+                color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
+
+        return color_map
+
+    def community_detection(self, clip_space: nx.DiGraph):
+
+        """
+        Converts graph into an undirected graph, and uses
+        networkx's greedy modularity function to obtain communities
+        """
+
+        undirected_clip_space = clip_space.to_undirected()
+
+        for stimuli in clip_space:
+            for linked_stim in nx.neighbors(clip_space, stimuli):
+                if stimuli in nx.neighbors(clip_space, linked_stim):
+                    undirected_clip_space.edges[stimuli, linked_stim]["weight"] = (
+                        clip_space.edges[stimuli, linked_stim]['weight'] + clip_space.edges[linked_stim, stimuli]['weight']
+                    )
+
+        undirected_communities = nx.community.greedy_modularity_communities(
+            undirected_clip_space, "weight", 1, 1, self.environment.num_classes
+        )
+
+        community_dict = {}
+        for i, community in enumerate(undirected_communities):
+            for stimuli in list(community):
+                community_dict[stimuli] = i
+
+        return community_dict
+
+    def obtain_normalised_weights(self, clip_space):
+
+        """
+        Returns a dictionary of normalised weights from the agent's clip_space
+        """
+        
+        weight_labels = nx.get_edge_attributes(clip_space, 'weight')
+        weights = np.array([weight for weight in weight_labels.values()])
+        return {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
+
+
+    def visualize_sequential(self, clip_space: nx.DiGraph):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -76,66 +188,42 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         3. Visualise each feature of the network on the provided plot
         """
+        # TODO: Re-write above description 
 
-        if self.selected_stim is not None:
-            self.table.stimEditor.update_clip_space(clip_space)
-            self.table.update_editor.emit()
-
-        # colours = [(1,1,1), (0,0,0), (0.85,0,0)]
-        # edge_color_map = LinearSegmentedColormap.from_list("edge_colours", colours, 1000)
-        edge_color_map = mpl.colormaps['gist_heat_r']
-
-        subsets = dict()
-        community_dict = {}
-        color_map = {}
-        color_map_array = []
-        for stimuli in clip_space.nodes:
-            community_dict[stimuli] = int(stimuli[1]) - 1
-            color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
-            subsets[stimuli] = stimuli[0]
-        subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
-                
-        for item in subsets.items():
-            color_map_array.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
-
-
-        self.figure.clf()
+        subsets = self.generate_groupings(clip_space, False, True)
+        node_color_map = self.generate_node_color_maps(clip_space, subsets)
         
         nx.set_node_attributes(clip_space, subsets, name="layers")
 
-        weight_labels = nx.get_edge_attributes(clip_space, 'weight')
-
-        weights = np.array([weight for weight in weight_labels.values()])
-        normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
+        if self.vis_settings["normalise_weights"]:
+            normalized_weights = self.obtain_normalised_weights(clip_space)
 
         memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
-        #memory_plot.set_facecolor('1') 
         
         ordered_clip_space = nx.DiGraph()
         ordered_clip_space.to_directed()
         ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
-        # pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
-        # pos = nx.spring_layout(clip_space)#
-        # pos = self.community_layout(clip_space, community_dict)
+        pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
-        # nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500)
-        # nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=node_color_map)
+        nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
         # self.edge_artist = []
-        # weight_counter = 0
-        # for key, weight in normalized_weights.items():
-        #     nx.draw_networkx_edges(clip_space,
-        #                             pos,
-        #                             connectionstyle='arc3,rad=0.1',
-        #                             edgelist=[key],
-        #                             ax=memory_plot,
-        #                             arrows=True,
-        #                             edge_color=edge_color_map(weight),
-        #                             width=2 + (weight * 6),
-        #                             alpha=max(0.33, weight)) #+ (weights[weight_counter] / 8),
-        #                             #alpha=weight)
-        #     weight_counter += 1
+        weight_counter = 0
+        if  self.vis_settings["normalise_weights"]:
+            for key, weight in normalized_weights.items():
+                nx.draw_networkx_edges(clip_space,
+                                        pos,
+                                        connectionstyle='arc3,rad=0.1',
+                                        edgelist=[key],
+                                        ax=memory_plot,
+                                        arrows=True,
+                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                        width=2 + (weight * 6),
+                                        alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
+                                        #alpha=weight)
+            weight_counter += 1
             
         # network_cursor = mplcursors.cursor(self.figure)
 
@@ -143,12 +231,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
         # def on_add(sel):
         #     self.table.populateEditor(list(ordered_clip_space.nodes())[sel.index], clip_space)
         #     self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
-
-        netgraph.Graph(clip_space,
-                       node_color=color_map, node_edge_width=0, edge_alpha=normalized_weights,
-                       node_layout="community", node_layout_kwargs=dict(node_to_community=community_dict),
-                       edge_layout="bundled", edge_layout_kwargs=dict(k=2000),
-                       ax=memory_plot, arrows=True, node_labels=True)
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()

@@ -1,51 +1,59 @@
 {
     "environment_parameters": [
         {
-            "name": "experiment_ID",
+            "name": "Experiment ID",
+            "variable_name": "experiment_ID",
             "description": "PLACEHOLDER",
             "value": 201,
             "type": "int"
         },
         {
-            "name": "environment_ID",
+            "name": "Environment ID",
+            "variable_name": "environment_ID",
             "description": "PLACEHOLDER",
             "value": 15,
             "type": "env_id"
         },
         {
-            "name": "max_trial",
+            "name": "Maxiumum Number of Trials",
+            "variable_name": "max_trial",
             "description": "PLACEHOLDER",
             "value": 10000,
             "type": "int"
         },
         {
-            "name": "num_agents",
+            "name": "Number of Agents",
+            "variable_name": "num_agents",
             "description": "PLACEHOLDER",
             "value": 1,
             "type": "int"
         },
         {
-            "name": "size_action_set",
+            "name": "Size of Action Set",
+            "variable_name": "size_action_set",
             "description": "PLACEHOLDER",
             "value": 4,
             "type": "int"
         },
         {
-            "name": "autogenerate_classes",
-            "description": "Controls whether EEPS generates unspecified stimuli using the num_classes variable in initialization_detail",
+            "name": "Automatically Generate Stimuli",
+            "variable_name": "autogenerate_classes",
+            "description": "Controls whether EEPS generates stimuli not identified in the experiment setup. For example, if a phase of an experiment only trains two out of four classes, should comparison stimuli be created for the other two classes",
             "value": true,
             "type": "bool"
         }
     ],
     "agent_parameters": [
         {
-            "name": "network_enhancement",
+            "name": "Symmetric Network Enhancement",
+            "variable_name": "network_enhancement",
             "description": "True or False; if True: we use the localized network (adoubly stochastic matrix) and Symmetric Network Enhancement (SNE); if False: we use the probability matrix and Directed Network Enhancement (DNE)",
             "value": false,
             "type": "bool"
         },
         {
-            "name": "beta_h",
+            "name": "𝛽ₕ",
+            "variable_name": "beta_h",
             "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
             "value": 0.1,
             "type": "unit_interval"
@@ -91,9 +99,28 @@
         {
             "name": "Graph Style",
             "description": "Controls the appearance of the graph visualisation display. \n The options are: \n 1. Mutlipartite: based on Mofrad et al.'s (2020) design, arranges stimuli in columns of classes and rows of forms. \n 2. Community: displays",
-            "value": "community",
+            "value": "Community",
             "type": "drop_down",
-            "options": ["multipartite", "community"]
+            "options": ["Multipartite", "Community"]
+        },
+        {
+            "name": "Normalise Weights",
+            "description": "If true, weights are normalised in the visualizations between 1 and 0. If false, weights remain as their value in the EEPS agent's clip space",
+            "value": true,
+            "type": "bool"
+        },
+        {
+            "name": "Community Creation Approach",
+            "description": "If graph style is set to community, which community detection method should be utilised",
+            "value": "Greedy Modularity",
+            "type": "drop_down",
+            "options": ["Greedy Modularity", "Class Number"]
+        },
+        {
+            "name": "Use Heatmap Colors for Edges",
+            "description": "If true, edges in the agent's clip_space will be colored by strength as per the relations in the heatmap",
+            "value": false,
+            "type": "bool"
         }
     ],
     "rdt_volume_types": [
