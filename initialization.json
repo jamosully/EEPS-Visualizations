@@ -98,6 +98,7 @@
     "affinity_parameters": [
         {
             "name": "Graph Style",
+            "variable_name": "graph_style",
             "description": "Controls the appearance of the graph visualisation display. \n The options are: \n 1. Mutlipartite: based on Mofrad et al.'s (2020) design, arranges stimuli in columns of classes and rows of forms. \n 2. Community: displays",
             "value": "Community",
             "type": "drop_down",
@@ -105,6 +106,7 @@
         },
         {
             "name": "Normalise Weights",
+            "variable_name": "normalize_weights",
             "description": "If true, weights are normalised in the visualizations between 1 and 0. If false, weights remain as their value in the EEPS agent's clip space",
             "value": true,
             "type": "bool"
@@ -115,6 +117,13 @@
             "value": "Greedy Modularity",
             "type": "drop_down",
             "options": ["Greedy Modularity", "Class Number"]
+        },
+        {
+            "name": "Use softmax transition probability for edge weight",
+            "variable_name": "softmax_weights",
+            "description": "If true, the weights in the visualization are calculated using the softmax transition probability, rather than the agent's weights in their clip space",
+            "value": false,
+            "type": "bool"
         },
         {
             "name": "Use Heatmap Colors for Edges",

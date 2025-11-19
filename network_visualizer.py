@@ -48,7 +48,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         self.vis_functions = {
             "Sequential Layout": self.visualize_sequential,
-            "Community Layout": self.visualize_community
+            "Community Layout": self.visualize_community_network
         }
 
         self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
@@ -177,7 +177,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         return {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
 
 
-    def visualize_sequential(self, clip_space: nx.DiGraph):
+    def visualize_sequential_network(self, clip_space: nx.DiGraph):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -239,7 +239,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         """
         Visualizes the agent's memory network via clusters
-        of nodes that 
+        of nodes that grow/recede based on relational density
         """
 
     def community_layout(self, g, partition):
