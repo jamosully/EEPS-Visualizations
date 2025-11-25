@@ -59,38 +59,44 @@
             "type": "unit_interval"
         },
         {
-            "name": "rdt_beta_h",
+            "name": "RDT 𝛽ₕ",
+            "variable_name": "rdt_beta_h",
             "description": "testing value for softmax function",
             "value": 0.1,
             "type": "unit_interval"
         },
         {
-            "name": "beta_t",
+            "name": "𝛽ₜ",
+            "variable_name": "beta_t",
             "description": "float >=0, controls agent\u2019s function in a trial at test phase (derived relation)",
             "value": 4.000000000000014,
             "type": "float"
         },
         {
             "name": "K",
+            "variable_name": "K",
             "description": "parameter for symmetry relation. K=1 means that the relations are bidirectional and network is symmetric at the end of the training phase.",
             "value": 1,
             "type": "unit_interval"
         },
         {
-            "name": "gamma_damping",
+            "name": "γ",
+            "variable_name": "gamma_damping",
             "description": "float between 0 and 1, controls forgetting/damping of h-values",
             "value": 0.001,
             "type": "unit_interval"
         },
         {
-            "name": "alpha",
+            "name": "α",
+            "variable_name": "alpha",
             "description": "the regularization parameter",
             "value": 0.7,
             "type": "unit_interval"
         },
         {
-            "name": "NE_during_training",
-            "description": "If true, network enhancement will occur when an agent progresses to a new block during training",
+            "name": "Use Network Enhancement During Training",
+            "variable_name": "NE_during_training",
+            "description": "If true, network enhancement will occur when an agent progresses to a new phase during training",
             "value": false,
             "type": "bool"
         }
