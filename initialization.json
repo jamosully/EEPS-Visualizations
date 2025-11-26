@@ -119,6 +119,7 @@
         },
         {
             "name": "Community Creation Approach",
+            "variable_name": "community_mode",
             "description": "If graph style is set to community, which community detection method should be utilised",
             "value": "Greedy Modularity",
             "type": "drop_down",
@@ -133,6 +134,7 @@
         },
         {
             "name": "Use Heatmap Colors for Edges",
+            "variable_name": "heatmap_colors",
             "description": "If true, edges in the agent's clip_space will be colored by strength as per the relations in the heatmap",
             "value": false,
             "type": "bool"

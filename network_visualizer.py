@@ -54,6 +54,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
 
         self.vis_settings = {
+            "community_mode": "Greedy Modularity",
             "normalise_weights": True,
             "color_edges": True,
             "min_egde_visibility": 0.25
@@ -241,6 +242,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
         Visualizes the agent's memory network via clusters
         of nodes that grow/recede based on relational density
         """
+
+        community_dict = self.generate_groupings(clip_space, True, False,
+                                                 True if self.vis_settings["community_mode"] == "Greedy Modularity" else False)
+        color_map = self.generate_node_color_maps(community_dict)
+
+        
+
+# COMMUNITY-MAKING FUNCTIONS BELOW
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------        
 
     def community_layout(self, g, partition):
         """
