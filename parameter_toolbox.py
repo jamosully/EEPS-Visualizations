@@ -57,6 +57,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.box_layout.addLayout(self.buttonLayout)
 
         self.tabs.addTab(self.eepsSettingsTab, "Model Settings")
+        self.tabs.addTab(self.affinitySettingsTab, "Affinity Settings")
 
     def createModelSettingsTab(self):
 
@@ -68,11 +69,9 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.environment_detail = EEPS.initialization_detail.environment_details()
         self.json_env_params = self.json_params['environment_parameters']
         self.json_agent_params = self.json_params['agent_parameters']
-        self.json_gui_params = self.json_params["affinity_parameters"]
 
         self.model_env_params = self.create_param_dict(self.json_env_params)
         self.model_agent_params = self.create_param_dict(self.json_agent_params)
-        self.gui_params = self.create_param_dict(self.json_gui_params)
 
         self.agentLabel = QLabel(self)
         self.agentLabel.setText("Agent Parameters")
@@ -103,7 +102,24 @@ class ParameterToolbox(QtWidgets.QWidget):
         the interface of Affinity
         """
 
+        box_layout = QVBoxLayout(self)
+        
         self.json_gui_params = self.json_params['affinity_parameters']
+
+        self.gui_params = self.create_param_dict(self.json_gui_params)
+
+        self.guiLabel = QLabel(self)
+        self.guiLabel.setText("Affinity Settings")
+
+        self.guiToolbox = ParamTable(self, self.json_gui_params, True)
+
+        self.guiToolbox.table.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        box_layout.addWidget(self.guiLabel)
+        box_layout.addWidget(self.guiToolbox.table)
+        box_layout.addWidget(self.guiToolbox.descriptionField)
+
+        self.affinitySettingsTab.setLayout(box_layout)
 
 
 
@@ -222,7 +238,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         new_param_dict = {}
         for param in detailed_params:
-            new_param_dict[param['name']] = [param['value']]
+            new_param_dict[param['variable_name']] = [param['value']]
 
         return new_param_dict
 
@@ -255,8 +271,26 @@ class ParameterToolbox(QtWidgets.QWidget):
                 if param['name'] == key:
                     param['value'] = value
 
+    def adjust_affinity_params(self, key, value):
 
-    def createParamWidget(self, key, value, type, options=[]):
+        """
+        Changes the settings of Affinity
+        """
+
+        for setting in self.network_vis.vis_settings.keys():
+            if setting == key:
+                self.network_vis.vis_settings[key] = value
+
+        self.network_vis.visualize_network(self.network_vis.clip_space_backup)
+
+    def add_network_visualizer(self, network_vis):
+
+        self.network_vis = network_vis
+        print("Network Visualizer Added!")
+        self.network_vis.update_settings(self.gui_params)
+
+
+    def createParamWidget(self, key, value, type, options=[], for_gui=False):
 
         """
         Based on the type provided in initialization.json,
@@ -269,7 +303,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setMinimum(1)
                 widget.setMaximum(100000)
                 widget.setValue(value)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
                 return widget
             case 'unit_interval':
                 widget = ParamDoubleSpinBox(key)
@@ -278,19 +312,19 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setDecimals(3)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
                 return widget
             case 'float':
                 widget = ParamDoubleSpinBox(key)
                 widget.setMinimum(0.01)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
                 return widget
             case 'bool':
                 widget = ParamCheckBox(key)
                 widget.setChecked(value)
-                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()))
+                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.isChecked()))
                 return widget
             case 'env_id':
                 widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))
@@ -308,7 +342,9 @@ class ParameterToolbox(QtWidgets.QWidget):
                     widget.insertItem(x, option)
                     if value == option:
                         widget.setCurrentIndex(x)
-                #widget.currentIndexChanged.connect(lambda)
+                # TODO: May need adjusting if model changes
+                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, widget.currentText()))
+                return widget
 
 class ParamTable(QtWidgets.QWidget):
 
@@ -316,7 +352,7 @@ class ParamTable(QtWidgets.QWidget):
     Table containing all agent parameters
     """
 
-    def __init__(self, toolbox, params):
+    def __init__(self, toolbox, params, affinity_settings=False):
         QtWidgets.QWidget.__init__(self)
 
         self.toolbox = toolbox
@@ -333,10 +369,11 @@ class ParamTable(QtWidgets.QWidget):
             param_label = ParamLabel(params[i]['description'])
             param_label.setIndent(5)
             param_label.setText(params[i]['name'] + "  ")
-            if params[i]['type'] == "enum":
-                self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type'], params[i]["options"]))
-            else:
-                self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['name'], params[i]['value'], params[i]['type']))
+            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['variable_name'], 
+                                                                          params[i]['value'], 
+                                                                          params[i]['type'], 
+                                                                          params[i]["options"] if "options" in params[i] else None,
+                                                                          affinity_settings))
             self.table.setCellWidget(i, 0, param_label)
 
         self.descriptionField = QPlainTextEdit()

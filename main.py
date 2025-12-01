@@ -106,7 +106,8 @@ class MainWindow(QtWidgets.QWidget):
                                     simulator['mutex'],
                                     env_params,
                                     rdt_volume_types,
-                                    rdt_density_types)
+                                    rdt_density_types,
+                                    self.parameterMenu)
 
     def createControlPanel(self, main, simulator):
 

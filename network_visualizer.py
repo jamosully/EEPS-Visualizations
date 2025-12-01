@@ -40,24 +40,26 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.main_display = parent
         self.table = table
 
-        self.vis_types = {
-            "Sequential Layout": True,
-            "Community Layout": False,
-            "Multigraph Layout": False
-        }
+        # self.vis_types = {
+        #     "Sequential Layout": True,
+        #     "Community Layout": False,
+        #     "Multigraph Layout": False
+        # }
 
         self.vis_functions = {
-            "Sequential Layout": self.visualize_sequential,
-            "Community Layout": self.visualize_community_network
+            "Multipartite": self.visualize_sequential_network,
+            "Community": self.visualize_community_network
         }
 
         self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
 
         self.vis_settings = {
+            "graph_style": "Community",
             "community_mode": "Greedy Modularity",
-            "normalise_weights": True,
+            "normalize_weights": True,
             "color_edges": True,
-            "min_egde_visibility": 0.25
+            "softmax_weights": True,
+            "min_edge_visibility": 0.25
         }
 
         self.selected_stim = None
@@ -92,11 +94,19 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.stimEditor.update_clip_space(clip_space)
             self.table.update_editor.emit()
 
+        self.clip_space_backup = clip_space
+
         self.figure.clf()
 
-        for vis_type in self.vis_types.keys:
-            if self.vis_types[vis_type]:
-                self.vis_functions[vis_type](clip_space)
+        print(self.vis_settings)
+
+        vis_type = self.vis_settings["graph_style"][0]
+        print(vis_type)
+        self.vis_functions[vis_type](self.clip_space_backup)
+
+        # for vis_type in self.vis_types.keys():
+        #     if self.vis_types[vis_type] == self.vis_settings[""]:
+        #         self.vis_functions[vis_type](clip_space)
 
     def generate_groupings(self, clip_space, as_community, as_subsets, use_modularity=True):
 
@@ -176,6 +186,14 @@ class NetworkVisualizer(QtWidgets.QWidget):
         weight_labels = nx.get_edge_attributes(clip_space, 'weight')
         weights = np.array([weight for weight in weight_labels.values()])
         return {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
+    
+    def create_ordered_clip_space(self, clip_space):
+
+        ordered_clip_space = nx.DiGraph()
+        ordered_clip_space.to_directed()
+        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
+        ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
+        return ordered_clip_space
 
 
     def visualize_sequential_network(self, clip_space: nx.DiGraph):
@@ -196,15 +214,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
         
         nx.set_node_attributes(clip_space, subsets, name="layers")
 
-        if self.vis_settings["normalise_weights"]:
+        if self.vis_settings["normalize_weights"]:
             normalized_weights = self.obtain_normalised_weights(clip_space)
 
         memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
         
-        ordered_clip_space = nx.DiGraph()
-        ordered_clip_space.to_directed()
-        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
-        ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
+        ordered_clip_space = self.create_ordered_clip_space(clip_space)
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
@@ -212,7 +227,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
         # self.edge_artist = []
         weight_counter = 0
-        if  self.vis_settings["normalise_weights"]:
+        if  self.vis_settings["normalize_weights"]:
             for key, weight in normalized_weights.items():
                 nx.draw_networkx_edges(clip_space,
                                         pos,
@@ -225,6 +240,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
             weight_counter += 1
+        else:
+            nx.draw_networkx_edges(clip_space,
+                                   pos,
+                                   connectionstyle='arc3,rad=0.1',
+                                   ax=memory_plot,
+                                   arrows=True,
+                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                   width=2 + (weight * 6),
+                                   alpha=max(self.vis_settings["min_edge_visibility"], weight))
             
         # network_cursor = mplcursors.cursor(self.figure)
 
@@ -245,8 +269,44 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         community_dict = self.generate_groupings(clip_space, True, False,
                                                  True if self.vis_settings["community_mode"] == "Greedy Modularity" else False)
-        color_map = self.generate_node_color_maps(community_dict)
+        subsets = self.generate_groupings(clip_space, False, True)
+        color_map = self.generate_node_color_maps(clip_space, subsets)
+        normalized_weights = self.obtain_normalised_weights(clip_space)
 
+        memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
+
+        ordered_clip_space = self.create_ordered_clip_space(clip_space)
+
+        pos = self.community_layout(clip_space, community_dict)
+
+        nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=color_map)
+        nx.draw_networkx_labels(clip_space, pos, font_color='white')
+
+        if  self.vis_settings["normalize_weights"]:
+            weight_counter  = 0
+            for key, weight in normalized_weights.items():
+                nx.draw_networkx_edges(clip_space,
+                                        pos,
+                                        connectionstyle='arc3,rad=0.1',
+                                        edgelist=[key],
+                                        ax=memory_plot,
+                                        arrows=True,
+                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                        width=2 + (weight * 6),
+                                        alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
+                                        #alpha=weight)
+                weight_counter += 1
+        else:
+            nx.draw_networkx_edges(clip_space,
+                                   pos,
+                                   connectionstyle='arc3,rad=0.1',
+                                   ax=memory_plot,
+                                   arrows=True,
+                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                   width=2 + (weight * 6),
+                                   alpha=max(self.vis_settings["min_edge_visibility"], weight))
+            
+        self.canvas.draw()
         
 
 # COMMUNITY-MAKING FUNCTIONS BELOW

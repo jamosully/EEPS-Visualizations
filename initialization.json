@@ -36,7 +36,7 @@
             "type": "int"
         },
         {
-            "name": "Automatically Generate Stimuli",
+            "name": "Auto-generate Stimuli",
             "variable_name": "autogenerate_classes",
             "description": "Controls whether EEPS generates stimuli not identified in the experiment setup. For example, if a phase of an experiment only trains two out of four classes, should comparison stimuli be created for the other two classes",
             "value": true,
@@ -45,7 +45,7 @@
     ],
     "agent_parameters": [
         {
-            "name": "Symmetric Network Enhancement",
+            "name": "Symmetric NE",
             "variable_name": "network_enhancement",
             "description": "True or False; if True: we use the localized network (adoubly stochastic matrix) and Symmetric Network Enhancement (SNE); if False: we use the probability matrix and Directed Network Enhancement (DNE)",
             "value": false,
@@ -94,7 +94,7 @@
             "type": "unit_interval"
         },
         {
-            "name": "Use Network Enhancement During Training",
+            "name": "Use NE During Training",
             "variable_name": "NE_during_training",
             "description": "If true, network enhancement will occur when an agent progresses to a new phase during training",
             "value": false,
@@ -134,10 +134,17 @@
         },
         {
             "name": "Use Heatmap Colors for Edges",
-            "variable_name": "heatmap_colors",
+            "variable_name": "color_edges",
             "description": "If true, edges in the agent's clip_space will be colored by strength as per the relations in the heatmap",
             "value": false,
             "type": "bool"
+        },
+        {
+            "name": "Minimum Edge Visibility",
+            "variable_name":  "min_edge_visibility",
+            "description": "Determines the minumum alpha value of edges in the network visualisation",
+            "value": 0.3,
+            "type": "unit_interval"
         }
     ],
     "rdt_volume_types": [

@@ -85,15 +85,15 @@ class Interaction(object):
             self.agent.training_update_network(percept, action_set_t,
                                                action, reward, new_trial)
             #print(self.agent.clip_space.nodes)
-            self.artists[self.num_steps] = nx.Graph.copy(self.agent.clip_space)
-            self.current_phase.append("Phase " + str(self.environment.step))
+            # self.artists[self.num_steps] = nx.Graph.copy(self.agent.clip_space)
+            # self.current_phase.append("Phase " + str(self.environment.step))
             print(self.environment.step)
             #print(self.artists)
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
                 if self.num_steps % self.vis_step == 0:
                     self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
-                    self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+                    self.vis_display.networkTab.visualize_network(self.agent.clip_space)
                     self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
                     self.vis_display.change_step_counter(self.num_steps)
                     self.pause.lock()
@@ -173,36 +173,36 @@ class Interaction(object):
                 self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
                 self.vis_display.change_step_counter(self.num_steps)
 
-        community_dict = {}
+        # community_dict = {}
 
-        for stimuli in self.artists[self.num_steps]:
-            community_dict[stimuli] = int(stimuli[1]) - 1
+        # for stimuli in self.artists[self.num_steps]:
+        #     community_dict[stimuli] = int(stimuli[1]) - 1
         
-        self.key_positions = []
-        self.fixed_positions = {}
-        self.pos_ready = False
+        # self.key_positions = []
+        # self.fixed_positions = {}
+        # self.pos_ready = False
         
-        final_pos = self.community_layout(self.artists[self.num_steps], community_dict)
+        # final_pos = self.community_layout(self.artists[self.num_steps], community_dict)
 
-        self.key_positions = ["A1", "A2", "A3", "A4"]
-        self.fixed_positions = {k: final_pos[k] for k in self.key_positions}
-        self.pos_ready = True
+        # self.key_positions = ["A1", "A2", "A3", "A4"]
+        # self.fixed_positions = {k: final_pos[k] for k in self.key_positions}
+        # self.pos_ready = True
 
-        xy = np.array(list(final_pos.values()))
-        self.x_min, self.y_min = np.min(xy, axis=0)
-        self.x_max, self.y_max = np.max(xy, axis=0)
-        self.pad_by = 0.05 # may need adjusting 
-        self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
+        # xy = np.array(list(final_pos.values()))
+        # self.x_min, self.y_min = np.min(xy, axis=0)
+        # self.x_max, self.y_max = np.max(xy, axis=0)
+        # self.pad_by = 0.05 # may need adjusting 
+        # self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
 
-        plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-        plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+        # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
         
-        try:
-            ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=40)
-            #plt.show()
-            ani.save(filename="test.mp4", writer="ffmpeg")
-        except IndexError:
-            print("Hahah")
+        # try:
+        #     ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=40)
+        #     #plt.show()
+        #     ani.save(filename="test.mp4", writer="ffmpeg")
+        # except IndexError:
+        #     print("Hahah")
         #ani.save(filename="test.gif", writer="PillowWriter")
 
 
@@ -394,225 +394,225 @@ class Interaction(object):
 
         return show, result
     
-    def plot_and_save_graph(self, n):
+    # def plot_and_save_graph(self, n):
 
-        """Used for creating animation"""
+    #     """Used for creating animation"""
 
-        self.figure.clf()
-        self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
+    #     self.figure.clf()
+    #     self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
 
-        clip_space = self.artists[n]
-        phase = self.current_phase[n]
-        print("Creating Frame " + str(n))
+    #     clip_space = self.artists[n]
+    #     phase = self.current_phase[n]
+    #     print("Creating Frame " + str(n))
 
-        counter_condition_relations = [('A1','B2'),('A2','B3'),
-                                       ('A3','B4'),('A4','B1')]
+    #     counter_condition_relations = [('A1','B2'),('A2','B3'),
+    #                                    ('A3','B4'),('A4','B1')]
 
-        if phase == "Phase 6":
-            counterconditioning = True
-        else:
-            counterconditioning = False 
+    #     if phase == "Phase 6":
+    #         counterconditioning = True
+    #     else:
+    #         counterconditioning = False 
 
-        subsets = dict()
-        community_dict = {}
-        color_map = {}
-        alt_color_map = []
-        for stimuli in clip_space:
-            community_dict[stimuli] = int(stimuli[1]) - 1
-            color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
-            subsets[stimuli] = stimuli[0]
-        subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
+    #     subsets = dict()
+    #     community_dict = {}
+    #     color_map = {}
+    #     alt_color_map = []
+    #     for stimuli in clip_space:
+    #         community_dict[stimuli] = int(stimuli[1]) - 1
+    #         color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
+    #         subsets[stimuli] = stimuli[0]
+    #     subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
 
-        community_dict = self.obtain_communities(clip_space)
+    #     community_dict = self.obtain_communities(clip_space)
 
-        for item in subsets.items():
-            alt_color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
+    #     for item in subsets.items():
+    #         alt_color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
         
-        nx.set_node_attributes(clip_space, subsets, name="layers")
+    #     nx.set_node_attributes(clip_space, subsets, name="layers")
 
-        weight_labels = nx.get_edge_attributes(clip_space, 'weight')
+    #     weight_labels = nx.get_edge_attributes(clip_space, 'weight')
 
-        weights = np.array([weight for weight in weight_labels.values()])
-        normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
+    #     weights = np.array([weight for weight in weight_labels.values()])
+    #     normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
         
-        ordered_clip_space = nx.DiGraph()
-        ordered_clip_space.to_directed()
-        ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
-        ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
+    #     ordered_clip_space = nx.DiGraph()
+    #     ordered_clip_space.to_directed()
+    #     ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
+    #     ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
 
-        pos = self.community_layout(clip_space, community_dict)
+    #     pos = self.community_layout(clip_space, community_dict)
 
-        edges = []
+    #     edges = []
 
-        nodes = nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=alt_color_map)
-        labels = nx.draw_networkx_labels(clip_space, pos, font_color='white')
+    #     nodes = nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=alt_color_map)
+    #     labels = nx.draw_networkx_labels(clip_space, pos, font_color='white')
 
-        self.edge_artist = []
-        weight_counter = 0
-        for key, weight in normalized_weights.items():
-            if counterconditioning and key in counter_condition_relations:
-                    edges.append(nx.draw_networkx_edges(clip_space,
-                                        pos,
-                                        connectionstyle='arc3,rad=0.1',
-                                        edgelist=[key],
-                                        arrows=True,
-                                        edge_color="tab:red",
-                                        width= 2 + (weight * 6),
-                                        alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
-                                        #alpha=weight)
-            else:
-                edges.append(nx.draw_networkx_edges(clip_space,
-                                        pos,
-                                        connectionstyle='arc3,rad=0.1',
-                                        edgelist=[key],
-                                        arrows=True,
-                                        #edge_color=edge_color_map(weight),
-                                        width= 2 + (weight * 6),
-                                        alpha=max(0.1, weight))) #+ (weights[weight_counter] / 8),
-                                        #alpha=weight)
-            weight_counter += 1
+    #     self.edge_artist = []
+    #     weight_counter = 0
+    #     for key, weight in normalized_weights.items():
+    #         if counterconditioning and key in counter_condition_relations:
+    #                 edges.append(nx.draw_networkx_edges(clip_space,
+    #                                     pos,
+    #                                     connectionstyle='arc3,rad=0.1',
+    #                                     edgelist=[key],
+    #                                     arrows=True,
+    #                                     edge_color="tab:red",
+    #                                     width= 2 + (weight * 6),
+    #                                     alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
+    #                                     #alpha=weight)
+    #         else:
+    #             edges.append(nx.draw_networkx_edges(clip_space,
+    #                                     pos,
+    #                                     connectionstyle='arc3,rad=0.1',
+    #                                     edgelist=[key],
+    #                                     arrows=True,
+    #                                     #edge_color=edge_color_map(weight),
+    #                                     width= 2 + (weight * 6),
+    #                                     alpha=max(0.1, weight))) #+ (weights[weight_counter] / 8),
+    #                                     #alpha=weight)
+    #         weight_counter += 1
 
-        self.ax.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-        self.ax.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
-        self.ax.set_aspect("equal")
+    #     self.ax.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+    #     self.ax.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+    #     self.ax.set_aspect("equal")
 
-        self.figure.text(0.1,
-                         0.1,
-                         phase,
-                         fontsize=12)
+    #     self.figure.text(0.1,
+    #                      0.1,
+    #                      phase,
+    #                      fontsize=12)
 
-        # self.ax.annotate("Test", xy=(1, 0), xycoords='axes fraction', fontsize=16,
-        #         horizontalalignment='right', verticalalignment='bottom')
+    #     # self.ax.annotate("Test", xy=(1, 0), xycoords='axes fraction', fontsize=16,
+    #     #         horizontalalignment='right', verticalalignment='bottom')
 
-        # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-        # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+    #     # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+    #     # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
 
-        #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
-        #print(self.ax.containers)
-        return nodes, edges, labels
+    #     #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
+    #     #print(self.ax.containers)
+    #     return nodes, edges, labels
     
-    def obtain_communities(self, clip_space: nx.DiGraph):
+    # def obtain_communities(self, clip_space: nx.DiGraph):
 
-        """
-        Uses greedy modularity function
-        """
+    #     """
+    #     Uses greedy modularity function
+    #     """
 
-        undirected_clip_space = clip_space.to_undirected()
+    #     undirected_clip_space = clip_space.to_undirected()
 
-        for stimuli in clip_space:
-            for linked_stim in nx.neighbors(clip_space, stimuli):
-                if stimuli in nx.neighbors(clip_space, linked_stim):
-                    undirected_clip_space.edges[stimuli, linked_stim]["weight"] = (
-                        clip_space.edges[stimuli, linked_stim]['weight'] + clip_space.edges[linked_stim, stimuli]['weight']
-                    )
+    #     for stimuli in clip_space:
+    #         for linked_stim in nx.neighbors(clip_space, stimuli):
+    #             if stimuli in nx.neighbors(clip_space, linked_stim):
+    #                 undirected_clip_space.edges[stimuli, linked_stim]["weight"] = (
+    #                     clip_space.edges[stimuli, linked_stim]['weight'] + clip_space.edges[linked_stim, stimuli]['weight']
+    #                 )
 
-        undirected_communities = nx.community.greedy_modularity_communities(
-            undirected_clip_space, "weight", 1, 1, self.environment.num_classes
-        )
+    #     undirected_communities = nx.community.greedy_modularity_communities(
+    #         undirected_clip_space, "weight", 1, 1, self.environment.num_classes
+    #     )
 
-        # undirected_communities = nx.community.asyn_lpa_communities(
-        #     undirected_clip_space, "weight", 1
-        # )
+    #     # undirected_communities = nx.community.asyn_lpa_communities(
+    #     #     undirected_clip_space, "weight", 1
+    #     # )
 
-        #print(undirected_communities)
+    #     #print(undirected_communities)
 
-        community_dict = {}
-        for i, community in enumerate(undirected_communities):
-            for stimuli in list(community):
-                community_dict[stimuli] = i
+    #     community_dict = {}
+    #     for i, community in enumerate(undirected_communities):
+    #         for stimuli in list(community):
+    #             community_dict[stimuli] = i
 
-        return community_dict
+    #     return community_dict
             
 
-    def community_layout(self, g, partition):
-        """
-        Compute the layout for a modular graph.
+    # def community_layout(self, g, partition):
+    #     """
+    #     Compute the layout for a modular graph.
 
 
-        Arguments:
-        ----------
-        g -- networkx.Graph or networkx.DiGraph instance
-            graph to plot
+    #     Arguments:
+    #     ----------
+    #     g -- networkx.Graph or networkx.DiGraph instance
+    #         graph to plot
 
-        partition -- dict mapping int node -> int community
-            graph partitions
+    #     partition -- dict mapping int node -> int community
+    #         graph partitions
 
 
-        Returns:
-        --------
-        pos -- dict mapping int node -> (float x, float y)
-            node positions
+    #     Returns:
+    #     --------
+    #     pos -- dict mapping int node -> (float x, float y)
+    #         node positions
 
-        """
+    #     """
 
-        pos_communities = self._position_communities(g, partition, scale=3.)
+    #     pos_communities = self._position_communities(g, partition, scale=3.)
 
-        pos_nodes = self._position_nodes(g, partition, scale=1.)
+    #     pos_nodes = self._position_nodes(g, partition, scale=1.)
 
-        # combine positions
-        pos = dict()
-        for node in g.nodes():
-            pos[node] = pos_communities[node] + pos_nodes[node]
+    #     # combine positions
+    #     pos = dict()
+    #     for node in g.nodes():
+    #         pos[node] = pos_communities[node] + pos_nodes[node]
 
-        return pos
+    #     return pos
 
-    def _position_communities(self, g, partition, **kwargs):
+    # def _position_communities(self, g, partition, **kwargs):
 
-        # create a weighted graph, in which each node corresponds to a community,
-        # and each edge weight to the number of edges between communities
-        between_community_edges = self._find_between_community_edges(g, partition)
+    #     # create a weighted graph, in which each node corresponds to a community,
+    #     # and each edge weight to the number of edges between communities
+    #     between_community_edges = self._find_between_community_edges(g, partition)
 
-        communities = set(partition.values())
-        hypergraph = nx.DiGraph()
-        hypergraph.add_nodes_from(communities)
-        for (ci, cj), edges in between_community_edges.items():
-            hypergraph.add_edge(ci, cj, weight=len(edges))
+    #     communities = set(partition.values())
+    #     hypergraph = nx.DiGraph()
+    #     hypergraph.add_nodes_from(communities)
+    #     for (ci, cj), edges in between_community_edges.items():
+    #         hypergraph.add_edge(ci, cj, weight=len(edges))
 
-        # find layout for communities
-        pos_communities = nx.spring_layout(hypergraph, **kwargs, center=[0,0], seed=1)
+    #     # find layout for communities
+    #     pos_communities = nx.spring_layout(hypergraph, **kwargs, center=[0,0], seed=1)
 
-        # set node positions to position of community
-        pos = dict()
-        for node, community in partition.items():
-            pos[node] = pos_communities[community]
+    #     # set node positions to position of community
+    #     pos = dict()
+    #     for node, community in partition.items():
+    #         pos[node] = pos_communities[community]
 
-        return pos
+    #     return pos
 
-    def _find_between_community_edges(self, g, partition):
+    # def _find_between_community_edges(self, g, partition):
 
-        edges = dict()
+    #     edges = dict()
 
-        for (ni, nj) in g.edges():
-            ci = partition[ni]
-            cj = partition[nj]
+    #     for (ni, nj) in g.edges():
+    #         ci = partition[ni]
+    #         cj = partition[nj]
 
-            if ci != cj:
-                try:
-                    edges[(ci, cj)] += [(ni, nj)]
-                except KeyError:
-                    edges[(ci, cj)] = [(ni, nj)]
+    #         if ci != cj:
+    #             try:
+    #                 edges[(ci, cj)] += [(ni, nj)]
+    #             except KeyError:
+    #                 edges[(ci, cj)] = [(ni, nj)]
 
-        return edges
+    #     return edges
 
-    def _position_nodes(self, g, partition, **kwargs):
-        """
-        Positions nodes within communities.
-        """
+    # def _position_nodes(self, g, partition, **kwargs):
+    #     """
+    #     Positions nodes within communities.
+    #     """
 
-        communities = dict()
-        for node, community in partition.items():
-            try:
-                communities[community] += [node]
-            except KeyError:
-                communities[community] = [node]
+    #     communities = dict()
+    #     for node, community in partition.items():
+    #         try:
+    #             communities[community] += [node]
+    #         except KeyError:
+    #             communities[community] = [node]
 
-        pos = dict()
-        for ci, nodes in communities.items():
-            subgraph = g.subgraph(nodes)
-            pos_subgraph = nx.spring_layout(subgraph, **kwargs, seed=1)
-            pos.update(pos_subgraph)
+    #     pos = dict()
+    #     for ci, nodes in communities.items():
+    #         subgraph = g.subgraph(nodes)
+    #         pos_subgraph = nx.spring_layout(subgraph, **kwargs, seed=1)
+    #         pos.update(pos_subgraph)
 
-        return pos
+    #     return pos
 
 #    def save_latex(self, results):
 #

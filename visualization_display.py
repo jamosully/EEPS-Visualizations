@@ -28,7 +28,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     update_editor = Signal()
 
-    def __init__(self, parent, simulator, simulator_thread, simulator_mutex, env_params, rdt_volume_types, rdt_density_types):
+    def __init__(self, parent, simulator, simulator_thread, simulator_mutex, env_params, rdt_volume_types, rdt_density_types, parameter_toolbox):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
@@ -45,6 +45,8 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
         self.tabs = QTabWidget()
         self.networkTab = NetworkVisualizer(self.main, self, simulator)
+        parameter_toolbox.add_network_visualizer(self.networkTab)
+
         self.visualizers.append(self.networkTab)
         self.rdtTab = RDTVisualizer(self, simulator, env_params, rdt_volume_types, rdt_density_types)
         self.visualizers.append(self.rdtTab)
