@@ -266,7 +266,8 @@ class ParameterToolbox(QtWidgets.QWidget):
             for param in self.json_params['environment_parameters']:
                 if param['name'] == key:
                     param['value'] = value
-        else:
+        elif key in self.gui_params:
+            self.gui_params[key] = [value]
             for param in self.json_params['affinity_parameters']:
                 if param['name'] == key:
                     param['value'] = value
@@ -277,6 +278,11 @@ class ParameterToolbox(QtWidgets.QWidget):
         Changes the settings of Affinity
         """
 
+        self.gui_params[key] = [value]
+        for param in self.json_params['affinity_parameters']:
+                if param['name'] == key:
+                    param['value'] = value
+        
         for setting in self.network_vis.vis_settings.keys():
             if setting == key:
                 self.network_vis.vis_settings[key] = value
@@ -303,7 +309,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setMinimum(1)
                 widget.setMaximum(100000)
                 widget.setValue(value)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
                 return widget
             case 'unit_interval':
                 widget = ParamDoubleSpinBox(key)
@@ -312,19 +318,19 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setDecimals(3)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
                 return widget
             case 'float':
                 widget = ParamDoubleSpinBox(key)
                 widget.setMinimum(0.01)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.value()))
+                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
                 return widget
             case 'bool':
                 widget = ParamCheckBox(key)
                 widget.setChecked(value)
-                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()) if not for_gui else lambda: self.adjust_affinity_params(key, widget.isChecked()))
+                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.isChecked()]))
                 return widget
             case 'env_id':
                 widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))
@@ -343,7 +349,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                     if value == option:
                         widget.setCurrentIndex(x)
                 # TODO: May need adjusting if model changes
-                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, widget.currentText()))
+                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, [widget.currentText()]))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):

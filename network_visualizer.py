@@ -40,6 +40,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.main_display = parent
         self.table = table
 
+        self.num_classes = 0
+
         # self.vis_types = {
         #     "Sequential Layout": True,
         #     "Community Layout": False,
@@ -167,7 +169,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                     )
 
         undirected_communities = nx.community.greedy_modularity_communities(
-            undirected_clip_space, "weight", 1, 1, self.environment.num_classes
+            undirected_clip_space, "weight", 1, 1, self.num_classes
         )
 
         community_dict = {}
@@ -235,7 +237,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         edgelist=[key],
                                         ax=memory_plot,
                                         arrows=True,
-                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
                                         alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
@@ -246,7 +248,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                    connectionstyle='arc3,rad=0.1',
                                    ax=memory_plot,
                                    arrows=True,
-                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
                                    alpha=max(self.vis_settings["min_edge_visibility"], weight))
             
@@ -268,7 +270,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         """
 
         community_dict = self.generate_groupings(clip_space, True, False,
-                                                 True if self.vis_settings["community_mode"] == "Greedy Modularity" else False)
+                                                 True if self.vis_settings["community_mode"][0] == "Greedy Modularity" else False)
         subsets = self.generate_groupings(clip_space, False, True)
         color_map = self.generate_node_color_maps(clip_space, subsets)
         normalized_weights = self.obtain_normalised_weights(clip_space)
@@ -279,8 +281,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         pos = self.community_layout(clip_space, community_dict)
 
-        nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=color_map)
-        nx.draw_networkx_labels(clip_space, pos, font_color='white')
+        nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=color_map)
+        nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
 
         if  self.vis_settings["normalize_weights"]:
             weight_counter  = 0
@@ -291,7 +293,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         edgelist=[key],
                                         ax=memory_plot,
                                         arrows=True,
-                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                        edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
                                         alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
@@ -302,7 +304,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                    connectionstyle='arc3,rad=0.1',
                                    ax=memory_plot,
                                    arrows=True,
-                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"] else None,
+                                   edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
                                    alpha=max(self.vis_settings["min_edge_visibility"], weight))
             
