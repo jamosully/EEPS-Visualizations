@@ -52,21 +52,21 @@
             "type": "bool"
         },
         {
-            "name": "𝛽ₕ",
+            "name": "\ud835\udefd\u2095",
             "variable_name": "beta_h",
             "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
             "value": 0.1,
             "type": "unit_interval"
         },
         {
-            "name": "RDT 𝛽ₕ",
+            "name": "RDT \ud835\udefd\u2095",
             "variable_name": "rdt_beta_h",
             "description": "testing value for softmax function",
             "value": 0.1,
             "type": "unit_interval"
         },
         {
-            "name": "𝛽ₜ",
+            "name": "\ud835\udefd\u209c",
             "variable_name": "beta_t",
             "description": "float >=0, controls agent\u2019s function in a trial at test phase (derived relation)",
             "value": 4.000000000000014,
@@ -80,14 +80,14 @@
             "type": "unit_interval"
         },
         {
-            "name": "γ",
+            "name": "\u03b3",
             "variable_name": "gamma_damping",
             "description": "float between 0 and 1, controls forgetting/damping of h-values",
             "value": 0.001,
             "type": "unit_interval"
         },
         {
-            "name": "α",
+            "name": "\u03b1",
             "variable_name": "alpha",
             "description": "the regularization parameter",
             "value": 0.7,
@@ -108,7 +108,10 @@
             "description": "Controls the appearance of the graph visualisation display. \n The options are: \n 1. Mutlipartite: based on Mofrad et al.'s (2020) design, arranges stimuli in columns of classes and rows of forms. \n 2. Community: displays",
             "value": "Community",
             "type": "drop_down",
-            "options": ["Multipartite", "Community"]
+            "options": [
+                "Multipartite",
+                "Community"
+            ]
         },
         {
             "name": "Normalise Weights",
@@ -123,7 +126,10 @@
             "description": "If graph style is set to community, which community detection method should be utilised",
             "value": "Greedy Modularity",
             "type": "drop_down",
-            "options": ["Greedy Modularity", "Class Number"]
+            "options": [
+                "Greedy Modularity",
+                "Class Number"
+            ]
         },
         {
             "name": "Use softmax transition probability for edge weight",
@@ -141,10 +147,22 @@
         },
         {
             "name": "Minimum Edge Visibility",
-            "variable_name":  "min_edge_visibility",
+            "variable_name": "min_edge_visibility",
             "description": "Determines the minumum alpha value of edges in the network visualisation",
             "value": 0.3,
             "type": "unit_interval"
+        },
+        {
+            "name": "Save as Animation",
+            "variable_name": "create_animation",
+            "description": "Controls whether Affinity saves the development of the agent's network as an animation in mp4 or gif format \n WARNING: This will cause a significant lag at the end of the experiment",
+            "value": "Don't Save",
+            "type": "drop_down",
+            "options": [
+                "Don't Save",
+                "gif",
+                "mp4"
+            ]
         }
     ],
     "rdt_volume_types": [

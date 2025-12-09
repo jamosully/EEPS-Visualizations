@@ -132,6 +132,7 @@ To achieve the aims of this project, several changes were made to the original E
 - [ ] An interface for creating new experiments
 - [ ] A system for integrating other EEPS/EPS/PS variants within the visualisation framework of Affinity
 - [ ] Various keyboard shortcuts
+- [ ] Counterconditioning
   
 ## References
 

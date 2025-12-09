@@ -198,7 +198,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         return ordered_clip_space
 
 
-    def visualize_sequential_network(self, clip_space: nx.DiGraph):
+    def visualize_sequential_network(self, clip_space: nx.DiGraph, create_animation=False):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -260,9 +260,13 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #     self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
-        self.canvas.draw()
+        if not create_animation:
+            self.canvas.draw()
+        elif create_animation:
+            print("Doing something?")
 
-    def visualize_community_network(self, clip_space):
+
+    def visualize_community_network(self, clip_space, create_animation=False):
 
         """
         Visualizes the agent's memory network via clusters
