@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import networkx as nx
-import netgraph
+#import netgraph
 import matplotlib.colors as mcolors
 import matplotlib.animation
 import seaborn as sns; sns.set()
@@ -87,7 +87,6 @@ class Interaction(object):
             #print(self.agent.clip_space.nodes)
             # self.artists[self.num_steps] = nx.Graph.copy(self.agent.clip_space)
             # self.current_phase.append("Phase " + str(self.environment.step))
-            print(self.environment.step)
             #print(self.artists)
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)

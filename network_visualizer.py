@@ -10,7 +10,7 @@ import matplotlib as mpl
 import matplotlib.animation
 
 import networkx as nx
-import netgraph
+#import netgraph
 import numpy as np
 import mplcursors
 
@@ -61,8 +61,11 @@ class NetworkVisualizer(QtWidgets.QWidget):
             "normalize_weights": True,
             "color_edges": True,
             "softmax_weights": True,
-            "min_edge_visibility": 0.25
+            "min_edge_visibility": 0.25,
+            "create_animation": "Do not save"
         }
+
+        self.animation_backup = []
 
         self.selected_stim = None
 
@@ -97,13 +100,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.update_editor.emit()
 
         self.clip_space_backup = clip_space
+        if self.vis_settings["create_animation"] != "Don't save":
+            self.animation_backup.append(nx.Graph.copy(clip_space))
 
         self.figure.clf()
 
-        print(self.vis_settings)
-
         vis_type = self.vis_settings["graph_style"][0]
-        print(vis_type)
         self.vis_functions[vis_type](self.clip_space_backup)
 
         # for vis_type in self.vis_types.keys():
@@ -225,13 +227,14 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
-        nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=node_color_map)
-        nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        nodes = nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=node_color_map)
+        labels = nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
         # self.edge_artist = []
+        edges = []
         weight_counter = 0
         if  self.vis_settings["normalize_weights"]:
             for key, weight in normalized_weights.items():
-                nx.draw_networkx_edges(clip_space,
+                edges.append(nx.draw_networkx_edges(clip_space,
                                         pos,
                                         connectionstyle='arc3,rad=0.1',
                                         edgelist=[key],
@@ -239,18 +242,18 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         arrows=True,
                                         edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
-                                        alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
+                                        alpha=max(self.vis_settings["min_edge_visibility"], weight))) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
             weight_counter += 1
         else:
-            nx.draw_networkx_edges(clip_space,
+            edges.append(nx.draw_networkx_edges(clip_space,
                                    pos,
                                    connectionstyle='arc3,rad=0.1',
                                    ax=memory_plot,
                                    arrows=True,
                                    edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
-                                   alpha=max(self.vis_settings["min_edge_visibility"], weight))
+                                   alpha=max(self.vis_settings["min_edge_visibility"], weight)))
             
         # network_cursor = mplcursors.cursor(self.figure)
 
@@ -260,10 +263,10 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #     self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
-        if not create_animation:
-            self.canvas.draw()
-        elif create_animation:
-            print("Doing something?")
+        self.canvas.draw()
+
+        if self.vis_settings["create_animation"] != "Don't save":
+            return nodes, edges, labels
 
 
     def visualize_community_network(self, clip_space, create_animation=False):
