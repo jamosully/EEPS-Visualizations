@@ -70,14 +70,12 @@ class VisualizationDisplay(QtWidgets.QWidget):
         else:
             self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
         self.tabs.addTab(self.resultsTab, "Results")
-        #self.main.setFixedSize(self.main.grid.sizeHint())
-
-        # for key in self.rdtTab.baseline_edge_weights.keys():
-        #     self.rdtTab.baseline_edge_weights[key] = np.mean(self.resultsTab.pad_rdt_data([self.rdtTab.baseline_edge_weights[key]]), axis=0)[0]
         
-        # print(self.rdtTab.baseline_edge_weights)
-        # ab_test = pd.DataFrame.from_dict(self.rdtTab.baseline_edge_weights)
-        # ab_test.to_csv("ne_baseline_1_agent.csv", index=False)
+        if self.networkTab.vis_settings["create_animation"] != "Don't save":
+            self.networkTab.generate_animation("test",
+                                               ["A1"],
+                                               0.5,
+                                               40)
 
     def delete_results(self):
 

@@ -127,7 +127,7 @@ class Interaction(object):
 
             if self.vis_display is not None:
                 self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
-                self.vis_display.networkTab.visualize_memory_network(self.agent.clip_space)
+                self.vis_display.networkTab.visualize_network(self.agent.clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(self.agent.clip_space)
 
             self.artists[self.num_steps] = self.agent.clip_space
@@ -168,7 +168,7 @@ class Interaction(object):
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
                 self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
-                self.vis_display.networkTab.visualize_memory_network(final_clip_space)
+                self.vis_display.networkTab.visualize_network(final_clip_space)
                 self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
                 self.vis_display.change_step_counter(self.num_steps)
 

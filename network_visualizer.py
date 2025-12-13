@@ -1,10 +1,11 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import Slot, Signal
+from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
 from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib as mpl
 import matplotlib.animation
@@ -62,7 +63,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
             "color_edges": True,
             "softmax_weights": True,
             "min_edge_visibility": 0.25,
-            "create_animation": "Do not save"
+            "create_animation": "Don't save"
         }
 
         self.animation_backup = []
@@ -88,6 +89,47 @@ class NetworkVisualizer(QtWidgets.QWidget):
     def update_settings(self, new_settings):
 
         self.vis_settings = new_settings
+
+    def generate_animation(self, experiment_name, key_positions, pad_by, interval):
+
+        """
+        Uses a separate thread to create an animation
+        """
+
+        animation_thread = QThread(self)
+        animation_mutex = QMutex()
+        self.moveToThread(animation_thread)
+
+        # Obtain communities from last version of network
+        start_community = self.generate_groupings(self.clip_space_backup,
+                                                  True, False)
+        
+        # Set fixed positions
+        fixed_positions = {k: start_community[k] for k in key_positions}
+        
+        # Define boundaries of space
+        xy = np.array(list(start_community.values()))
+        x_min, y_min = np.min(xy, axis=0)
+        x_max, y_max = np.max(xy, axis=0)
+        pad_x, pad_y = pad_by * np.ptp(xy, axis=0)
+
+        plt.xlim(x_min - pad_x, x_max + pad_x)
+        plt.ylim(y_min - pad_y, y_max + pad_y)
+
+        # Set animation settings
+        match(self.vis_settings["create_animation"]):
+            case "gif":
+                writer = "PillowWriter"
+                suffix = ".gif"
+            case "mp4":
+                writer = "ffmpeg"
+                suffix =".mp4"
+
+        try:
+            ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.vis_functions[self.vis_settings["graph_style"][0]](None, True), interval=interval)
+            ani.save(filename=experiment_name + suffix, writer=writer)
+        except IndexError:
+            pass
 
     def visualize_network(self, clip_space):
         
@@ -200,7 +242,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         return ordered_clip_space
 
 
-    def visualize_sequential_network(self, clip_space: nx.DiGraph, create_animation=False):
+    def visualize_sequential_network(self, n, clip_space: nx.DiGraph, create_animation=False):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -211,7 +253,10 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         3. Visualise each feature of the network on the provided plot
         """
-        # TODO: Re-write above description 
+        # TODO: Re-write above description
+
+        if create_animation:
+            clip_space = self.animation_backup[n]
 
         subsets = self.generate_groupings(clip_space, False, True)
         node_color_map = self.generate_node_color_maps(clip_space, subsets)
@@ -242,8 +287,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         arrows=True,
                                         edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
-                                        alpha=max(self.vis_settings["min_edge_visibility"], weight))) #+ (weights[weight_counter] / 8),
-                                        #alpha=weight)
+                                        alpha=max(self.vis_settings["min_edge_visibility"], weight)))
             weight_counter += 1
         else:
             edges.append(nx.draw_networkx_edges(clip_space,
@@ -265,7 +309,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
         self.canvas.draw()
 
-        if self.vis_settings["create_animation"] != "Don't save":
+        if create_animation:
             return nodes, edges, labels
 
 
@@ -288,13 +332,14 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         pos = self.community_layout(clip_space, community_dict)
 
-        nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=color_map)
-        nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        nodes = nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=color_map)
+        labels = nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        edges = []
 
         if  self.vis_settings["normalize_weights"]:
             weight_counter  = 0
             for key, weight in normalized_weights.items():
-                nx.draw_networkx_edges(clip_space,
+                edges.append(nx.draw_networkx_edges(clip_space,
                                         pos,
                                         connectionstyle='arc3,rad=0.1',
                                         edgelist=[key],
@@ -302,20 +347,23 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         arrows=True,
                                         edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
-                                        alpha=max(self.vis_settings["min_edge_visibility"], weight)) #+ (weights[weight_counter] / 8),
+                                        alpha=max(self.vis_settings["min_edge_visibility"], weight))) #+ (weights[weight_counter] / 8),
                                         #alpha=weight)
                 weight_counter += 1
         else:
-            nx.draw_networkx_edges(clip_space,
+            edges.append(nx.draw_networkx_edges(clip_space,
                                    pos,
                                    connectionstyle='arc3,rad=0.1',
                                    ax=memory_plot,
                                    arrows=True,
                                    edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
-                                   alpha=max(self.vis_settings["min_edge_visibility"], weight))
+                                   alpha=max(self.vis_settings["min_edge_visibility"], weight)))
             
         self.canvas.draw()
+
+        if create_animation:
+            return nodes, edges, labels
         
 
 # COMMUNITY-MAKING FUNCTIONS BELOW

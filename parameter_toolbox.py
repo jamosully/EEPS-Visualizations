@@ -42,6 +42,8 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.eepsSettingsTab = QGroupBox(self)
         self.affinitySettingsTab = QGroupBox(self)
 
+        self.network_vis = None
+
         self.load_json()
         self.createModelSettingsTab()
         self.createGUISettingsTab()
@@ -283,11 +285,12 @@ class ParameterToolbox(QtWidgets.QWidget):
                 if param['name'] == key:
                     param['value'] = value
         
-        for setting in self.network_vis.vis_settings.keys():
-            if setting == key:
-                self.network_vis.vis_settings[key] = value
+        if self.network_vis is not None:
+            for setting in self.network_vis.vis_settings.keys():
+                if setting == key:
+                    self.network_vis.vis_settings[key] = value
 
-        self.network_vis.visualize_network(self.network_vis.clip_space_backup)
+            self.network_vis.visualize_network(self.network_vis.clip_space_backup)
 
     def add_network_visualizer(self, network_vis):
 
