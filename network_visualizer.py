@@ -1,6 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
+from PySide6.QtCore import Slot, Signal, QRunnable, QThreadPool
 from PySide6.QtWidgets import QGridLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -13,6 +13,7 @@ import matplotlib.animation
 import networkx as nx
 #import netgraph
 import numpy as np
+import functools
 import mplcursors
 
 """
@@ -96,40 +97,55 @@ class NetworkVisualizer(QtWidgets.QWidget):
         Uses a separate thread to create an animation
         """
 
-        animation_thread = QThread(self)
-        animation_mutex = QMutex()
-        self.moveToThread(animation_thread)
-
         # Obtain communities from last version of network
         start_community = self.generate_groupings(self.clip_space_backup,
                                                   True, False)
+        final_pos = self.community_layout(self.clip_space_backup, start_community)
         
-        # Set fixed positions
-        fixed_positions = {k: start_community[k] for k in key_positions}
+        network_thread_pool  = QThreadPool()
+        animation_creator = AnimationGenerator(experiment_name,
+                                               list(final_pos.values()),
+                                               pad_by,
+                                               self.vis_settings["create_animation"][0],
+                                               40,
+                                               self.vis_functions[self.vis_settings["graph_style"][0]],
+                                               self.animation_backup)
+        network_thread_pool.start(animation_creator)
+
+        # animation_thread = QThread(self)
+        # animation_mutex = QMutex()
+        # self.moveToThread(animation_thread)
+
+        # # Set fixed positions
+        # fixed_positions = {k: start_community[k] for k in key_positions}
         
-        # Define boundaries of space
-        xy = np.array(list(start_community.values()))
-        x_min, y_min = np.min(xy, axis=0)
-        x_max, y_max = np.max(xy, axis=0)
-        pad_x, pad_y = pad_by * np.ptp(xy, axis=0)
+        # # Define boundaries of space
+        # xy = np.array(list(final_pos.values()))
+        # x_min, y_min = np.min(xy, axis=0)
+        # x_max, y_max = np.max(xy, axis=0)
+        # pad_x, pad_y = pad_by * np.ptp(xy, axis=0)
 
-        plt.xlim(x_min - pad_x, x_max + pad_x)
-        plt.ylim(y_min - pad_y, y_max + pad_y)
+        # plt.xlim(x_min - pad_x, x_max + pad_x)
+        # plt.ylim(y_min - pad_y, y_max + pad_y)
 
-        # Set animation settings
-        match(self.vis_settings["create_animation"]):
-            case "gif":
-                writer = "PillowWriter"
-                suffix = ".gif"
-            case "mp4":
-                writer = "ffmpeg"
-                suffix =".mp4"
+        # # Set animation settings
+        # writer = "ffmpeg"
+        # suffix = ".mp4"
+        
+        # match(self.vis_settings["create_animation"]):
+        #     case "gif":
+        #         writer = "PillowWriter"
+        #         suffix = ".gif"
+        #     case "mp4":
+        #         pass
 
-        try:
-            ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.vis_functions[self.vis_settings["graph_style"][0]](None, True), interval=interval)
-            ani.save(filename=experiment_name + suffix, writer=writer)
-        except IndexError:
-            pass
+        # try:
+        #     ani = matplotlib.animation.FuncAnimation(fig=self.figure, 
+        #                                              func=functools.partial(self.vis_functions[self.vis_settings["graph_style"][0]],
+        #                                                                     create_animation=True), interval=interval)
+        #     ani.save(filename=(experiment_name + suffix), writer=writer)
+        # except IndexError:
+        #     pass
 
     def visualize_network(self, clip_space):
         
@@ -148,7 +164,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.figure.clf()
 
         vis_type = self.vis_settings["graph_style"][0]
-        self.vis_functions[vis_type](self.clip_space_backup)
+        self.vis_functions[vis_type](0, clip_space=self.clip_space_backup)
 
         # for vis_type in self.vis_types.keys():
         #     if self.vis_types[vis_type] == self.vis_settings[""]:
@@ -242,7 +258,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         return ordered_clip_space
 
 
-    def visualize_sequential_network(self, n, clip_space: nx.DiGraph, create_animation=False):
+    def visualize_sequential_network(self, n, clip_space=None, create_animation=False):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -256,7 +272,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         # TODO: Re-write above description
 
         if create_animation:
-            clip_space = self.animation_backup[n]
+            clip_space = n
 
         subsets = self.generate_groupings(clip_space, False, True)
         node_color_map = self.generate_node_color_maps(clip_space, subsets)
@@ -313,13 +329,17 @@ class NetworkVisualizer(QtWidgets.QWidget):
             return nodes, edges, labels
 
 
-    def visualize_community_network(self, clip_space, create_animation=False):
+    def visualize_community_network(self, n, clip_space=None, create_animation=False):
 
         """
         Visualizes the agent's memory network via clusters
         of nodes that grow/recede based on relational density
         """
 
+        if create_animation:
+            print(n)
+            clip_space = n
+        
         community_dict = self.generate_groupings(clip_space, True, False,
                                                  True if self.vis_settings["community_mode"][0] == "Greedy Modularity" else False)
         subsets = self.generate_groupings(clip_space, False, True)
@@ -459,3 +479,61 @@ class NetworkVisualizer(QtWidgets.QWidget):
             pos.update(pos_subgraph)
 
         return pos
+    
+
+class AnimationGenerator(QRunnable):
+
+    """
+    Handles the creation of animations in a separate
+    thread from the rest of Affinity
+    """
+
+    def __init__(self, experiment_name, final_pos, padding, animation_type, 
+                 interval, animation_function, frames):
+        super().__init__()
+
+        self.experiment_name = experiment_name
+        self.final_pos = final_pos,
+        self.pad_by = padding
+        self.animation_type = animation_type
+        self.interval = interval
+        self.animation_function = animation_function
+        self.frames = frames
+
+    def run(self):
+
+        """
+        Uses a separate thread to create an animation
+        """
+
+        self.figure = Figure()
+        
+        # Define boundaries of space
+        xy = np.array(self.final_pos[0])
+        x_min, y_min = np.min(xy, axis=0)
+        x_max, y_max = np.max(xy, axis=0)
+        pad_x, pad_y = self.pad_by * np.ptp(xy, axis=0)
+
+        plt.xlim(x_min - pad_x, x_max + pad_x)
+        plt.ylim(y_min - pad_y, y_max + pad_y)
+
+        # Set animation settings
+        writer = "ffmpeg"
+        suffix = ".mp4"
+        
+        match(self.animation_type):
+            case "gif":
+                writer = "PillowWriter"
+                suffix = ".gif"
+            case "mp4":
+                pass
+
+        try:
+            ani = matplotlib.animation.FuncAnimation(fig=self.figure, 
+                                                     func=functools.partial(self.animation_function,
+                                                                            create_animation=True), 
+                                                    frames=self.frames,
+                                                    interval=self.interval)
+            ani.save(filename=(self.experiment_name + suffix), writer=writer)
+        except IndexError:
+            pass
