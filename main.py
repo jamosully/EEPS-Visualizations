@@ -3,7 +3,7 @@ import sys
 # UI Modules
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QStyleFactory, QTabWidget, QGroupBox
-from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition
+from PySide6.QtCore import Slot, Signal, QThread, QMutex, QWaitCondition, QThreadPool
 
 from simulator import Simulator
 from visualization_display import VisualizationDisplay
@@ -42,7 +42,9 @@ class MainWindow(QtWidgets.QWidget):
 
         self.models = {}
         self.threads = []
-        self.model_num  = 1
+        self.model_num  = 0
+        
+        self.threadpool = QThreadPool()
 
         # Filename is none at start, once a user adds a file it changes
 
@@ -107,7 +109,8 @@ class MainWindow(QtWidgets.QWidget):
                                     env_params,
                                     rdt_volume_types,
                                     rdt_density_types,
-                                    self.parameterMenu)
+                                    self.parameterMenu,
+                                    self.threadpool)
 
     def createControlPanel(self, main, simulator):
 
@@ -165,9 +168,14 @@ class MainWindow(QtWidgets.QWidget):
 
         self.tab.setLayout(self.tabLayout)
 
-        self.tabs.addTab(self.tab, "Agent " + str(self.model_num))
+        self.tabs.addTab(self.tab, "Agent " + str(self.model_num + 1))
 
         self.model_num += 1
+
+    def closeEvent(self, event):
+        for i in range(self.model_num):
+            self.models[i]['simulator']['thread'].quit()
+        return super().closeEvent(event)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])

@@ -91,7 +91,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         self.vis_settings = new_settings
 
-    def generate_animation(self, experiment_name, key_positions, pad_by, interval):
+    def generate_animation(self, experiment_name, key_positions, pad_by, interval, threadpool):
 
         """
         Uses a separate thread to create an animation
@@ -102,7 +102,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                                   True, False)
         final_pos = self.community_layout(self.clip_space_backup, start_community)
         
-        network_thread_pool  = QThreadPool()
         animation_creator = AnimationGenerator(experiment_name,
                                                list(final_pos.values()),
                                                pad_by,
@@ -110,7 +109,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                                40,
                                                self.vis_functions[self.vis_settings["graph_style"][0]],
                                                self.animation_backup)
-        network_thread_pool.start(animation_creator)
+        threadpool.start(animation_creator)
 
         # animation_thread = QThread(self)
         # animation_mutex = QMutex()
@@ -158,8 +157,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
             self.table.update_editor.emit()
 
         self.clip_space_backup = clip_space
-        if self.vis_settings["create_animation"] != "Don't save":
-            self.animation_backup.append(nx.Graph.copy(clip_space))
+        # if self.vis_settings["create_animation"] != "Don't save":
+        #     self.animation_backup.append(nx.Graph.copy(clip_space))
 
         self.figure.clf()
 
@@ -288,8 +287,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         pos = nx.multipartite_layout(ordered_clip_space, "layers", align="horizontal", scale=-1)
 
-        nodes = nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=node_color_map)
-        labels = nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        nodes = nx.draw_networkx_nodes(clip_space, pos, ax=None if create_animation else memory_plot, node_size=500, node_color=node_color_map)
+        labels = nx.draw_networkx_labels(clip_space, pos, ax=None if create_animation else memory_plot, font_color='white')
         # self.edge_artist = []
         edges = []
         weight_counter = 0
@@ -299,7 +298,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         pos,
                                         connectionstyle='arc3,rad=0.1',
                                         edgelist=[key],
-                                        ax=memory_plot,
+                                        ax=None if create_animation else memory_plot,
                                         arrows=True,
                                         edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
@@ -309,7 +308,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
             edges.append(nx.draw_networkx_edges(clip_space,
                                    pos,
                                    connectionstyle='arc3,rad=0.1',
-                                   ax=memory_plot,
+                                   ax=None if create_animation else memory_plot,
                                    arrows=True,
                                    edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
@@ -323,9 +322,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
         #     self.selected_stim = list(ordered_clip_space.nodes())[sel.index]
 
         #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
-        self.canvas.draw()
-
-        if create_animation:
+        if not create_animation:
+            self.canvas.draw()
+        elif create_animation:
             return nodes, edges, labels
 
 
@@ -337,7 +336,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
         """
 
         if create_animation:
-            print(n)
             clip_space = n
         
         community_dict = self.generate_groupings(clip_space, True, False,
@@ -352,8 +350,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         pos = self.community_layout(clip_space, community_dict)
 
-        nodes = nx.draw_networkx_nodes(clip_space, pos, ax=memory_plot, node_size=500, node_color=color_map)
-        labels = nx.draw_networkx_labels(clip_space, pos, ax=memory_plot, font_color='white')
+        nodes = nx.draw_networkx_nodes(clip_space, pos, 
+                                       ax=None if create_animation else memory_plot, 
+                                       node_size=500, node_color=color_map)
+        labels = nx.draw_networkx_labels(clip_space, pos, 
+                                         ax=None if create_animation else memory_plot, 
+                                         font_color='white')
         edges = []
 
         if  self.vis_settings["normalize_weights"]:
@@ -363,7 +365,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                         pos,
                                         connectionstyle='arc3,rad=0.1',
                                         edgelist=[key],
-                                        ax=memory_plot,
+                                        ax=None if create_animation else memory_plot,
                                         arrows=True,
                                         edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                         width=2 + (weight * 6),
@@ -374,15 +376,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
             edges.append(nx.draw_networkx_edges(clip_space,
                                    pos,
                                    connectionstyle='arc3,rad=0.1',
-                                   ax=memory_plot,
+                                   ax=None if create_animation else memory_plot,
                                    arrows=True,
                                    edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
                                    alpha=max(self.vis_settings["min_edge_visibility"], weight)))
             
-        self.canvas.draw()
-
-        if create_animation:
+        if not create_animation:
+            self.canvas.draw()
+        elif create_animation:
             return nodes, edges, labels
         
 
@@ -499,6 +501,8 @@ class AnimationGenerator(QRunnable):
         self.interval = interval
         self.animation_function = animation_function
         self.frames = frames
+
+        self.setAutoDelete(True)
 
     def run(self):
 

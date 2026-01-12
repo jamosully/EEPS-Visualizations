@@ -28,7 +28,9 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     update_editor = Signal()
 
-    def __init__(self, parent, simulator, simulator_thread, simulator_mutex, env_params, rdt_volume_types, rdt_density_types, parameter_toolbox):
+    def __init__(self, parent, simulator, simulator_thread, 
+                 simulator_mutex, env_params, rdt_volume_types, 
+                 rdt_density_types, parameter_toolbox, threadpool):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
         self.simulator = simulator
@@ -42,6 +44,8 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.step_changed = False
 
         self.resultsTab = None
+
+        self.threadpool = threadpool
 
         self.tabs = QTabWidget()
         self.networkTab = NetworkVisualizer(self.main, self, simulator)
@@ -71,11 +75,12 @@ class VisualizationDisplay(QtWidgets.QWidget):
             self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
         self.tabs.addTab(self.resultsTab, "Results")
         
-        if self.networkTab.vis_settings["create_animation"] != "Don't save":
+        if self.networkTab.vis_settings["create_animation"][0] != "Don't Save":
             self.networkTab.generate_animation("test",
                                                ["A1"],
                                                0.5,
-                                               40)
+                                               40,
+                                               self.threadpool)
 
     def delete_results(self):
 

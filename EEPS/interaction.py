@@ -90,6 +90,7 @@ class Interaction(object):
             #print(self.artists)
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(self.agent.clip_space, self.environment.class_accuracies, new_trial)
+                self.vis_display.networkTab.animation_backup.append(nx.Graph.copy(self.agent.clip_space))
                 if self.num_steps % self.vis_step == 0:
                     self.vis_display.rdtTab.visualize_rdt_data(self.agent.clip_space)
                     self.vis_display.networkTab.visualize_network(self.agent.clip_space)
