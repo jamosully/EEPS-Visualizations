@@ -96,6 +96,17 @@
             "options": ["multipartite", "community"]
         }
     ],
+    "FE_agent_parameters": [
+        {
+            "name": "n_clones",
+            "description": "Controls the number of clone clips a single observation will be linked to",
+            "value": 3,
+            "type": "int"
+        },
+        {
+
+        }
+    ],
     "rdt_volume_types": [
         "True nodal distance",
         "Empirical nodal distance",

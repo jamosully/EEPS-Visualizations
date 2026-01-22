@@ -32,6 +32,7 @@ class FEAgent(object):
         self.alpha = parameter["alpha"][0]
         self.NE = parameter["network_enhancement"][0]
         self.training_NE = parameter["NE_during_training"][0]
+        self.n_clones = parameter["n_clones"][0]
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
         self.trained_edges = {}
@@ -41,22 +42,40 @@ class FEAgent(object):
         self.world_space_clip_space = nx.DiGraph()
         self.policy_clip_space = nx.DiGraph()
 
+        self.free_energies = []
+        self.expected_free_energies = []
+        self.length_trajectories = []
+
+        self.observations = []
+        self.pbs = 0
+        self.prev_action = None
+
         # TODO: Create function for creating intial distributions
 
     def trial_preprocess(self, percept, action, new_trial): # Ok!
 
-            """
-            Takes a percept and an action set, updates clip_space if required.
-            """
+        """
+        Takes a percept and an action set, updates clip_space if required.
 
-            if new_trial and self.training_NE:
-                self.network_enhancement_in_progress()
+        NOTE: This needs to be modified to allow the agent to enter their first
+                state as part of the FEPS architecture
+        """
 
-            for act in  action:
-                if (percept, act) not in self.clip_space.edges():
-                    self.clip_space.add_edge(percept, act, weight=1)
-                    self.clip_space.add_edge(act, percept, weight=1)
-                    self.trained_edges[percept] = []
+        observation_idx = np.where([percept, action] in self.observations)[0][0]
+        self.pbs = observation_idx * self.n_clones + np.random.choice(
+            np.arange(self.n_clones)
+        )
+
+        if new_trial and self.training_NE:
+            self.network_enhancement_in_progress()
+        
+        for act in  action:
+            if (percept, act) not in self.clip_space.edges():
+                self.clip_space.add_edge(percept, act, weight=1)
+                self.clip_space.add_edge(act, percept, weight=1)
+                self.trained_edges[percept] = []
+                if [percept, action] not in self.observations:
+                    self.observations.append([percept, action])
 
 
     def action_selection(self, percept, action_set_t, clip = None): # Ok!
@@ -76,6 +95,9 @@ class FEAgent(object):
         probability_distr = self.softmax(h_vector, self.beta_h)
         size_action_set = len(action_set_t)
         Action = np.random.choice(size_action_set, p = probability_distr)
+
+        if self.prev_action is None:
+            self.prev_action = action_set_t[Action]
 
         return action_set_t[Action]
 
@@ -106,7 +128,8 @@ class FEAgent(object):
             if action not in self.trained_edges[percept]:
                 self.trained_edges[percept].append(action)
 
-
+        self.prev_action = action_set_t[action]
+        
 
     def softmax(self, h_vec, beta): # Ok!
 
