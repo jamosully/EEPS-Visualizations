@@ -173,38 +173,6 @@ class Interaction(object):
                 self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
                 self.vis_display.change_step_counter(self.num_steps)
 
-        # community_dict = {}
-
-        # for stimuli in self.artists[self.num_steps]:
-        #     community_dict[stimuli] = int(stimuli[1]) - 1
-        
-        # self.key_positions = []
-        # self.fixed_positions = {}
-        # self.pos_ready = False
-        
-        # final_pos = self.community_layout(self.artists[self.num_steps], community_dict)
-
-        # self.key_positions = ["A1", "A2", "A3", "A4"]
-        # self.fixed_positions = {k: final_pos[k] for k in self.key_positions}
-        # self.pos_ready = True
-
-        # xy = np.array(list(final_pos.values()))
-        # self.x_min, self.y_min = np.min(xy, axis=0)
-        # self.x_max, self.y_max = np.max(xy, axis=0)
-        # self.pad_by = 0.05 # may need adjusting 
-        # self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
-
-        # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-        # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
-        
-        # try:
-        #     ani = matplotlib.animation.FuncAnimation(fig=self.figure, func=self.plot_and_save_graph, interval=40)
-        #     #plt.show()
-        #     ani.save(filename="test.mp4", writer="ffmpeg")
-        # except IndexError:
-        #     print("Hahah")
-        #ani.save(filename="test.gif", writer="PillowWriter")
-
 
         for k, v in avg_time_training.items():
             avg_time_training[k] = v/ num_agents

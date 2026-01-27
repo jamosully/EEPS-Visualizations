@@ -106,7 +106,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                                list(final_pos.values()),
                                                pad_by,
                                                self.vis_settings["create_animation"][0],
-                                               40,
+                                               interval,
                                                self,
                                                self.animation_backup)
         threadpool.start(animation_creator)
@@ -132,7 +132,6 @@ class NetworkVisualizer(QtWidgets.QWidget):
         if not create_animation:
             self.vis_functions[vis_type](0, clip_space=self.clip_space_backup)
         else:
-            print(n)
             return self.vis_functions[vis_type](n, create_animation=True)
 
         # for vis_type in self.vis_types.keys():
@@ -226,6 +225,20 @@ class NetworkVisualizer(QtWidgets.QWidget):
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
         return ordered_clip_space
 
+    def adjust_plot_size(self, final_pos):
+
+        """
+        Used specifically for generating animations
+        """
+
+        xy = np.array(final_pos)
+        self.x_min, self.y_min = np.min(xy, axis=0)
+        self.x_max, self.y_max = np.max(xy, axis=0)
+        self.pad_by = 0.05 # may need adjusting 
+        self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
+
+        plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
 
     def visualize_sequential_network(self, n, clip_space=None, create_animation=False):
 
@@ -306,8 +319,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
         """
         
         if create_animation:
+            self.figure.clf()
+            self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
             clip_space = self.animation_backup[n]
-            print(clip_space)
         
         community_dict = self.generate_groupings(clip_space, True, False,
                                                  True if self.vis_settings["community_mode"][0] == "Greedy Modularity" else False)
@@ -352,10 +366,19 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                    edge_color=self.heatmap_edge_colormap(weight) if self.vis_settings["color_edges"][0] else None,
                                    width=2 + (weight * 6),
                                    alpha=max(self.vis_settings["min_edge_visibility"], weight)))
+            
+        
 
         if not create_animation:
             self.canvas.draw()
         elif create_animation:
+            memory_plot.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+            memory_plot.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+            memory_plot.set_aspect("equal")
+
+            # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+            # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+            
             return nodes, edges, labels
         
 
@@ -473,6 +496,7 @@ class AnimationGenerator(QRunnable):
         self.network_gen = network_gen
         self.frames = frames
 
+        self.network_gen.adjust_plot_size(final_pos)
         self.setAutoDelete(True)
 
     def run(self):
