@@ -146,6 +146,7 @@ class ResultsDisplay(QtWidgets.QWidget):
 
             elif self.results[value]['type'] == 'table':
                 print(self.results[value]['result'])
+                #self.figure.delaxes(self.r_ax)
                 self.r_ax.table(cellText=self.results[value]['result'].values, colLabels=self.results[value]['result'].columns)
 
             self.canvas.draw()
