@@ -29,7 +29,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
     update_editor = Signal()
 
     def __init__(self, parent, simulator, simulator_thread, 
-                 simulator_mutex, env_params, rdt_volume_types, 
+                 simulator_mutex, env_params, gui_params, rdt_volume_types, 
                  rdt_density_types, parameter_toolbox, threadpool):
         QtWidgets.QWidget.__init__(self)
         self.layout = QHBoxLayout(self)
@@ -48,7 +48,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.threadpool = threadpool
 
         self.tabs = QTabWidget()
-        self.networkTab = NetworkVisualizer(self.main, self, simulator)
+        self.networkTab = NetworkVisualizer(self.main, self, simulator, gui_params)
         parameter_toolbox.add_network_visualizer(self.networkTab)
 
         self.visualizers.append(self.networkTab)
@@ -74,6 +74,8 @@ class VisualizationDisplay(QtWidgets.QWidget):
         else:
             self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
         self.tabs.addTab(self.resultsTab, "Results")
+
+        self.stimEditor.hide()
         
         if self.networkTab.vis_settings["create_animation"][0] != "Don't Save":
             self.networkTab.generate_animation("test",

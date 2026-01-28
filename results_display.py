@@ -1,6 +1,6 @@
 # UI Modules
 from PySide6 import QtWidgets
-from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QGridLayout, QPushButton, QHBoxLayout, QTableWidget
 from PySide6.QtGui import QIcon
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -40,8 +40,11 @@ class ResultsDisplay(QtWidgets.QWidget):
         self.visualGrid = QGridLayout()
 
         self.figure = Figure(tight_layout=False)
+        self.r_ax = None
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
+        
+        self.resultsTable = QTableWidget()
 
         self.figure_id = 0
 
@@ -85,13 +88,17 @@ class ResultsDisplay(QtWidgets.QWidget):
         version of EEPS
         """
 
-        self.figure.clf()
-        self.r_ax = self.figure.add_subplot(111)
-        self.r_ax = self.figure.axes[0]
-        self.r_ax.axis("auto")
-        self.r_ax.set_autoscale_on(True)
-
         if value >= 0 and value < len(self.results):
+            self.figure.clear()
+            self.canvas.show()
+            self.toolbar.show()
+            self.figure_id = value
+            print(self.figure_id)
+
+            self.r_ax = self.figure.add_subplot(111)
+            self.r_ax = self.figure.axes[0]
+            self.r_ax.axis("auto")
+            self.r_ax.set_autoscale_on(True)
             if self.results[value]['type'] == 'bar':
                 self.results[value]['result'].plot(kind='bar',
                                                 color = ['royalblue','lightgreen', 'red','cyan'], 
@@ -145,12 +152,15 @@ class ResultsDisplay(QtWidgets.QWidget):
                 self.figure.autofmt_xdate(rotation=45)
 
             elif self.results[value]['type'] == 'table':
-                print(self.results[value]['result'])
-                #self.figure.delaxes(self.r_ax)
-                self.r_ax.table(cellText=self.results[value]['result'].values, colLabels=self.results[value]['result'].columns)
+                self.figure.delaxes(self.r_ax)
+                self.canvas.hide()
+                self.toolbar.hide()
+                # self.table = self.r_ax.table(cellText=self.results[value]['result'].values, colLabels=self.results[value]['result'].columns, loc='center')
+                # self.figure.tight_layout()
+                # self.table.auto_set_font_size(True)
+                # self.table.set_fontsize(44)
 
             self.canvas.draw()
-            self.figure_id = value
         
 
     def displayResults(self, rdt_volume, rdt_density, filename=None):

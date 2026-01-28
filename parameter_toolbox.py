@@ -356,7 +356,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                     if value == option:
                         widget.setCurrentIndex(x)
                 # TODO: May need adjusting if model changes
-                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, [widget.currentText()]))
+                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, widget.currentText()))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):

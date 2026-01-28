@@ -4,7 +4,7 @@
             "name": "Experiment ID",
             "variable_name": "experiment_ID",
             "description": "PLACEHOLDER",
-            "value": 201,
+            "value": 211,
             "type": "int"
         },
         {
@@ -155,10 +155,8 @@
         {
             "name": "Save as Animation",
             "variable_name": "create_animation",
-            "description": "Controls whether Affinity saves the development of the agent's network as an animation in mp4 or gif format \n WARNING: This will cause a significant lag at the end of the experiment",
-            "value": [
-                "mp4"
-            ],
+            "description": "Controls whether Affinity saves the development of the agent's network as an animation in mp4 or gif format \n WARNING: This currently runs in the background on a separate thread which can cause Affinity to hang when closed. I will implement a fix in due time.",
+            "value": "Don't Save",
             "type": "drop_down",
             "options": [
                 "Don't Save",

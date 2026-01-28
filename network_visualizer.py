@@ -32,7 +32,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
     Visualiser for graph networks
     """
 
-    def __init__(self, parent, table, simulator):
+    def __init__(self, parent, table, simulator, gui_params):
 
         QtWidgets.QWidget.__init__(self)
 
@@ -57,15 +57,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
 
         self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
 
-        self.vis_settings = {
-            "graph_style": "Community",
-            "community_mode": "Greedy Modularity",
-            "normalize_weights": True,
-            "color_edges": True,
-            "softmax_weights": True,
-            "min_edge_visibility": 0.25,
-            "create_animation": "Don't save"
-        }
+        self.vis_settings = gui_params
 
         self.animation_backup = []
 
