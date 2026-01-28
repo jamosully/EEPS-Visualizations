@@ -111,7 +111,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
                                                self.animation_backup)
         threadpool.start(animation_creator)
 
-    def visualize_network(self, n, clip_space=None, create_animation=False):
+    def visualize_network(self, n, clip_space=None, create_animation=False, figure=None):
         
         """
         Routes the clip_space to the currently-selected visualizer
@@ -126,13 +126,15 @@ class NetworkVisualizer(QtWidgets.QWidget):
         # if self.vis_settings["create_animation"] != "Don't save":
         #     self.animation_backup.append(nx.Graph.copy(clip_space))
 
-        self.figure.clf()
+        if figure is None:
+            figure = self.figure
+            # self.figure.clf()
 
         vis_type = self.vis_settings["graph_style"][0]
         if not create_animation:
-            self.vis_functions[vis_type](0, clip_space=self.clip_space_backup)
+            self.vis_functions[vis_type](0, clip_space=self.clip_space_backup, figure=figure)
         else:
-            return self.vis_functions[vis_type](n, create_animation=True)
+            return self.vis_functions[vis_type](n, create_animation=True, figure=figure)
 
         # for vis_type in self.vis_types.keys():
         #     if self.vis_types[vis_type] == self.vis_settings[""]:
@@ -225,7 +227,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
         return ordered_clip_space
 
-    def adjust_plot_size(self, final_pos):
+    def adjust_plot_size(self, final_pos, pad_value):
 
         """
         Used specifically for generating animations
@@ -234,13 +236,13 @@ class NetworkVisualizer(QtWidgets.QWidget):
         xy = np.array(final_pos)
         self.x_min, self.y_min = np.min(xy, axis=0)
         self.x_max, self.y_max = np.max(xy, axis=0)
-        self.pad_by = 0.05 # may need adjusting 
+        self.pad_by = pad_value # may need adjusting 
         self.pad_x, self.pad_y = self.pad_by * np.ptp(xy, axis=0)
 
-        plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-        plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+        # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+        # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
 
-    def visualize_sequential_network(self, n, clip_space=None, create_animation=False):
+    def visualize_sequential_network(self, n, clip_space=None, create_animation=False, figure=None):
 
         """
         Called by the simulator, creates a new visualization via three steps:
@@ -254,6 +256,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         # TODO: Re-write above description
 
         if create_animation:
+            figure.clf()
+            figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
             clip_space = self.animation_backup[n]
 
         subsets = self.generate_groupings(clip_space, False, True)
@@ -264,7 +268,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         if self.vis_settings["normalize_weights"]:
             normalized_weights = self.obtain_normalised_weights(clip_space)
 
-        memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
+        memory_plot = figure.add_subplot(111) #, picker=self.on_pick)
         
         ordered_clip_space = self.create_ordered_clip_space(clip_space)
 
@@ -308,10 +312,16 @@ class NetworkVisualizer(QtWidgets.QWidget):
         if not create_animation:
             self.canvas.draw()
         elif create_animation:
+            memory_plot.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+            memory_plot.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
+            memory_plot.set_aspect("equal")
+
+            plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
+            plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
             return nodes, edges, labels
 
 
-    def visualize_community_network(self, n, clip_space=None, create_animation=False):
+    def visualize_community_network(self, n, clip_space=None, create_animation=False, figure=None):
 
         """
         Visualizes the agent's memory network via clusters
@@ -319,8 +329,8 @@ class NetworkVisualizer(QtWidgets.QWidget):
         """
         
         if create_animation:
-            self.figure.clf()
-            self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
+            figure.clf()
+            figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
             clip_space = self.animation_backup[n]
         
         community_dict = self.generate_groupings(clip_space, True, False,
@@ -329,7 +339,7 @@ class NetworkVisualizer(QtWidgets.QWidget):
         color_map = self.generate_node_color_maps(clip_space, subsets)
         normalized_weights = self.obtain_normalised_weights(clip_space)
 
-        memory_plot = self.figure.add_subplot(111) #, picker=self.on_pick)
+        memory_plot = figure.add_subplot(111) #, picker=self.on_pick)
 
         ordered_clip_space = self.create_ordered_clip_space(clip_space)
 
@@ -496,7 +506,7 @@ class AnimationGenerator(QRunnable):
         self.network_gen = network_gen
         self.frames = frames
 
-        self.network_gen.adjust_plot_size(final_pos)
+        self.network_gen.adjust_plot_size(final_pos, self.pad_by)
         self.setAutoDelete(True)
 
     def run(self):
@@ -505,7 +515,7 @@ class AnimationGenerator(QRunnable):
         Uses a separate thread to create an animation
         """
 
-        self.figure = Figure()
+        self.figure = Figure(tight_layout=False)
         
         # Define boundaries of space
         xy = np.array(self.final_pos[0])
@@ -528,9 +538,10 @@ class AnimationGenerator(QRunnable):
                 pass
 
         try:
-            ani = matplotlib.animation.FuncAnimation(fig=self.network_gen.figure, 
+            ani = matplotlib.animation.FuncAnimation(fig=self.figure, 
                                                      func=functools.partial(self.network_gen.visualize_network,
-                                                                            create_animation=True),
+                                                                            create_animation=True,
+                                                                            figure=self.figure),
                                                      interval=self.interval)
             ani.save(filename=(self.experiment_name + suffix), writer=writer)
         except IndexError:
