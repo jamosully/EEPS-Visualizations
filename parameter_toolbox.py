@@ -1,6 +1,6 @@
 # UI Modules
 from PySide6 import QtCore, QtWidgets 
-from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QComboBox, 
+from PySide6.QtWidgets import (QVBoxLayout, QTableWidget, QWidget, 
                                QLabel, QGroupBox, QSizePolicy, 
                                QHeaderView, QPushButton, QHBoxLayout, 
                                QCheckBox, QDoubleSpinBox, QSpinBox,
@@ -36,11 +36,11 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.main = parent
 
-        self.box_layout = QVBoxLayout(self)
+        self.box_layout = QVBoxLayout()
 
         self.tabs = QTabWidget()
-        self.eepsSettingsTab = QGroupBox(self)
-        self.affinitySettingsTab = QGroupBox(self)
+        self.eepsSettingsTab = QGroupBox()
+        self.affinitySettingsTab = QGroupBox()
 
         self.network_vis = None
 
@@ -56,10 +56,14 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.rdt_density_types = []
         
         self.createButtons()
-        self.box_layout.addLayout(self.buttonLayout)
 
         self.tabs.addTab(self.eepsSettingsTab, "Model Settings")
         self.tabs.addTab(self.affinitySettingsTab, "Affinity Settings")
+
+        self.box_layout.addWidget(self.tabs)
+        self.box_layout.addLayout(self.buttonLayout)
+        
+        self.setLayout(self.box_layout)
 
     def createModelSettingsTab(self):
 
@@ -67,6 +71,8 @@ class ParameterToolbox(QtWidgets.QWidget):
         Creates a tab that contains settings for modifying the function
         of the underlying EEPS model
         """
+
+        box_layout = QVBoxLayout(self)
 
         self.environment_detail = EEPS.initialization_detail.environment_details()
         self.json_env_params = self.json_params['environment_parameters']
@@ -86,15 +92,15 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         self.createFilenameEntry()
 
-        self.box_layout.addWidget(self.fileTable)
-        self.box_layout.addWidget(self.agentLabel)
-        self.box_layout.addWidget(self.agentToolbox.table)
-        self.box_layout.addWidget(self.agentToolbox.descriptionField)
-        self.box_layout.addWidget(self.envLabel)
-        self.box_layout.addWidget(self.envToolbox.table)
-        self.box_layout.addWidget(self.envToolbox.descriptionField)
+        box_layout.addWidget(self.fileTable)
+        box_layout.addWidget(self.agentLabel)
+        box_layout.addWidget(self.agentToolbox.table)
+        box_layout.addWidget(self.agentToolbox.descriptionField)
+        box_layout.addWidget(self.envLabel)
+        box_layout.addWidget(self.envToolbox.table)
+        box_layout.addWidget(self.envToolbox.descriptionField)
 
-        self.eepsSettingsTab.setLayout(self.box_layout)
+        self.eepsSettingsTab.setLayout(box_layout)
 
 
     def createGUISettingsTab(self):
@@ -122,8 +128,6 @@ class ParameterToolbox(QtWidgets.QWidget):
         box_layout.addWidget(self.guiToolbox.descriptionField)
 
         self.affinitySettingsTab.setLayout(box_layout)
-
-
 
     def createButtons(self):
 
@@ -248,6 +252,7 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         print("Parameters exported")
         with open("initialization.json", "w", encoding="utf8") as init_params:
+            print(self.json_params)
             json.dump(self.json_params, init_params, indent=4)
 
 
@@ -260,19 +265,19 @@ class ParameterToolbox(QtWidgets.QWidget):
         
         if key in self.model_agent_params:
             self.model_agent_params[key] = [value]
-            for param in self.json_params['agent_parameters']:
-                if param['name'] == key:
-                    param['value'] = value
+            for i in range(len(self.json_params['agent_parameters'])):
+                if self.json_params['agent_parameters'][i]['variable_name'] == key:
+                    self.json_params['agent_parameters'][i]['value'] = value
         elif key in self.model_env_params:
             self.model_env_params[key] = [value]
-            for param in self.json_params['environment_parameters']:
-                if param['name'] == key:
-                    param['value'] = value
+            for i in range(len(self.json_params['environment_parameters'])):
+                if self.json_params['environment_parameters'][i]['variable_name'] == key:
+                    self.json_params['environment_parameters'][i]['value'] = value
         elif key in self.gui_params:
             self.gui_params[key] = [value]
-            for param in self.json_params['affinity_parameters']:
-                if param['name'] == key:
-                    param['value'] = value
+            for i in range(len(self.json_params['affinity_parameters'])):
+                if self.json_params['affinity_parameters'][i]['variable_name'] == key:
+                    self.json_params['affinity_parameters'][i]['value'] = value
 
     def adjust_affinity_params(self, key, value):
 
@@ -281,9 +286,9 @@ class ParameterToolbox(QtWidgets.QWidget):
         """
 
         self.gui_params[key] = [value]
-        for param in self.json_params['affinity_parameters']:
-                if param['name'] == key:
-                    param['value'] = value
+        for i in range(len(self.json_params['affinity_parameters'])):
+            if self.json_params['affinity_parameters'][i]['variable_name'] == key:
+                self.json_params['affinity_parameters'][i]['value'] = value
         
         if self.network_vis is not None:
             for setting in self.network_vis.vis_settings.keys():
@@ -297,7 +302,6 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.network_vis = network_vis
         print("Network Visualizer Added!")
         self.network_vis.update_settings(self.gui_params)
-
 
     def createParamWidget(self, key, value, type, options=[], for_gui=False):
 

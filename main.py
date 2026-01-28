@@ -50,7 +50,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.filename = None
 
-        self.grid.addWidget(self.parameterMenu.tabs, 0, 0)
+        self.grid.addWidget(self.parameterMenu, 0, 0)
         self.grid.addWidget(self.tabs, 0 , 1)
 
         self.grid.setColumnStretch(0, 1)
