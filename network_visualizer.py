@@ -58,8 +58,10 @@ class NetworkVisualizer(QtWidgets.QWidget):
         self.heatmap_edge_colormap = mpl.colormaps['gist_heat_r']
 
         self.vis_settings = gui_params
+        print(self.vis_settings)
 
         self.animation_backup = []
+        self.clip_space_backup = None
 
         self.selected_stim = None
 
@@ -123,10 +125,12 @@ class NetworkVisualizer(QtWidgets.QWidget):
             # self.figure.clf()
 
         vis_type = self.vis_settings["graph_style"][0]
-        if not create_animation:
-            self.vis_functions[vis_type](0, clip_space=self.clip_space_backup, figure=figure)
-        else:
-            return self.vis_functions[vis_type](n, create_animation=True, figure=figure)
+        
+        if self.clip_space_backup is not None:
+            if not create_animation:
+                self.vis_functions[vis_type](0, clip_space=self.clip_space_backup, figure=figure)
+            else:
+                return self.vis_functions[vis_type](n, create_animation=True, figure=figure)
 
         # for vis_type in self.vis_types.keys():
         #     if self.vis_types[vis_type] == self.vis_settings[""]:

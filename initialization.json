@@ -163,6 +163,13 @@
                 "gif",
                 "mp4"
             ]
+        },
+        {
+            "name": "Hide Stimuli Editor",
+            "variable_name": "is_editor_visible",
+            "description": "Toggles the visibility of the stimuli editor in the interface",
+            "value": false,
+            "type": "bool"
         }
     ],
     "rdt_volume_types": [

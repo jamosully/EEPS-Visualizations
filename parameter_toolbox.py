@@ -43,6 +43,7 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.affinitySettingsTab = QGroupBox()
 
         self.network_vis = None
+        self.vis_display = None
 
         self.load_json()
         self.createModelSettingsTab()
@@ -255,13 +256,13 @@ class ParameterToolbox(QtWidgets.QWidget):
             print(self.json_params)
             json.dump(self.json_params, init_params, indent=4)
 
-
     def adjust_params(self, key, value):
 
         """
         Assigning variable in the dictionary that is used
         by the createSystem function in main.py
         """
+        print("clicked")
         
         if key in self.model_agent_params:
             self.model_agent_params[key] = [value]
@@ -285,23 +286,33 @@ class ParameterToolbox(QtWidgets.QWidget):
         Changes the settings of Affinity
         """
 
+        print("clicked")
+
         self.gui_params[key] = [value]
         for i in range(len(self.json_params['affinity_parameters'])):
             if self.json_params['affinity_parameters'][i]['variable_name'] == key:
                 self.json_params['affinity_parameters'][i]['value'] = value
         
+        if key == "is_editor_visible" and self.vis_display is not None:
+            self.vis_display.hideEditor(value)
+        
         if self.network_vis is not None:
             for setting in self.network_vis.vis_settings.keys():
                 if setting == key:
-                    self.network_vis.vis_settings[key] = value
+                    self.network_vis.vis_settings[key] = [value]
 
-            self.network_vis.visualize_network(self.network_vis.clip_space_backup)
+            self.network_vis.visualize_network(0, clip_space=self.network_vis.clip_space_backup)
 
     def add_network_visualizer(self, network_vis):
 
         self.network_vis = network_vis
         print("Network Visualizer Added!")
         self.network_vis.update_settings(self.gui_params)
+
+    def add_display(self, display):
+
+        self.vis_display  = display
+        print("Visualization Display Added!")
 
     def createParamWidget(self, key, value, type, options=[], for_gui=False):
 
@@ -310,13 +321,15 @@ class ParameterToolbox(QtWidgets.QWidget):
         create a widget for the table
         """
 
+        print(key + ": " + str(for_gui))
+
         match type:
             case 'int':
                 widget = ParamSpinBox(key)
                 widget.setMinimum(1)
                 widget.setMaximum(100000)
                 widget.setValue(value)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
+                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'unit_interval':
                 widget = ParamDoubleSpinBox(key)
@@ -325,19 +338,19 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setDecimals(3)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
+                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'float':
                 widget = ParamDoubleSpinBox(key)
                 widget.setMinimum(0.01)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect(lambda: self.adjust_params(key, widget.value()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.value()]))
+                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'bool':
                 widget = ParamCheckBox(key)
                 widget.setChecked(value)
-                widget.clicked.connect(lambda: self.adjust_params(key, widget.isChecked()) if not for_gui else lambda: self.adjust_affinity_params(key, [widget.isChecked()]))
+                widget.clicked.connect((lambda: self.adjust_params(key, widget.isChecked())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.isChecked()])))
                 return widget
             case 'env_id':
                 widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))
@@ -356,7 +369,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                     if value == option:
                         widget.setCurrentIndex(x)
                 # TODO: May need adjusting if model changes
-                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, widget.currentText()))
+                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, [widget.currentText()]))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):
@@ -453,6 +466,7 @@ class ParamCheckBox(QtWidgets.QCheckBox):
 
     def update_param_value(self, value):
 
+        print("testing...")
         self.setChecked(value)
     
 

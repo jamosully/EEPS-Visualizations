@@ -50,6 +50,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.tabs = QTabWidget()
         self.networkTab = NetworkVisualizer(self.main, self, simulator, gui_params)
         parameter_toolbox.add_network_visualizer(self.networkTab)
+        parameter_toolbox.add_display(self)
 
         self.visualizers.append(self.networkTab)
         self.rdtTab = RDTVisualizer(self, simulator, env_params, rdt_volume_types, rdt_density_types)
@@ -75,7 +76,7 @@ class VisualizationDisplay(QtWidgets.QWidget):
             self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
         self.tabs.addTab(self.resultsTab, "Results")
 
-        self.stimEditor.hide()
+        #self.stimEditor.hide()
         
         if self.networkTab.vis_settings["create_animation"][0] != "Don't Save":
             self.networkTab.generate_animation("test",
@@ -110,6 +111,13 @@ class VisualizationDisplay(QtWidgets.QWidget):
     def updateEditor(self):
      
         self.stimEditor.updateEditor()
+
+    def hideEditor(self, value):
+
+        if value[0] == True:
+            self.stimEditor.hide()
+        elif value[0] == False:
+            self.stimEditor.show()
 
     def update_clip_space(self):
 
