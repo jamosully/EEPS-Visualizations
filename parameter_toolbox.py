@@ -91,6 +91,9 @@ class ParameterToolbox(QtWidgets.QWidget):
         self.envToolbox = ParamTable(self, self.json_env_params)
         self.agentToolbox = ParamTable(self, self.json_agent_params)
 
+        self.change_agent_env_type("_agent_parameters", self.json_agent_params[0]["value"])
+        self.change_agent_env_type("_environment_parameters", self.json_env_params[4]["value"])
+
         self.createFilenameEntry()
 
         box_layout.addWidget(self.fileTable)
@@ -231,7 +234,30 @@ class ParameterToolbox(QtWidgets.QWidget):
                 if self.agentToolbox.table.cellWidget(j, 1).param_name == param_name:
                     self.agentToolbox.table.cellWidget(j, 1).update_param_value(value[0]) 
     
-    
+    def change_agent_env_type(self, param_suffix, param_type):
+
+        """
+        Updates the table to include the rest of the parameters for an agent/environment.
+        Also updates the parameters/agent file that will be passed to the model.
+        """
+
+
+        type_name = param_type + param_suffix
+        additional_params = self.json_params[type_name]
+
+        if param_suffix == "_agent_parameters":
+            self.json_agent_params = self.json_params["agent_parameters"] + additional_params
+            self.json_agent_params[0]["value"] = param_type
+            self.json_params['agent_parameters'][0]['value'] = param_type
+            self.model_agent_params = self.create_param_dict(self.json_agent_params)
+            self.agentToolbox.updateTable(self.json_agent_params)
+        else:
+            self.json_env_params = self.json_params["environment_parameters"] + additional_params
+            self.json_env_params[4]["value"] = param_type
+            self.json_params["environment_parameters"][4]["value"] = param_type
+            self.model_env_params = self.create_param_dict(self.json_env_params)
+            self.envToolbox.updateTable(self.json_env_params)
+
     def reset_filename(self):
 
         self.main.filename = None
@@ -262,18 +288,19 @@ class ParameterToolbox(QtWidgets.QWidget):
         Assigning variable in the dictionary that is used
         by the createSystem function in main.py
         """
-        print("clicked")
         
         if key in self.model_agent_params:
             self.model_agent_params[key] = [value]
             for i in range(len(self.json_params['agent_parameters'])):
                 if self.json_params['agent_parameters'][i]['variable_name'] == key:
                     self.json_params['agent_parameters'][i]['value'] = value
+                    
         elif key in self.model_env_params:
             self.model_env_params[key] = [value]
             for i in range(len(self.json_params['environment_parameters'])):
                 if self.json_params['environment_parameters'][i]['variable_name'] == key:
                     self.json_params['environment_parameters'][i]['value'] = value
+
         elif key in self.gui_params:
             self.gui_params[key] = [value]
             for i in range(len(self.json_params['affinity_parameters'])):
@@ -321,8 +348,6 @@ class ParameterToolbox(QtWidgets.QWidget):
         create a widget for the table
         """
 
-        print(key + ": " + str(for_gui))
-
         match type:
             case 'int':
                 widget = ParamSpinBox(key)
@@ -362,14 +387,17 @@ class ParameterToolbox(QtWidgets.QWidget):
                                   "Create experiment")
                 widget.currentIndexChanged.connect(lambda: self.adjust_params(key, int(widget.currentText())))
                 return widget
-            case 'drop_down':
+            case 'drop_down' | 'agent_drop_down' | "environment_drop_down":
                 widget = ParamComboBox(key, options)
                 for x, option in enumerate(options):
                     widget.insertItem(x, option)
                     if value == option:
                         widget.setCurrentIndex(x)
                 # TODO: May need adjusting if model changes
-                widget.currentIndexChanged.connect(lambda: self.adjust_affinity_params(key, [widget.currentText()]))
+                if type == "drop_down":
+                    widget.currentIndexChanged.connect((lambda: self.adjust_params(key, widget.currentText())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.currentText()])))
+                elif type == "agent_drop_down":
+                    widget.currentIndexChanged.connect((lambda: self.change_agent_env_type(("_" + type.replace("_drop_down", "_parameters")), widget.currentText())))
                 return widget
 
 class ParamTable(QtWidgets.QWidget):
@@ -415,6 +443,27 @@ class ParamTable(QtWidgets.QWidget):
         widget = self.table.cellWidget(row, 0)
         if self.descriptionField.toPlainText != widget.desc:
             self.descriptionField.setPlainText(widget.desc)
+
+    def updateTable(self, params, affinity_settings=False):
+
+        """
+        Deletes additional table cells if settings in the model change
+        """
+
+        self.table.setRowCount(0)
+        self.table.setRowCount(len(params))
+        for i in range(len(params)):
+            param_label = ParamLabel(params[i]['description'])
+            param_label.setIndent(5)
+            param_label.setText(params[i]['name'] + "  ")
+            print(params[i])
+            self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['variable_name'], 
+                                                                          params[i]['value'], 
+                                                                          params[i]['type'], 
+                                                                          params[i]["options"] if "options" in params[i] else None,
+                                                                          affinity_settings))
+            self.table.setCellWidget(i, 0, param_label)
+
 
 class ParamLabel(QtWidgets.QLabel):
 

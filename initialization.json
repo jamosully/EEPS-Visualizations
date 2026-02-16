@@ -29,6 +29,19 @@
             "type": "int"
         },
         {
+            "name": "Environment Type",
+            "variable_name": "enviornment_type",
+            "description": "Determines which environment is utilised: \n - EEPS Environment: Traditional Stimulus Equivalence MTS trials \n - RFT Environment: ADD WHEN READY",
+            "value": "EEPS",
+            "type": "environment_drop_down",
+            "options": [
+                "EEPS",
+                "RFT"
+            ]
+        }
+    ],
+    "EEPS_environment_parameters": [
+        {
             "name": "Size of Action Set",
             "variable_name": "size_action_set",
             "description": "PLACEHOLDER",
@@ -43,7 +56,23 @@
             "type": "bool"
         }
     ],
+    "RFT_environment_parameters": [],
     "agent_parameters": [
+        {
+            "name": "Agent Type",
+            "variable_name": "agent_type",
+            "description": "Controls the type of agent being utilised in the simulation",
+            "value": "EEPS",
+            "type": "agent_drop_down",
+            "options": [
+                "EEPS",
+                "EPS",
+                "mePS",
+                "FEPS"
+            ]
+        }
+    ],
+    "EEPS_agent_parameters": [
         {
             "name": "Symmetric NE",
             "variable_name": "network_enhancement",
@@ -101,6 +130,17 @@
             "type": "bool"
         }
     ],
+    "mePS_agent_parameters": [
+        {
+            "name": "N Bodies",
+            "variable_name": "n_body",
+            "description": "Controls how many percpet excitations are considered with each h-value",
+            "value": 2,
+            "type": "int"
+        }
+    ],
+    "FEPS_agent_parameters": [],
+    "EPS_agent_parameters": [],
     "affinity_parameters": [
         {
             "name": "Graph Style",

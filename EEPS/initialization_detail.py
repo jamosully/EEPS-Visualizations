@@ -484,6 +484,17 @@ def environment_details():
                          },
         "plot_blocks_ID": {'relation_type':['Baseline', 'Symmetry', 'Equivalence']},
         "mastery_training": 0.875
+        },
+        # Test for RFT
+        17: {
+               "num_classes": 2,
+               "training_order": {
+                  1:[('A1','B1',"SAME",10)],
+                  2:[('B2','A2',"SAME",10)],
+               },
+               "plot_blocks": {},
+               "plot_blocks_ID": {},
+               "mastery_training": 0.9
         }
         }
 
