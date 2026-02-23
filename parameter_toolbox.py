@@ -354,7 +354,9 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setMinimum(1)
                 widget.setMaximum(100000)
                 widget.setValue(value)
-                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
+                widget.valueChanged.connect( \
+                    (lambda: self.adjust_params(key, widget.value())) if not for_gui else 
+                        (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'unit_interval':
                 widget = ParamDoubleSpinBox(key)
@@ -363,19 +365,25 @@ class ParameterToolbox(QtWidgets.QWidget):
                 widget.setDecimals(3)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
+                widget.valueChanged.connect( \
+                    (lambda: self.adjust_params(key, widget.value())) if not for_gui else 
+                        (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'float':
                 widget = ParamDoubleSpinBox(key)
                 widget.setMinimum(0.01)
                 widget.setValue(value)
                 widget.setStepType(QDoubleSpinBox.StepType.AdaptiveDecimalStepType)
-                widget.valueChanged.connect((lambda: self.adjust_params(key, widget.value())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.value()])))
+                widget.valueChanged.connect( \
+                    (lambda: self.adjust_params(key, widget.value())) if not for_gui else 
+                        (lambda: self.adjust_affinity_params(key, [widget.value()])))
                 return widget
             case 'bool':
                 widget = ParamCheckBox(key)
                 widget.setChecked(value)
-                widget.clicked.connect((lambda: self.adjust_params(key, widget.isChecked())) if not for_gui else (lambda: self.adjust_affinity_params(key, [widget.isChecked()])))
+                widget.clicked.connect( \
+                    (lambda: self.adjust_params(key, widget.isChecked())) if not for_gui else 
+                        (lambda: self.adjust_affinity_params(key, [widget.isChecked()])))
                 return widget
             case 'env_id':
                 widget = ParamComboBox(key, len(EEPS.initialization_detail.environment_details().items()))
@@ -456,7 +464,6 @@ class ParamTable(QtWidgets.QWidget):
             param_label = ParamLabel(params[i]['description'])
             param_label.setIndent(5)
             param_label.setText(params[i]['name'] + "  ")
-            print(params[i])
             self.table.setCellWidget(i, 1, self.toolbox.createParamWidget(params[i]['variable_name'], 
                                                                           params[i]['value'], 
                                                                           params[i]['type'], 

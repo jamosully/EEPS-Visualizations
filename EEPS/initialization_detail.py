@@ -492,8 +492,10 @@ def environment_details():
                   1:[('A1','B1',"SAME",10)],
                   2:[('B2','A2',"SAME",10)],
                },
-               "plot_blocks": {},
-               "plot_blocks_ID": {},
+               "plot_blocks": {"relation_type": {
+                   "Baseline": ["AB"]
+               }},
+               "plot_blocks_ID": {"relation_type": []},
                "mastery_training": 0.9
         }
         }

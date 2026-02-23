@@ -43,7 +43,8 @@ class VisualizationDisplay(QtWidgets.QWidget):
         self.edits_made = False
         self.step_changed = False
 
-        self.resultsTab = None
+        self.finalResultsTab = None
+        self.testing_phase_result_tabs = []
 
         self.threadpool = threadpool
 
@@ -71,10 +72,10 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
         self.simulator_thread.quit()
         if self.simulator.prev_file:
-            self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, self.simulator.file_name)
+            self.finalResultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, self.simulator.file_name)
         else:
-            self.resultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
-        self.tabs.addTab(self.resultsTab, "Results")
+            self.finalResultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume, self.rdtTab.rdt_density, None)
+        self.tabs.addTab(self.finalResultsTab, "Results")
 
         #self.stimEditor.hide()
         
@@ -87,10 +88,21 @@ class VisualizationDisplay(QtWidgets.QWidget):
 
     def delete_results(self):
 
-        if self.resultsTab is not None:
-            self.tabs.removeTab(self.resultsTab)
-            self.resultsTab.deleteLater()
-            self.resultsTab = None
+        if self.finalResultsTab is not None:
+            self.tabs.removeTab(self.finalResultsTab)
+            self.finalResultsTab.deleteLater()
+            self.finalResultsTab = None
+
+    def add_testing_phase_results(self, testing_phase_results):
+
+        """
+        Adds a new tab for presenting phase results
+        """
+
+        testPhaseResultsTab = ResultsDisplay(self.main, self.simulator, self.rdtTab.rdt_volume,
+                                             self.rdtTab.rdt_density, None, self.testing_phase_result_tabs)
+        self.testing_phase_result_tabs.append(testPhaseResultsTab)
+        self.tabs.addTab(testPhaseResultsTab, "Testing Phase " + str(len(self.testing_phase_result_tabs)) + " Results")
 
     def assignControlPanel(self, controlPanel):
 

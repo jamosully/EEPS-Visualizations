@@ -77,7 +77,12 @@ class Interaction(object):
             percept, action_set_t, new_trial = self.environment.next_trial()
 
             if self.environment.Training is not True:
-                break
+                if self.environment.testing_phase:
+                    self.environment.save_state()
+                    self.vis_display.add_testing_phase_results(self.obtain_testing_phase_results())
+                    continue
+                else:
+                    break
 
             self.agent.trial_preprocess(percept, action_set_t, new_trial)
             action = self.agent.action_selection(percept, action_set_t)
@@ -199,6 +204,56 @@ class Interaction(object):
                    avg_NE_itr, W_in, P, Tau]
 
         return results
+    
+    def obtain_test_phase_results(self):
+
+        """
+        Creates results for a specific test phase
+        """
+
+        avg_time_training = self.environment.num_iteration_training.copy()
+        avg_prob_training = self.environment.Block_results_training.copy()
+        prob_training_clip = self.agent.softmax_matrix()
+        W_in, P, Tau, prob_testing_clip = self.agent.Network_Enhancement()
+        prob_testing_clip_marginalized = self.agent.marginalized_probability(prob_testing_clip)
+        prob_testing_clip_category = self.agent.probability_categorization(prob_testing_clip_marginalized)
+        avg_NE_itr += self.agent.NE_itr
+
+        num_agents = self.environment_parameter['num_agents'][0]
+
+        for k, v in avg_time_training.items():
+            avg_time_training[k] = v/ num_agents
+
+        for k, v in avg_prob_training.items():
+            avg_prob_training[k] = v/ num_agents
+
+        prob_training_clip /= num_agents
+        prob_testing_clip  /= num_agents
+        prob_testing_clip_marginalized /= num_agents
+        prob_testing_clip_category /= num_agents
+        W_in /= num_agents
+        P /= num_agents
+        Tau /= num_agents
+
+        training_df = self.training_dataframe(self.environment.training_order,
+                                        avg_time_training, avg_prob_training)
+
+        avg_NE_itr /= num_agents
+
+        results = [training_df, prob_training_clip, prob_testing_clip,
+                   prob_testing_clip_marginalized, prob_testing_clip_category,
+                   avg_NE_itr, W_in, P, Tau]
+        
+        show, result = self.plot_data(results)
+        
+        Simulation_data = {}
+        Simulation_data['agent_parameter'] = self.agent_parameter
+        Simulation_data['environment_parameter'] = self.environment_parameter
+        Simulation_data['show'] = show
+        Simulation_data['result'] = result
+        
+        return Simulation_data
+        
 
     def training_dataframe(self, training_order, avg_time_training,
                                                            avg_prob_training): # Ok!
@@ -361,226 +416,6 @@ class Interaction(object):
                 result[k_] = result_
 
         return show, result
-    
-    # def plot_and_save_graph(self, n):
-
-    #     """Used for creating animation"""
-
-    #     self.figure.clf()
-    #     self.figure.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
-
-    #     clip_space = self.artists[n]
-    #     phase = self.current_phase[n]
-    #     print("Creating Frame " + str(n))
-
-    #     counter_condition_relations = [('A1','B2'),('A2','B3'),
-    #                                    ('A3','B4'),('A4','B1')]
-
-    #     if phase == "Phase 6":
-    #         counterconditioning = True
-    #     else:
-    #         counterconditioning = False 
-
-    #     subsets = dict()
-    #     community_dict = {}
-    #     color_map = {}
-    #     alt_color_map = []
-    #     for stimuli in clip_space:
-    #         community_dict[stimuli] = int(stimuli[1]) - 1
-    #         color_map[stimuli] = (list(mcolors.TABLEAU_COLORS.keys())[int(stimuli[1]) + 3])
-    #         subsets[stimuli] = stimuli[0]
-    #     subsets = {k: subsets[k] for k in list(sorted(subsets.keys()))}
-
-    #     community_dict = self.obtain_communities(clip_space)
-
-    #     for item in subsets.items():
-    #         alt_color_map.append(list(mcolors.TABLEAU_COLORS.keys())[int(item[0][1]) + 3])
-        
-    #     nx.set_node_attributes(clip_space, subsets, name="layers")
-
-    #     weight_labels = nx.get_edge_attributes(clip_space, 'weight')
-
-    #     weights = np.array([weight for weight in weight_labels.values()])
-    #     normalized_weights = {key: ((weight_labels[key] - np.min(weights)) / (np.max(weights) - np.min(weights))) for key in weight_labels.keys()}
-        
-    #     ordered_clip_space = nx.DiGraph()
-    #     ordered_clip_space.to_directed()
-    #     ordered_clip_space.add_nodes_from(sorted(clip_space.nodes(data=True)))
-    #     ordered_clip_space.add_weighted_edges_from(clip_space.edges(data=True))
-
-    #     pos = self.community_layout(clip_space, community_dict)
-
-    #     edges = []
-
-    #     nodes = nx.draw_networkx_nodes(clip_space, pos, node_size=500, node_color=alt_color_map)
-    #     labels = nx.draw_networkx_labels(clip_space, pos, font_color='white')
-
-    #     self.edge_artist = []
-    #     weight_counter = 0
-    #     for key, weight in normalized_weights.items():
-    #         if counterconditioning and key in counter_condition_relations:
-    #                 edges.append(nx.draw_networkx_edges(clip_space,
-    #                                     pos,
-    #                                     connectionstyle='arc3,rad=0.1',
-    #                                     edgelist=[key],
-    #                                     arrows=True,
-    #                                     edge_color="tab:red",
-    #                                     width= 2 + (weight * 6),
-    #                                     alpha=max(0.33, weight))) #+ (weights[weight_counter] / 8),
-    #                                     #alpha=weight)
-    #         else:
-    #             edges.append(nx.draw_networkx_edges(clip_space,
-    #                                     pos,
-    #                                     connectionstyle='arc3,rad=0.1',
-    #                                     edgelist=[key],
-    #                                     arrows=True,
-    #                                     #edge_color=edge_color_map(weight),
-    #                                     width= 2 + (weight * 6),
-    #                                     alpha=max(0.1, weight))) #+ (weights[weight_counter] / 8),
-    #                                     #alpha=weight)
-    #         weight_counter += 1
-
-    #     self.ax.set_xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-    #     self.ax.set_ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
-    #     self.ax.set_aspect("equal")
-
-    #     self.figure.text(0.1,
-    #                      0.1,
-    #                      phase,
-    #                      fontsize=12)
-
-    #     # self.ax.annotate("Test", xy=(1, 0), xycoords='axes fraction', fontsize=16,
-    #     #         horizontalalignment='right', verticalalignment='bottom')
-
-    #     # plt.xlim(self.x_min - self.pad_x, self.x_max + self.pad_x)
-    #     # plt.ylim(self.y_min - self.pad_y, self.y_max + self.pad_y)
-
-    #     #self.main_display.setFixedSize(self.main_display.grid.sizeHint())
-    #     #print(self.ax.containers)
-    #     return nodes, edges, labels
-    
-    # def obtain_communities(self, clip_space: nx.DiGraph):
-
-    #     """
-    #     Uses greedy modularity function
-    #     """
-
-    #     undirected_clip_space = clip_space.to_undirected()
-
-    #     for stimuli in clip_space:
-    #         for linked_stim in nx.neighbors(clip_space, stimuli):
-    #             if stimuli in nx.neighbors(clip_space, linked_stim):
-    #                 undirected_clip_space.edges[stimuli, linked_stim]["weight"] = (
-    #                     clip_space.edges[stimuli, linked_stim]['weight'] + clip_space.edges[linked_stim, stimuli]['weight']
-    #                 )
-
-    #     undirected_communities = nx.community.greedy_modularity_communities(
-    #         undirected_clip_space, "weight", 1, 1, self.environment.num_classes
-    #     )
-
-    #     # undirected_communities = nx.community.asyn_lpa_communities(
-    #     #     undirected_clip_space, "weight", 1
-    #     # )
-
-    #     #print(undirected_communities)
-
-    #     community_dict = {}
-    #     for i, community in enumerate(undirected_communities):
-    #         for stimuli in list(community):
-    #             community_dict[stimuli] = i
-
-    #     return community_dict
-            
-
-    # def community_layout(self, g, partition):
-    #     """
-    #     Compute the layout for a modular graph.
-
-
-    #     Arguments:
-    #     ----------
-    #     g -- networkx.Graph or networkx.DiGraph instance
-    #         graph to plot
-
-    #     partition -- dict mapping int node -> int community
-    #         graph partitions
-
-
-    #     Returns:
-    #     --------
-    #     pos -- dict mapping int node -> (float x, float y)
-    #         node positions
-
-    #     """
-
-    #     pos_communities = self._position_communities(g, partition, scale=3.)
-
-    #     pos_nodes = self._position_nodes(g, partition, scale=1.)
-
-    #     # combine positions
-    #     pos = dict()
-    #     for node in g.nodes():
-    #         pos[node] = pos_communities[node] + pos_nodes[node]
-
-    #     return pos
-
-    # def _position_communities(self, g, partition, **kwargs):
-
-    #     # create a weighted graph, in which each node corresponds to a community,
-    #     # and each edge weight to the number of edges between communities
-    #     between_community_edges = self._find_between_community_edges(g, partition)
-
-    #     communities = set(partition.values())
-    #     hypergraph = nx.DiGraph()
-    #     hypergraph.add_nodes_from(communities)
-    #     for (ci, cj), edges in between_community_edges.items():
-    #         hypergraph.add_edge(ci, cj, weight=len(edges))
-
-    #     # find layout for communities
-    #     pos_communities = nx.spring_layout(hypergraph, **kwargs, center=[0,0], seed=1)
-
-    #     # set node positions to position of community
-    #     pos = dict()
-    #     for node, community in partition.items():
-    #         pos[node] = pos_communities[community]
-
-    #     return pos
-
-    # def _find_between_community_edges(self, g, partition):
-
-    #     edges = dict()
-
-    #     for (ni, nj) in g.edges():
-    #         ci = partition[ni]
-    #         cj = partition[nj]
-
-    #         if ci != cj:
-    #             try:
-    #                 edges[(ci, cj)] += [(ni, nj)]
-    #             except KeyError:
-    #                 edges[(ci, cj)] = [(ni, nj)]
-
-    #     return edges
-
-    # def _position_nodes(self, g, partition, **kwargs):
-    #     """
-    #     Positions nodes within communities.
-    #     """
-
-    #     communities = dict()
-    #     for node, community in partition.items():
-    #         try:
-    #             communities[community] += [node]
-    #         except KeyError:
-    #             communities[community] = [node]
-
-    #     pos = dict()
-    #     for ci, nodes in communities.items():
-    #         subgraph = g.subgraph(nodes)
-    #         pos_subgraph = nx.spring_layout(subgraph, **kwargs, seed=1)
-    #         pos.update(pos_subgraph)
-
-    #     return pos
 
 #    def save_latex(self, results):
 #

@@ -30,7 +30,7 @@ class ResultsDisplay(QtWidgets.QWidget):
     Tab for displaying results at the end of an experiment
     """
 
-    def __init__(self, main, simulator, rdt_volume, rdt_density,  filename):
+    def __init__(self, main, simulator, rdt_volume, rdt_density, filename, test_phase_results=None):
 
         QtWidgets.QWidget.__init__(self)
         self.simulator = simulator
@@ -163,26 +163,33 @@ class ResultsDisplay(QtWidgets.QWidget):
             self.canvas.draw()
         
 
-    def displayResults(self, rdt_volume, rdt_density, filename=None):
+    def displayResults(self, rdt_volume, rdt_density, filename=None, test_phase_results=None):
 
-        if filename is None:
-            self.filename = self.simulator.file_name
-            add_rdt_data = True
+        if test_phase_results is None:
+            if filename is None:
+                self.filename = self.simulator.file_name
+                add_rdt_data = True
+            else:
+                self.filename = filename
+                add_rdt_data = False
+
+            print(add_rdt_data)
+
+            self.obtain_and_organise_data(rdt_volume, rdt_density, add_rdt_data)
+
+            self.switchFigure(self.figure_id)
         else:
-            self.filename = filename
-            add_rdt_data = False
 
-        print(add_rdt_data)
+            self.obtain_and_organise_data(rdt_volume, rdt_density, True, test_phase_results)
 
-        self.obtain_and_organise_data(rdt_volume, rdt_density, add_rdt_data)
+    def obtain_and_organise_data(self, rdt_volume, rdt_density, add_rdt_data, test_phase_results=None):
 
-        self.switchFigure(self.figure_id)
-
-    def obtain_and_organise_data(self, rdt_volume, rdt_density, add_rdt_data):
-
-        resultFile = open(self.filename, 'rb')
-        self.data = pickle.load(resultFile)
-        resultFile.close()
+        if test_phase_results is None:
+            resultFile = open(self.filename, 'rb')
+            self.data = pickle.load(resultFile)
+            resultFile.close()
+        else:
+            self.data = test_phase_results
 
         self.results = []
         self.transition_trials = []
