@@ -1,0 +1,53 @@
+{
+  "1": {
+    "num_classes": 2,
+    "training_order": {
+      "train_1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "contextual_cue": "SAME",
+          "n_repeat": 10
+        },
+        {
+          "sample": "A1",
+          "comparison": "B2",
+          "contextual_cue": "OPPOSITE",
+          "n_repeat": 10
+        },
+        {
+          "sample": "Y1",
+          "comparison": "X1",
+          "contextual_cue": "SAME",
+          "n_repeat": 10
+        },
+        {
+          "sample": "Y1",
+          "comparison": "X2",
+          "contextual_cue": "OPPOSITE",
+          "n_repeat": 10
+        }
+      ],
+      "testing_phase": "TRUE",
+      "train_2": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "contextual_cue": "SAME",
+          "n_repeat": 10
+        },
+        {
+          "sample": "A1",
+          "comparison": "C2",
+          "contextual_cue": "OPPOSITE",
+          "n_repeat": 10
+        }
+      ]
+    },
+    "relation_types": {
+      "baseline": ["A1B1", "A1B2", "Y1X1", "Y1X2"],
+      "mutual_entailment": ["B2A1", "B1A2"],
+      "reflexivity": ["A1A1"]
+    }
+  }
+}

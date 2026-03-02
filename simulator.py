@@ -9,6 +9,12 @@ import EEPS.environment as env
 import EEPS.agent as agn
 import EEPS.interaction as intrc
 
+# RFT Modules
+import RFT.rft_environment as rft_env
+
+# Agent Modules
+import Agents.mePS_agent as mePS_agent
+
 import pickle
 
 """

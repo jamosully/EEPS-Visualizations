@@ -279,7 +279,6 @@ class ParameterToolbox(QtWidgets.QWidget):
 
         print("Parameters exported")
         with open("initialization.json", "w", encoding="utf8") as init_params:
-            print(self.json_params)
             json.dump(self.json_params, init_params, indent=4)
 
     def adjust_params(self, key, value):
