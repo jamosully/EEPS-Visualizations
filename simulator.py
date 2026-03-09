@@ -4,13 +4,12 @@ from PySide6.QtCore import Slot, Signal
 
 # EEPS Modules
 import EEPS.initialization as initialization
-import EEPS.initialization_detail as initialization_detail
-import EEPS.environment as env
+import EEPS.environment as eeps_env
 import EEPS.agent as agn
 import EEPS.interaction as intrc
 
 # RFT Modules
-import RFT.rft_environment as rft_env
+import RFT.rft_environment as env
 
 # Agent Modules
 import Agents.mePS_agent as mePS_agent
@@ -60,7 +59,7 @@ class Simulator(QtCore.QObject):
             return
 
         self.agent = agn.Agent(self.agent_parameter)
-        self.environment = env.Environment(self.environment_parameter)
+        self.environment = env.Environment("1", self.environment_parameter)
 
         self.step = step
 

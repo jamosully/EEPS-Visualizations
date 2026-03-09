@@ -122,6 +122,8 @@ To achieve the aims of this project, several changes were made to the original E
 
 #### Visualisation Support
 
+Additional code is added to the interaction script to
+
 #### Network Enhancement During Training
 
 ## Future Work

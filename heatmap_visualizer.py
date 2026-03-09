@@ -87,6 +87,7 @@ class HeatmapVisualizer(QtWidgets.QWidget):
 
         scaler = preprocessing.MinMaxScaler()
         heat_df = nx.to_pandas_adjacency(clip_space)
+        print(heat_df)
         norm_heat_df = pd.DataFrame(scaler.fit_transform(heat_df), index=heat_df.index, columns=heat_df.columns)
         norm_heat_df = norm_heat_df.reindex(sorted(norm_heat_df.columns), axis=1).sort_index()
 

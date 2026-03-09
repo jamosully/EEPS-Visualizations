@@ -298,6 +298,7 @@ class Agent(object):
         Also return a table with the same index but marginalized probabilities.
         """
 
+        print(prob_matrix)
         feature_list = self.category_list(prob_matrix)
         category_matrix = pd.DataFrame(0, index = feature_list, columns = feature_list)
 
@@ -306,6 +307,8 @@ class Agent(object):
                 pr_sum_correct = 0
                 pr_sum_wrong = 0
                 for row in prob_matrix.index:
+                    print(row)
+                    print(row[0])
                     if row[0] == ctg1[0]:
                         pr_row_correct = [prob_matrix.at[row, col] for col in
                                           prob_matrix.columns if

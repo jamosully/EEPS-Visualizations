@@ -11,7 +11,7 @@
             "name": "Environment ID",
             "variable_name": "environment_ID",
             "description": "PLACEHOLDER",
-            "value": 17,
+            "value": 16,
             "type": "env_id"
         },
         {
@@ -146,7 +146,9 @@
             "name": "Graph Style",
             "variable_name": "graph_style",
             "description": "Controls the appearance of the graph visualisation display. \n The options are: \n 1. Mutlipartite: based on Mofrad et al.'s (2020) design, arranges stimuli in columns of classes and rows of forms. \n 2. Community: displays",
-            "value": "Community",
+            "value": [
+                "Multipartite"
+            ],
             "type": "drop_down",
             "options": [
                 "Multipartite",

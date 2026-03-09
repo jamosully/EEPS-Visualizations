@@ -124,7 +124,9 @@ class NetworkVisualizer(QtWidgets.QWidget):
             figure = self.figure
             # self.figure.clf()
 
-        vis_type = self.vis_settings["graph_style"][0]
+        print(self.vis_settings["graph_style"])
+        vis_type = self.vis_settings["graph_style"][0][0]
+        print(vis_type)
         
         if self.clip_space_backup is not None:
             if not create_animation:

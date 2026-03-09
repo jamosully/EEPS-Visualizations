@@ -1,0 +1,2251 @@
+{
+  "1": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 30
+        }
+      ],
+      "2": [
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 30
+        }
+      ],
+      "3": [
+        {
+          "sample": "D",
+          "comparison": "C",
+          "repeat_num": 30
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Direct": ["AB", "BC", "DC"],
+        "Derived": ["BA", "CB", "CD", "AC", "CA", "BD", "DB", "AD", "DA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Direct", "Derived"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "10": {
+    "num_classes": 5,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 50
+        }
+      ],
+      "2": [
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 50
+        }
+      ],
+      "3": [
+        {
+          "sample": "D",
+          "comparison": "C",
+          "repeat_num": 50
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Direct": ["AB", "BC", "DC"],
+        "Derived": ["BA", "CB", "CD", "AC", "CA", "BD", "DB", "AD", "DA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Direct", "Derived"]
+    },
+    "mastery_training": 0.95,
+    "description": ""
+  },
+  "2": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 10
+        }
+      ],
+      "2": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "3": [
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "4": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "5": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 10
+        }
+      ],
+      "6": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "7": [
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "8": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "9": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 5
+        }
+      ],
+      "10": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D2",
+          "comparison": "C2",
+          "repeat_num": 10
+        }
+      ],
+      "11": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "12": [
+        {
+          "sample": "D2",
+          "comparison": "C2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "13": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D2",
+          "comparison": "C2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "14": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "D2",
+          "comparison": "C2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 5
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "AC", "DC"],
+        "Symmetry": ["BA", "CA", "CD"],
+        "Equivalence": ["BC", "CB", "BD", "DB", "AD", "DA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "3": {
+    "num_classes": 2,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        }
+      ],
+      "2": [
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 10
+        }
+      ],
+      "3": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 5
+        }
+      ],
+      "4": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        }
+      ],
+      "5": [
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 10
+        }
+      ],
+      "6": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 5
+        }
+      ],
+      "7": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 2
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 2
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 2
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 2
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "AC"],
+        "Symmetry": ["BA", "CA"],
+        "Equivalence": ["BC", "CB"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "4": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 48
+        }
+      ],
+      "2": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 24
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 24
+        }
+      ],
+      "3": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 12
+        },
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 24
+        }
+      ],
+      "4": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 9
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 9
+        },
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 9
+        },
+        {
+          "sample": "D",
+          "comparison": "E",
+          "repeat_num": 24
+        }
+      ],
+      "5": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D",
+          "comparison": "E",
+          "repeat_num": 6
+        },
+        {
+          "sample": "E",
+          "comparison": "F",
+          "repeat_num": 24
+        }
+      ],
+      "6": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "D",
+          "comparison": "E",
+          "repeat_num": 6
+        },
+        {
+          "sample": "E",
+          "comparison": "F",
+          "repeat_num": 9
+        },
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "7": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "D",
+          "comparison": "E",
+          "repeat_num": 3
+        },
+        {
+          "sample": "E",
+          "comparison": "F",
+          "repeat_num": 3
+        },
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 3
+        }
+      ]
+    },
+    "plot_blocks": {
+      "nodal_distance": {
+        "Bsl": ["AB", "BC", "CD", "DE", "EF", "FG"],
+        "Sym": ["BA", "CB", "DC", "ED", "FE", "GF"],
+        "1-Tr": ["AC", "BD", "CE", "DF", "EG"],
+        "2-Tr": ["AD", "BE", "CF", "DG"],
+        "3-Tr": ["AE", "BF", "CG"],
+        "4-Tr": ["AF", "BG"],
+        "5-Tr": ["AG"],
+        "1-Eq": ["CA", "DB", "EC", "FD", "GE"],
+        "2-Eq": ["DA", "EB", "FC", "GD"],
+        "3-Eq": ["EA", "FB", "GC"],
+        "4-Eq": ["FA", "GB"],
+        "5-Eq": ["GA"]
+      },
+      "relation_type": {
+        "Baseline": ["AB", "BC", "CD", "DE", "EF", "FG"],
+        "Symmetry": ["BA", "CB", "DC", "ED", "FE", "GF"],
+        "Transivity": [
+          "AC",
+          "BD",
+          "CE",
+          "DF",
+          "EG",
+          "AD",
+          "BE",
+          "CF",
+          "DG",
+          "AE",
+          "BF",
+          "CG",
+          "AF",
+          "BG",
+          "AG"
+        ],
+        "Equivalence": [
+          "CA",
+          "DB",
+          "EC",
+          "FD",
+          "GE",
+          "DA",
+          "EB",
+          "FC",
+          "GD",
+          "EA",
+          "FB",
+          "GC",
+          "FA",
+          "GB",
+          "GA"
+        ]
+      }
+    },
+    "plot_blocks_ID": {
+      "nodal_distance": [
+        "Bsl",
+        "Sym",
+        "1-Tr",
+        "2-Tr",
+        "3-Tr",
+        "4-Tr",
+        "5-Tr",
+        "1-Eq",
+        "2-Eq",
+        "3-Eq",
+        "4-Eq",
+        "5-Eq"
+      ],
+      "relation_type": ["Baseline", "Symmetry", "Transivity", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "5": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 10
+        }
+      ],
+      "2": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "3": [
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "4": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 10
+        }
+      ],
+      "5": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 10
+        }
+      ],
+      "6": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "7": [
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "8": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "9": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 5
+        }
+      ],
+      "10": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 10
+        }
+      ],
+      "11": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "12": [
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "13": [
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 10
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 10
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 10
+        }
+      ],
+      "14": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "A3",
+          "comparison": "C3",
+          "repeat_num": 5
+        },
+        {
+          "sample": "D1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 5
+        },
+        {
+          "sample": "D3",
+          "comparison": "C3",
+          "repeat_num": 5
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "AC", "DC"],
+        "Symmetry": ["BA", "CA", "CD"],
+        "Equivalence": ["BC", "CB", "BD", "DB", "AD", "DA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "6": {
+    "num_classes": 2,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 10
+        }
+      ],
+      "2": [
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 10
+        }
+      ],
+      "3": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 5
+        }
+      ],
+      "4": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 10
+        }
+      ],
+      "5": [
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 10
+        }
+      ],
+      "6": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 5
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 5
+        }
+      ],
+      "7": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 2
+        },
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": 2
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 2
+        },
+        {
+          "sample": "C2",
+          "comparison": "A2",
+          "repeat_num": 2
+        }
+      ]
+    },
+    "plot_blocks": {},
+    "plot_blocks_ID": {},
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "7": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 48
+        }
+      ],
+      "2": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 24
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 24
+        }
+      ],
+      "3": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 24
+        }
+      ],
+      "4": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 9
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 9
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 9
+        },
+        {
+          "sample": "A",
+          "comparison": "E",
+          "repeat_num": 24
+        }
+      ],
+      "5": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "E",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 24
+        }
+      ],
+      "6": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "E",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 9
+        },
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "7": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "E",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 3
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "AC", "AD", "AE", "AF", "AG"],
+        "Symmetry": ["BA", "CA", "DA", "EA", "FA", "GA"],
+        "Equivalence": [
+          "BC",
+          "BD",
+          "BE",
+          "BF",
+          "BG",
+          "CB",
+          "CD",
+          "CE",
+          "CF",
+          "CG",
+          "DB",
+          "DC",
+          "DE",
+          "DF",
+          "DG",
+          "EB",
+          "EC",
+          "ED",
+          "EF",
+          "EG",
+          "FB",
+          "FC",
+          "FD",
+          "FE",
+          "FG",
+          "GB",
+          "GC",
+          "GD",
+          "GE",
+          "GF"
+        ]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "8": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 48
+        }
+      ],
+      "2": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 24
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "3": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 12
+        },
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "4": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 9
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 9
+        },
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 9
+        },
+        {
+          "sample": "D",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "5": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D",
+          "comparison": "G",
+          "repeat_num": 6
+        },
+        {
+          "sample": "E",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "6": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "D",
+          "comparison": "G",
+          "repeat_num": 6
+        },
+        {
+          "sample": "E",
+          "comparison": "G",
+          "repeat_num": 9
+        },
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 24
+        }
+      ],
+      "7": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "D",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "E",
+          "comparison": "G",
+          "repeat_num": 3
+        },
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 3
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AG", "BG", "CG", "DG", "EG", "FG"],
+        "Symmetry": ["GA", "GB", "GC", "GD", "GE", "GF"],
+        "Equivalence": [
+          "AB",
+          "AC",
+          "AD",
+          "AE",
+          "AF",
+          "BA",
+          "BC",
+          "BD",
+          "BE",
+          "BF",
+          "CA",
+          "CB",
+          "CD",
+          "CE",
+          "CF",
+          "DA",
+          "DB",
+          "DC",
+          "DE",
+          "DF",
+          "EA",
+          "EB",
+          "EC",
+          "ED",
+          "EF",
+          "FA",
+          "FB",
+          "FC",
+          "FD",
+          "FE"
+        ]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "9": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 48
+        }
+      ],
+      "2": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 24
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 24
+        }
+      ],
+      "3": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 12
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 24
+        }
+      ],
+      "4": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 9
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 9
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 9
+        },
+        {
+          "sample": "E",
+          "comparison": "A",
+          "repeat_num": 24
+        }
+      ],
+      "5": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 6
+        },
+        {
+          "sample": "E",
+          "comparison": "A",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 24
+        }
+      ],
+      "6": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "E",
+          "comparison": "A",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 9
+        },
+        {
+          "sample": "G",
+          "comparison": "A",
+          "repeat_num": 24
+        }
+      ],
+      "7": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 3
+        },
+        {
+          "sample": "C",
+          "comparison": "A",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 3
+        },
+        {
+          "sample": "E",
+          "comparison": "A",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 3
+        },
+        {
+          "sample": "G",
+          "comparison": "A",
+          "repeat_num": 3
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "CA", "AD", "EA", "AF", "GA"],
+        "Symmetry": ["BA", "AC", "DA", "AE", "FA", "AG"],
+        "Equivalence": [
+          "BC",
+          "BD",
+          "BE",
+          "BF",
+          "BG",
+          "CB",
+          "CD",
+          "CE",
+          "CF",
+          "CG",
+          "DB",
+          "DC",
+          "DE",
+          "DF",
+          "DG",
+          "EB",
+          "EC",
+          "ED",
+          "EF",
+          "EG",
+          "FB",
+          "FC",
+          "FD",
+          "FE",
+          "FG",
+          "GB",
+          "GC",
+          "GD",
+          "GE",
+          "GF"
+        ]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "11": {
+    "num_classes": 3,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 30
+        }
+      ],
+      "2": [
+        {
+          "sample": "B",
+          "comparison": "C",
+          "repeat_num": 30
+        }
+      ],
+      "3": [
+        {
+          "sample": "C",
+          "comparison": "D",
+          "repeat_num": 30
+        }
+      ],
+      "4": [
+        {
+          "sample": "D",
+          "comparison": "E",
+          "repeat_num": 30
+        }
+      ],
+      "5": [
+        {
+          "sample": "E",
+          "comparison": "F",
+          "repeat_num": 30
+        }
+      ],
+      "6": [
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 30
+        }
+      ]
+    },
+    "plot_blocks": {},
+    "plot_blocks_ID": {},
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "12": {
+    "num_classes": 6,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "B",
+          "repeat_num": 60
+        }
+      ],
+      "2": [
+        {
+          "sample": "A",
+          "comparison": "C",
+          "repeat_num": 60
+        }
+      ],
+      "3": [
+        {
+          "sample": "A",
+          "comparison": "D",
+          "repeat_num": 60
+        }
+      ],
+      "4": [
+        {
+          "sample": "A",
+          "comparison": "E",
+          "repeat_num": 60
+        }
+      ],
+      "5": [
+        {
+          "sample": "A",
+          "comparison": "F",
+          "repeat_num": 60
+        }
+      ],
+      "6": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ]
+    },
+    "plot_blocks": {},
+    "plot_blocks_ID": {},
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "13": {
+    "num_classes": 6,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ],
+      "2": [
+        {
+          "sample": "B",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ],
+      "3": [
+        {
+          "sample": "C",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ],
+      "4": [
+        {
+          "sample": "D",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ],
+      "5": [
+        {
+          "sample": "E",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ],
+      "6": [
+        {
+          "sample": "F",
+          "comparison": "G",
+          "repeat_num": 60
+        }
+      ]
+    },
+    "plot_blocks": {},
+    "plot_blocks_ID": {},
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "14": {
+    "num_classes": 4,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A4",
+          "comparison": "B4",
+          "repeat_num": 12
+        }
+      ],
+      "2": [
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B3",
+          "comparison": "C3",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B4",
+          "comparison": "C4",
+          "repeat_num": 12
+        }
+      ],
+      "3": [
+        {
+          "sample": "C1",
+          "comparison": "D1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 12
+        }
+      ],
+      "4": [
+        {
+          "sample": "D1",
+          "comparison": "E1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "D2",
+          "comparison": "E2",
+          "repeat_num": 12
+        }
+      ],
+      "5": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A4",
+          "comparison": "B4",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B3",
+          "comparison": "C3",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B4",
+          "comparison": "C4",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C1",
+          "comparison": "D1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D1",
+          "comparison": "E1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D2",
+          "comparison": "E2",
+          "repeat_num": 6
+        }
+      ],
+      "6": [
+        {
+          "sample": "A1",
+          "comparison": "B2",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A2",
+          "comparison": "B3",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A3",
+          "comparison": "B4",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A4",
+          "comparison": "B1",
+          "repeat_num": 12
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "BC", "CD", "DE"],
+        "Equivalence": ["AC", "CA", "CB", "BA", "DC", "ED", "AE", "EA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "15": {
+    "num_classes": 4,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 12
+        },
+        {
+          "sample": "A4",
+          "comparison": "B4",
+          "repeat_num": 12
+        }
+      ],
+      "2": [
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B3",
+          "comparison": "C3",
+          "repeat_num": 12
+        },
+        {
+          "sample": "B4",
+          "comparison": "C4",
+          "repeat_num": 12
+        }
+      ],
+      "3": [
+        {
+          "sample": "C1",
+          "comparison": "D1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 12
+        }
+      ],
+      "4": [
+        {
+          "sample": "D1",
+          "comparison": "E1",
+          "repeat_num": 12
+        },
+        {
+          "sample": "D2",
+          "comparison": "E2",
+          "repeat_num": 12
+        }
+      ],
+      "5": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A2",
+          "comparison": "B2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A3",
+          "comparison": "B3",
+          "repeat_num": 6
+        },
+        {
+          "sample": "A4",
+          "comparison": "B4",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B3",
+          "comparison": "C3",
+          "repeat_num": 6
+        },
+        {
+          "sample": "B4",
+          "comparison": "C4",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C1",
+          "comparison": "D1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "C2",
+          "comparison": "D2",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D1",
+          "comparison": "E1",
+          "repeat_num": 6
+        },
+        {
+          "sample": "D2",
+          "comparison": "E2",
+          "repeat_num": 6
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB", "BC", "CD", "DE"],
+        "Equivalence": ["AC", "CA", "CB", "BA", "DC", "ED", "AE", "EA"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Equivalence"]
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  },
+  "16": {
+    "num_classes": 2,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 4
+        }
+      ],
+      "2": [
+        {
+          "sample": "A1",
+          "comparison": "D1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "D2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 4
+        }
+      ],
+      "3": [
+        {
+          "sample": "A1",
+          "comparison": "D1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "D2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 4
+        }
+      ],
+      "4": [
+        {
+          "sample": "A1",
+          "comparison": "D2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "D1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B1",
+          "comparison": "C1",
+          "repeat_num": 4
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 4
+        }
+      ],
+      "5": [
+        {
+          "sample": "D1",
+          "comparison": "E1",
+          "repeat_num": 3
+        },
+        {
+          "sample": "D2",
+          "comparison": "E2",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A1",
+          "comparison": "C1",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A2",
+          "comparison": "C2",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B1",
+          "comparison": "C2",
+          "repeat_num": 3
+        },
+        {
+          "sample": "B2",
+          "comparison": "C2",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A1",
+          "comparison": "D1",
+          "repeat_num": 3
+        },
+        {
+          "sample": "A2",
+          "comparison": "D2",
+          "repeat_num": 3
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AC", "BC", "AD"],
+        "Symmetry": ["CA", "CB", "DA"],
+        "Equivalence": ["CD", "DC"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": ["Baseline", "Symmetry", "Equivalence"]
+    },
+    "mastery_training": 0.875,
+    "description": ""
+  },
+  "17": {
+    "num_classes": 2,
+    "training_order": {
+      "1": [
+        {
+          "sample": "A1",
+          "comparison": "B1",
+          "repeat_num": "SAME"
+        }
+      ],
+      "2": [
+        {
+          "sample": "B2",
+          "comparison": "A2",
+          "repeat_num": "SAME"
+        }
+      ]
+    },
+    "plot_blocks": {
+      "relation_type": {
+        "Baseline": ["AB"]
+      }
+    },
+    "plot_blocks_ID": {
+      "relation_type": []
+    },
+    "mastery_training": 0.9,
+    "description": ""
+  }
+}

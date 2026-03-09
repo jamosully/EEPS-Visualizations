@@ -173,10 +173,10 @@ class Interaction(object):
                 self.current_phase.append("Network Enhancement")
             if self.vis_display is not None:
                 self.vis_display.rdtTab.track_rdt_data(final_clip_space, self.environment.class_accuracies, self.environment.next_step)
-                self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
-                self.vis_display.networkTab.visualize_network(0, final_clip_space)
-                self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
-                self.vis_display.change_step_counter(self.num_steps)
+            #     self.vis_display.rdtTab.visualize_rdt_data(final_clip_space)
+            #     self.vis_display.networkTab.visualize_network(0, final_clip_space)
+            #     self.vis_display.heatmapTab.visualize_heatmaps(final_clip_space)
+            #     self.vis_display.change_step_counter(self.num_steps)
 
 
         for k, v in avg_time_training.items():
@@ -217,6 +217,7 @@ class Interaction(object):
         W_in, P, Tau, prob_testing_clip = self.agent.Network_Enhancement()
         prob_testing_clip_marginalized = self.agent.marginalized_probability(prob_testing_clip)
         prob_testing_clip_category = self.agent.probability_categorization(prob_testing_clip_marginalized)
+        print(prob_testing_clip_category)
         avg_NE_itr += self.agent.NE_itr
 
         num_agents = self.environment_parameter['num_agents'][0]
@@ -255,8 +256,7 @@ class Interaction(object):
         return Simulation_data
         
 
-    def training_dataframe(self, training_order, avg_time_training,
-                                                           avg_prob_training): # Ok!
+    def training_dataframe(self, training_order, avg_time_training, avg_prob_training):
 
         """
         To create a summery of training, including block size, average number of
@@ -265,20 +265,23 @@ class Interaction(object):
 
         train_list = []
         if self.vis_display is not None:
+            print(self.vis_display.rdtTab.transition_trials)
             trial_list = np.mean(self.vis_display.rdtTab.transition_trials, axis=0)
         size_list = []
         time_list = []
         mastery_list = []
+
         for k, v in training_order.items():
             train = ''
             size=0
-            for pair in v:
-                train += pair[0]+pair[1]+', '
-                size += pair[2]
+            for step in v:
+                train += step["sample"] + step["comparison"] + ', '
+                size += step["repeat_num"]
             train_list.append(train)
             size_list.append(size)
             time_list.append(avg_time_training[k])
             mastery_list.append(avg_prob_training[k])
+        print(train_list, size_list, time_list, trial_list)
         if self.vis_display is not None:
             df = pd.DataFrame({'Training': train_list,
                             'Block Size': size_list,
@@ -305,6 +308,7 @@ class Interaction(object):
         """
 
         avg_relations = {}
+        print(prob_dict)
         for k, v in relations.items():
             sum_prob = 0
             i = 0
