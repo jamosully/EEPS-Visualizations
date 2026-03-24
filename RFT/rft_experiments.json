@@ -2,7 +2,7 @@
   "1": {
     "num_classes": 2,
     "training_order": {
-      "train_1": [
+      "1": [
         {
           "sample": "A1",
           "comparison": "B1",
@@ -28,7 +28,7 @@
           "repeat_num": 10
         }
       ],
-      "train_2": [
+      "2": [
         {
           "sample": "A1",
           "comparison": "C1",

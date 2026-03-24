@@ -78,7 +78,6 @@ class ResultsDisplay(QtWidgets.QWidget):
         self.backButton.setText("<")
         self.backButton.clicked.connect(lambda: self.switchFigure(self.figure_id - 1))
 
-
     def switchFigure(self, value):
 
         """
@@ -162,7 +161,6 @@ class ResultsDisplay(QtWidgets.QWidget):
 
             self.canvas.draw()
         
-
     def displayResults(self, rdt_volume, rdt_density, filename=None, test_phase_results=None):
 
         if test_phase_results is None:
