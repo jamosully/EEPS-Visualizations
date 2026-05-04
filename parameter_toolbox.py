@@ -379,6 +379,7 @@ class ParameterToolbox(QtWidgets.QWidget):
                 return widget
             case 'bool':
                 widget = ParamCheckBox(key)
+                print(key, value)
                 widget.setChecked(value)
                 widget.clicked.connect( \
                     (lambda: self.adjust_params(key, widget.isChecked())) if not for_gui else 

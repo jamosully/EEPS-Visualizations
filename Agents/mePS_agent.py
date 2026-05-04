@@ -5,6 +5,7 @@ import networkx as nx
 import pandas as pd
 import sympy as sp
 import matplotlib.pyplot as plt
+import itertools
 
 
 """
@@ -25,13 +26,13 @@ class mePS_Agent(object):
         """
 
         # Parameters inherited from EEPS agent
-        # self.gamma_damping = parameter["gamma_damping"][0]
-        # self.beta_h = parameter["beta_h"][0]
-        # self.beta_t = parameter["beta_t"][0]
-        # self.K = parameter["K"][0]
-        # self.alpha = parameter["alpha"][0]
-        # self.NE = parameter["network_enhancement"][0]
-        # self.training_NE = parameter["NE_during_training"][0]
+        self.gamma_damping = parameter["gamma_damping"][0]
+        self.beta_h = parameter["beta_h"][0]
+        self.beta_t = parameter["beta_t"][0]
+        self.K = parameter["K"][0]
+        self.alpha = parameter["alpha"][0]
+        self.NE = parameter["network_enhancement"][0]
+        self.training_NE = parameter["NE_during_training"][0]
 
         self.NE_itr = 0
         self.clip_space = nx.DiGraph()
@@ -40,6 +41,10 @@ class mePS_Agent(object):
 
         # Parameters inherited from mePS agent
         self.n_body = parameter["n_bodies"][0] # Number of percept excitations considered for each h-value
+
+        # Observable range is in the clip space
+        # Action range is too
+
 
     def trial_preprocess(self, percept, action, new_trial): # Ok!
 
@@ -52,6 +57,10 @@ class mePS_Agent(object):
                     self.clip_space.add_edge(percept, act, weight=1)
                     self.clip_space.add_edge(act, percept, weight=1)
                     self.trained_edges[percept] = []
+
+            for observations in itertools.combinations(action, self.n_body):
+                print("Here are observations")
+                print(observations)
 
 
     def action_selection(self, percept, action_set_t, clip = None): # Ok!

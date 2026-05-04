@@ -62,7 +62,7 @@
             "name": "Agent Type",
             "variable_name": "agent_type",
             "description": "Controls the type of agent being utilised in the simulation",
-            "value": "EEPS",
+            "value": "mePS",
             "type": "agent_drop_down",
             "options": [
                 "EEPS",
@@ -131,6 +131,62 @@
         }
     ],
     "mePS_agent_parameters": [
+        {
+            "name": "Symmetric NE",
+            "variable_name": "network_enhancement",
+            "description": "True or False; if True: we use the localized network (adoubly stochastic matrix) and Symmetric Network Enhancement (SNE); if False: we use the probability matrix and Directed Network Enhancement (DNE)",
+            "value": false,
+            "type": "bool"
+        },
+        {
+            "name": "\ud835\udefd\u2095",
+            "variable_name": "beta_h",
+            "description": "float >=0, probabilities are proportional to exp(beta_h*h_value). is used for converting h-values to probabilities during training and to generate the Network enhancement input",
+            "value": 0.1,
+            "type": "unit_interval"
+        },
+        {
+            "name": "RDT \ud835\udefd\u2095",
+            "variable_name": "rdt_beta_h",
+            "description": "testing value for softmax function",
+            "value": 0.1,
+            "type": "unit_interval"
+        },
+        {
+            "name": "\ud835\udefd\u209c",
+            "variable_name": "beta_t",
+            "description": "float >=0, controls agent\u2019s function in a trial at test phase (derived relation)",
+            "value": 4.000000000000014,
+            "type": "float"
+        },
+        {
+            "name": "K",
+            "variable_name": "K",
+            "description": "parameter for symmetry relation. K=1 means that the relations are bidirectional and network is symmetric at the end of the training phase.",
+            "value": 1,
+            "type": "unit_interval"
+        },
+        {
+            "name": "\u03b3",
+            "variable_name": "gamma_damping",
+            "description": "float between 0 and 1, controls forgetting/damping of h-values",
+            "value": 0.001,
+            "type": "unit_interval"
+        },
+        {
+            "name": "\u03b1",
+            "variable_name": "alpha",
+            "description": "the regularization parameter",
+            "value": 0.7,
+            "type": "unit_interval"
+        },
+        {
+            "name": "Use NE During Training",
+            "variable_name": "NE_during_training",
+            "description": "If true, network enhancement will occur when an agent progresses to a new phase during training",
+            "value": false,
+            "type": "bool"
+        },
         {
             "name": "N Bodies",
             "variable_name": "n_body",
@@ -210,9 +266,7 @@
             "name": "Hide Stimuli Editor",
             "variable_name": "is_editor_visible",
             "description": "Toggles the visibility of the stimuli editor in the interface",
-            "value": [
-                true
-            ],
+            "value": true,
             "type": "bool"
         }
     ],
